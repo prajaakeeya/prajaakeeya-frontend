@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody, Chip, IconButton, Box, Typography, Avatar } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     reports: any[];
@@ -29,10 +30,11 @@ const statusColor = (s: string) => {
 const truncateOneLineStyle = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 260 } as const;
 
 const ReportsTable: React.FC<Props> = ({ reports, onView }) => {
+    const { t } = useTranslation();
     if (!reports || reports.length === 0) {
         return (
             <Box sx={{ py: 6, textAlign: 'center' }}>
-                <Typography color="text.secondary">No reports found</Typography>
+                <Typography color="text.secondary">{t('adminReportsTable.noReportsFound', { defaultValue: 'No reports found' })}</Typography>
             </Box>
         );
     }
@@ -41,13 +43,13 @@ const ReportsTable: React.FC<Props> = ({ reports, onView }) => {
         <Table>
             <TableHead>
                 <TableRow>
-                    <TableCell sx={{ fontWeight: 600 }}>Reported User</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Reported User Type</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Reported By</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Reason</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Reported On</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Action</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.reportedUser', { defaultValue: 'Reported User' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.reportedUserType', { defaultValue: 'Reported User Type' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.reportedBy', { defaultValue: 'Reported By' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.reason', { defaultValue: 'Reason' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.status', { defaultValue: 'Status' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.reportedOn', { defaultValue: 'Reported On' })}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('adminReportsTable.action', { defaultValue: 'Action' })}</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -91,7 +93,7 @@ const ReportsTable: React.FC<Props> = ({ reports, onView }) => {
                             </TableCell>
                             <TableCell>{createdAt ? new Date(createdAt).toLocaleString() : ''}</TableCell>
                             <TableCell>
-                                <IconButton size="small" onClick={() => onView(id)} title="View details">
+                                <IconButton size="small" onClick={() => onView(id)} title={t('adminReportsTable.viewDetails', { defaultValue: 'View details' })}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </TableCell>

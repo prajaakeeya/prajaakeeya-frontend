@@ -122,6 +122,34 @@
     "verify": "Verify",
     "error": "Unable to authenticate"
   },
+  "adminReportsTable": {
+    "noReportsFound": "No reports found",
+    "reportedUser": "Reported User",
+    "reportedUserType": "Reported User Type",
+    "reportedBy": "Reported By",
+    "reason": "Reason",
+    "status": "Status",
+    "reportedOn": "Reported On",
+    "action": "Action",
+    "viewDetails": "View details"
+  },
+  "adminReportStatusModal": {
+    "title": "Update Report Status",
+    "status": "Status",
+    "adminRemarks": "Admin remarks (optional)",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "adminUsersTable": {
+    "noUsersFound": "No users found.",
+    "name": "Name",
+    "role": "Role",
+    "status": "Status",
+    "block": "Block",
+    "blocked": "Blocked",
+    "active": "Active",
+    "unblock": "Unblock"
+  },
   "userLogin": {
     "title": "Voter Login"
   },

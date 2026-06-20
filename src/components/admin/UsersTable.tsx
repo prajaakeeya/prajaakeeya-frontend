@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import BlockIcon from '@mui/icons-material/Block';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { useTranslation } from 'react-i18next';
 
 import { AdminUser } from '../../services/adminUsersService';
 
@@ -24,17 +25,18 @@ const safeAvatarSrc = (url?: string | null) => {
 };
 
 const UsersTable: React.FC<Props> = ({ users, onToggleBlock }) => {
-    if (!users || users.length === 0) return <Box sx={{ py: 4 }}><Typography>No users found.</Typography></Box>;
+    const { t } = useTranslation();
+    if (!users || users.length === 0) return <Box sx={{ py: 4 }}><Typography>{t('adminUsersTable.noUsersFound', { defaultValue: 'No users found.' })}</Typography></Box>;
 
     return (
         <TableContainer>
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Role</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }} align="right">Block</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('adminUsersTable.name', { defaultValue: 'Name' })}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('adminUsersTable.role', { defaultValue: 'Role' })}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('adminUsersTable.status', { defaultValue: 'Status' })}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }} align="right">{t('adminUsersTable.block', { defaultValue: 'Block' })}</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -55,12 +57,12 @@ const UsersTable: React.FC<Props> = ({ users, onToggleBlock }) => {
                             <TableCell>{u.role}</TableCell>
                             <TableCell>
                                 {u.isBlocked
-                                    ? <Chip label="Blocked" color="error" size="small" />
-                                    : <Chip label="Active" color="success" size="small" />
+                                    ? <Chip label={t('adminUsersTable.blocked', { defaultValue: 'Blocked' })} color="error" size="small" />
+                                    : <Chip label={t('adminUsersTable.active', { defaultValue: 'Active' })} color="success" size="small" />
                                 }
                             </TableCell>
                             <TableCell align="right">
-<Tooltip title={u.isBlocked ? 'Unblock' : 'Block'}>
+                                <Tooltip title={u.isBlocked ? t('adminUsersTable.unblock', { defaultValue: 'Unblock' }) : t('adminUsersTable.block', { defaultValue: 'Block' })}>
                                     <IconButton
                                         size="small"
                                         onClick={() => onToggleBlock && onToggleBlock(u)}
