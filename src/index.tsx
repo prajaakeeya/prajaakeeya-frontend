@@ -40,19 +40,6 @@ const ErrorFallback = () => (
 
 // ── Force reload when a new service worker activates ──
 if ('serviceWorker' in navigator) {
-  // Only reload on a genuine SW UPDATE (an old controller was already in charge
-  // and a new one took over). An openWindow()-launched page loads UNCONTROLLED
-  // (controller === null); Workbox's clientsClaim then claims it and fires
-  // controllerchange. Reloading on THAT first claim would needlessly throw away
-  // a freshly deep-linked page (and previously masked the real PUSH_NAVIGATE
-  // delivery bug). Guarding on a pre-existing controller — plus a refreshing
-  // flag — keeps the auto-update behaviour without the spurious reload.
-  // Snapshot control state NOW, at load. Inside the controllerchange handler
-  // navigator.serviceWorker.controller already points at the NEW controller, so
-  // it can't tell an initial claim from an update — we must remember whether a
-  // controller existed before the event. If this page loaded with no controller
-  // (the openWindow() case), the upcoming controllerchange is the initial claim,
-  // not an update, so we must NOT reload.
   const hadControllerAtLoad = Boolean(navigator.serviceWorker.controller);
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
@@ -76,7 +63,7 @@ const ThemedApp = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Sentry.ErrorBoundary fallback={<ErrorFallback />}>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <BrowserRouter>
           <App />
         </BrowserRouter>
       </Sentry.ErrorBoundary>

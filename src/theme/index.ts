@@ -1,11 +1,7 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type { PaletteMode } from "@mui/material";
 
-// ─────────────────────────────────────────────────────────────────────────────
 // BRAND COLORS — single source of truth for Prajaakeeya palette.
-// Import `BRAND` anywhere you need a brand color that doesn't live in the MUI
-// palette (e.g. decorative gradients, logo rings, particle colours).
-// ─────────────────────────────────────────────────────────────────────────────
 export const BRAND = {
   red: '#C8180A',   // primary brand red
   red2: '#E02010',   // lighter brand red
@@ -35,9 +31,7 @@ export const PARTICLE_COLORS = [
   BRAND.red2,
 ] as const;
 
-// ─────────────────────────────────────────────────────────────────────────────
 // THEME FACTORY — returns a fully-configured MUI theme for the given mode.
-// ─────────────────────────────────────────────────────────────────────────────
 export const getTheme = (mode: PaletteMode) =>
   responsiveFontSizes(
     createTheme({
@@ -59,17 +53,17 @@ export const getTheme = (mode: PaletteMode) =>
         secondary:
           mode === 'dark'
             ? {
-              main: BRAND.yellow,
-              light: BRAND.yellow2,
-              dark: '#B45309',
-              contrastText: BRAND.black,
-            }
+                main: BRAND.yellow,
+                light: BRAND.yellow2,
+                dark: '#B45309',
+                contrastText: BRAND.black,
+              }
             : {
-              main: '#111827',
-              light: '#374151',
-              dark: '#020617',
-              contrastText: '#FFFFFF',
-            },
+                main: '#111827',
+                light: '#374151',
+                dark: '#020617',
+                contrastText: '#FFFFFF',
+              },
 
         /* BACKGROUNDS */
         background:
@@ -85,9 +79,7 @@ export const getTheme = (mode: PaletteMode) =>
 
         /* DIVIDER */
         divider:
-          mode === 'dark'
-            ? 'rgba(245,168,0,0.18)'
-            : 'rgba(17, 24, 39, 0.10)',
+          mode === 'dark' ? 'rgba(245,168,0,0.18)' : 'rgba(17, 24, 39, 0.10)',
 
         /* STATUS */
         success: { main: mode === 'dark' ? '#22C55E' : '#15803D' },
@@ -96,7 +88,7 @@ export const getTheme = (mode: PaletteMode) =>
         info: { main: mode === 'dark' ? '#60A5FA' : '#2563EB' },
       },
 
-      // ── Typography ───────────────────────────────────────────────────────
+      // Typography
       typography: {
         fontFamily:
           '"Inter", "Noto Sans Kannada", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -137,7 +129,7 @@ export const getTheme = (mode: PaletteMode) =>
         },
       },
 
-      // ── Component overrides ──────────────────────────────────────────────
+      // Component overrides
       components: {
         /* BUTTONS */
         MuiButton: {
@@ -189,7 +181,7 @@ export const getTheme = (mode: PaletteMode) =>
           },
         },
 
-        // Force a single card radius across the app, even when page-level sx sets larger values.
+        // Force a single card radius across the app.
         MuiCssBaseline: {
           styleOverrides: {
             '.MuiCard-root': {

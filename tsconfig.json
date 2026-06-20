@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "ignoreDeprecations": "5.0",
-    "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "include": ["src"]
 }

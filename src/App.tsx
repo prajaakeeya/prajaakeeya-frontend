@@ -4,8 +4,6 @@ import { useTranslation } from "react-i18next";
 import { CircularProgress, Box } from "@mui/material";
 
 // ── Static imports ──
-// Layouts, store and always-on components are rendered outside <Suspense>,
-// so they stay in the entry chunk.
 import AdminLayout from "./layouts/AdminLayout";
 import UserLayout from "./layouts/UserLayout";
 import AuthLayout from "./layouts/AuthLayout";
@@ -129,11 +127,6 @@ const App = () => {
   useEffect(() => {
     // Web-push notification tap → navigate. The FCM service worker stashes the
     // target route in the Cache API; we PULL it whenever the app (re)gains focus.
-    // This is reliable even for a page launched via openWindow (which loads
-    // UNCONTROLLED, so the SW's postMessage isn't delivered — the real cause of
-    // "navigates only after a refresh"). Triggers: mount, visibilitychange,
-    // window focus, and the PUSH_NAVIGATE message as a fast-path nudge. The
-    // consumer deletes the stash, so multiple triggers never double-navigate.
     void consumePendingPushRoute();
 
     const onVisible = () => {
@@ -150,8 +143,6 @@ const App = () => {
         if (msg && msg.type === "PUSH_NAVIGATE") void consumePendingPushRoute();
       };
       navigator.serviceWorker.addEventListener("message", onSwMessage);
-      // addEventListener('message') does not start the client message queue;
-      // startMessages() does. Harmless even though the stash is the primary path.
       navigator.serviceWorker.startMessages();
     }
 
@@ -172,9 +163,7 @@ const App = () => {
   }, [token, fetchProfile]);
 
   useEffect(() => {
-    // Wire web push (FCM) for the signed-in user: registers silently if the
-    // user already granted notifications, otherwise prompts on their next
-    // gesture. No-op unless Firebase env is configured + push is supported.
+    // Wire web push (FCM) for the signed-in user:
     if (isAuthenticated && token) {
       return setupPushForUser();
     }
@@ -182,7 +171,6 @@ const App = () => {
 
   useEffect(() => {
     // Dismiss the preloader after the animation completes (~5 s)
-    // Only if on the root path where the preloader is shown.
     if (
       location.pathname === "/" ||
       location.pathname === "/index.html" ||
@@ -355,7 +343,8 @@ const App = () => {
             <Route path="upload-sop" element={<AdminUploadSopPage />} />
             <Route path="registered-aspirants" element={<AdminAspirantListPage />} />
             <Route path="registered-aspirants/:id" element={<AdminUserDetailsPage />} />
-            <Route path="/admin/users/:id" element={<AdminUserDetailsPage />} />
+            {/* Ensure child route is relative under /admin */}
+            <Route path="users/:id" element={<AdminUserDetailsPage />} />
           </Route>
 
           {/* Standalone onboarding route — auth required, no UserLayout chrome */}
@@ -448,7 +437,6 @@ const App = () => {
           </Route>
 
           {/* Guest routes — no auth required */}
-          {/* test comment */}
           <Route path="/guest" element={<GuestLayout />}>
             <Route path="dashboard" element={<GuestDashboardPage />} />
             <Route path="aspirants" element={<GuestAspirantsPage />} />
