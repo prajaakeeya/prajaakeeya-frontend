@@ -11,10 +11,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prajaakeeya - Your Voice, Your Rule, Your Vote | Ward Elections &amp; Democracy Platform</title>
   <meta name="description" content="A democratic platform connecting voters, aspirants, and candidates across ward elections, GBA, BBMP, Lok Sabha, and Vidhan Sabha. Technology-driven transparent elections for people's voice." />
-  <meta name="keywords" content="Prajaakeeya, elections, democracy, ward elections, GBA, Greater Bengaluru Authority, BBMP, Lok Sabha, Vidhan Sabha, candidates, aspirants, voters, voter registration, civic issues, technology in elections, election platform, Karnataka elections, India elections, transparent elections, accountability, responsibility, transparency" />
+  <meta name="keywords" content="Prajaakeeya, elections, democracy, ward elections, GBA, BBMP, Lok Sabha, Vidhan Sabha, candidates, aspirants, voters, voter registration, civic issues, technology in elections, election platform, Karnataka elections, India elections, transparent elections, accountability, responsibility, transparency" />
   <!-- Manifest is auto-injected by vite-plugin-pwa -->
-  <!-- Status bar / browser chrome colour (Android Chrome + iOS Safari 15+) -->
-  <meta name="theme-color" content="#0A0808" />
+  <!-- Status bar / browser chrome colour -->
+  <meta name="theme-color" content="#FFFFFF" />
   <!-- Open Graph -->
   <meta property="og:title" content="Prajaakeeya - Your Voice, Your Rule, Your Vote | Ward Elections &amp; Democracy Platform" />
   <meta property="og:description" content="A democratic platform connecting voters, aspirants, and candidates across ward elections, GBA, BBMP, Lok Sabha, and Vidhan Sabha. Technology-driven transparent elections for people's voice." />
@@ -29,635 +29,190 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&family=Baloo+2:wght@700;800;900&family=Tiro+Kannada&family=Mukta:wght@300;400;600;700&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&family=Baloo+2:wght@700;800;900&family=Tiro+Kannada&family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
   <!-- ═══ Preloader styles — inline so they load before React ═══ -->
   <style>
+    html, body {
+      background-color: #FFFFFF !important;
+    }
     #preloader {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: #08060A;
+      background: #FFFFFF !important; /* Force Pure White Background */
       overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center
+      justify-content: center;
     }
-
     #preloader.exit {
-      animation: plExit .7s ease forwards
+      animation: plExit .5s ease forwards;
     }
-
     @keyframes plExit {
-      to {
-        opacity: 0;
-        transform: scale(1.04)
-      }
+      to { opacity: 0; transform: scale(1.05); }
     }
 
-    .pl-bar-top,
-    .pl-bar-bottom {
+    /* Orbital Energy Rings */
+    .pl-orbital-wrap {
       position: absolute;
-      left: 0;
-      right: 0;
-      display: flex
-    }
-
-    .pl-bar-top {
-      top: 0;
-      height: 4px
-    }
-
-    .pl-bar-bottom {
-      bottom: 0;
-      height: 3px;
-      opacity: .4
-    }
-
-    .pl-bar-top span:nth-child(1),
-    .pl-bar-bottom span:nth-child(1) {
-      flex: 1;
-      background: #C8180A
-    }
-
-    .pl-bar-top span:nth-child(2),
-    .pl-bar-bottom span:nth-child(2) {
-      flex: 1;
-      background: #F5A800
-    }
-
-    .pl-bar-top span:nth-child(3),
-    .pl-bar-bottom span:nth-child(3) {
-      flex: 1;
-      background: #E02010
-    }
-
-    .pl-bg-glow {
-      position: absolute;
-      width: 560px;
-      height: 560px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245, 168, 0, .10) 0%, rgba(200, 24, 10, .05) 45%, transparent 70%);
-      top: 50%;
+      top: 45%;
       left: 50%;
       transform: translate(-50%, -50%);
-      animation: plBreathe 4s ease-in-out infinite;
-      pointer-events: none
-    }
-
-    @keyframes plBreathe {
-
-      0%,
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: .8
-      }
-
-      50% {
-        transform: translate(-50%, -50%) scale(1.15);
-        opacity: 1
-      }
-    }
-
-    .pl-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .018) 1px, transparent 1px);
-      background-size: 44px 44px;
-      animation: plGridFade 1s .2s ease both;
-      pointer-events: none
-    }
-
-    @keyframes plGridFade {
-      from {
-        opacity: 0
-      }
-
-      to {
-        opacity: 1
-      }
-    }
-
-    .pl-scan {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      top: -2px;
-      background: linear-gradient(90deg, transparent, rgba(245, 168, 0, .3), transparent);
-      animation: plScan 3s .5s ease-in-out infinite;
-      pointer-events: none
-    }
-
-    @keyframes plScan {
-      0% {
-        top: -2px
-      }
-
-      100% {
-        top: 100vh
-      }
-    }
-
-    #pl-particles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1
-    }
-
-    .pl-particle {
-      position: absolute;
-      border-radius: 50%;
-      animation: plRise linear infinite
-    }
-
-    @keyframes plRise {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0
-      }
-
-      8% {
-        opacity: 1
-      }
-
-      92% {
-        opacity: .4
-      }
-
-      100% {
-        transform: translateY(-110vh) translateX(var(--dx));
-        opacity: 0
-      }
-    }
-
-    .pl-stage {
-      position: relative;
-      z-index: 5;
-      width: min(440px, 90vw);
-      height: 220px;
-      overflow: visible
-    }
-
-    .pl-word-old,
-    .pl-word-new {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center
-    }
-
-    .pl-word-old {
-      animation: plWordOldIn .8s 0s ease both, plWordOldOut .6s 2.2s ease forwards
-    }
-
-    @keyframes plWordOldIn {
-      from {
-        opacity: 0;
-        transform: translateY(calc(-50% + 30px))
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(-50%)
-      }
-    }
-
-    @keyframes plWordOldOut {
-      to {
-        opacity: 0;
-        transform: translateY(calc(-50% - 40px));
-        filter: blur(4px)
-      }
-    }
-
-    .pl-old-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .30);
-      border: 1px solid rgba(255, 255, 255, .12);
-      padding: 3px 14px;
-      border-radius: 20px;
-      margin-bottom: 10px
-    }
-
-    .pl-old-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(42px, 9vw, 82px);
-      font-weight: 900;
-      letter-spacing: 3px;
-      line-height: 1;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative
-    }
-
-    .pl-old-word::after {
-      content: '';
-      position: absolute;
-      left: -4%;
-      top: 50%;
-      width: 0%;
-      height: 3px;
-      background: linear-gradient(90deg, #C8180A, #E02010);
-      box-shadow: 0 0 10px rgba(200, 24, 10, .7);
-      animation: plStrike .7s 1.0s ease forwards
-    }
-
-    @keyframes plStrike {
-      from {
-        width: 0%
-      }
-
-      to {
-        width: 108%
-      }
-    }
-
-    .pl-old-kannada {
-      font-family: 'Tiro Kannada', serif;
-      font-size: clamp(14px, 2.5vw, 22px);
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 4px;
-      margin-top: 5px;
-      animation: plFadeSlideUp .6s 0.8s ease both
-    }
-
-    .pl-word-new {
-      animation: plWordNewIn .9s 3.0s cubic-bezier(.34, 1.56, .64, 1) both
-    }
-
-    @keyframes plWordNewIn {
-      from {
-        opacity: 0;
-        transform: translateY(calc(-50% + 50px)) scale(.8);
-        filter: blur(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-        filter: blur(0)
-      }
-    }
-
-    .pl-new-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #fff;
-      background: linear-gradient(90deg, #C8180A, #F5A800);
-      padding: 3px 14px;
-      border-radius: 20px;
-      margin-bottom: 10px
-    }
-
-    .pl-the-real {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(22px, 5vw, 48px);
-      font-weight: 900;
-      letter-spacing: 2px;
-      line-height: 1;
-      margin-bottom: 4px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: plFadeSlideUp .6s 3.2s ease both
-    }
-
-    .pl-new-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(42px, 9vw, 82px);
-      font-weight: 900;
-      letter-spacing: 3px;
-      line-height: 1.3;
-      padding-bottom: 8px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: plGlowPulse 3s 3.9s ease-in-out infinite
-    }
-
-    @keyframes plGlowPulse {
-
-      0%,
-      100% {
-        filter: drop-shadow(0 0 10px rgba(245, 168, 0, .3))
-      }
-
-      50% {
-        filter: drop-shadow(0 0 24px rgba(245, 168, 0, .7)) drop-shadow(0 0 48px rgba(200, 24, 10, .3))
-      }
-    }
-
-    .pl-new-prefix {
-      font-family: 'Baloo 2', 'Tiro Kannada', cursive, serif;
-      font-size: clamp(16px, 3vw, 28px);
-      font-weight: 800;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 3px;
-      margin-bottom: -4px;
-      animation: plFadeSlideUp .5s 3.2s ease both
-    }
-
-    .pl-new-kannada {
-      font-family: 'Tiro Kannada', serif;
-      font-size: clamp(14px, 2.5vw, 22px);
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 4px;
-      margin-top: 5px;
-      animation: plFadeSlideUp .6s 3.7s ease both
-    }
-
-    .pl-tagline-wrap {
-      position: absolute;
-      bottom: -78px;
-      left: 0;
-      right: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      animation: plFadeSlideUp .7s 3.9s ease both
-    }
-
-    @keyframes plFadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(16px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    .pl-tagline-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px
-    }
-
-    .pl-div-line-l {
-      width: 48px;
-      height: 1.5px;
-      background: linear-gradient(90deg, transparent, #C8180A)
-    }
-
-    .pl-div-dot {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #C8180A, #F5A800);
+      width: 260px;
+      height: 260px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      box-shadow: 0 0 10px rgba(245, 168, 0, .4)
+    }
+    .pl-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      animation: plSpin linear infinite;
+    }
+    .pl-ring-1 {
+      width: 100%; height: 100%;
+      border-top-color: #C8180A;
+      border-left-color: rgba(200, 24, 10, 0.1);
+      animation-duration: 1.5s; /* FAST */
+    }
+    .pl-ring-2 {
+      width: 80%; height: 80%;
+      border-right-color: #F5A800;
+      border-bottom-color: rgba(245, 168, 0, 0.1);
+      animation-duration: 1s; /* FAST */
+      animation-direction: reverse;
+    }
+    .pl-ring-3 {
+      width: 60%; height: 60%;
+      border-top-color: #E02010;
+      border-bottom-color: rgba(224, 32, 16, 0.1);
+      animation-duration: 2s; /* FAST */
     }
 
-    .pl-div-line-r {
-      width: 48px;
-      height: 1.5px;
-      background: linear-gradient(90deg, #F5A800, transparent)
+    @keyframes plSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
+    /* Glowing Core / Logo */
+    .pl-core {
+      position: relative;
+      z-index: 10;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(0, 0, 0, 0.05);
+      animation: plCorePulse 1s ease-in-out infinite alternate;
+    }
+    @keyframes plCorePulse {
+      0% { box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05), inset 0 0 10px rgba(0, 0, 0, 0.02); transform: scale(1); }
+      100% { box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12), inset 0 0 30px rgba(0, 0, 0, 0.05); transform: scale(1.05); }
+    }
+    .pl-logo-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Text Reveal */
+    .pl-text-wrap {
+      position: absolute;
+      top: 68%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      /* removed opacity: 0 and animation to show instantly */
+    }
+    
+    .pl-title-kn {
+      font-family: 'Tiro Kannada', serif;
+      font-size: clamp(16px, 3.5vw, 32px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: -4px;
+      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+    .pl-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+    
     .pl-art-row {
       display: flex;
       align-items: center;
-      gap: 8px
+      gap: 15px;
     }
-
-    .pl-art-pill {
-      display: flex;
-      align-items: baseline;
-      gap: 3px
-    }
-
-    .pl-art-letter {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(18px, 3vw, 26px);
-      font-weight: 900;
-      background: linear-gradient(135deg, #E02010, #F5A800);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text
-    }
-
     .pl-art-word {
       font-family: 'Mukta', sans-serif;
-      font-size: clamp(8px, 1.2vw, 11px);
-      font-weight: 600;
+      font-size: clamp(10px, 1.5vw, 14px);
+      font-weight: 700;
       letter-spacing: 1px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-transform: uppercase
+      color: rgba(15, 23, 42, 0.8) !important; /* Force dark grey so Vite CSS doesn't make it white */
+      text-transform: uppercase;
+    }
+    .pl-art-word span {
+      color: #E02010 !important;
+      font-size: 1.3em;
+      font-weight: 900;
     }
 
-    .pl-art-sep {
-      color: rgba(245, 168, 0, .4);
-      font-size: 20px;
-      line-height: 1
-    }
+    /* removed plFadeIn keyframes */
 
+    /* Progress Bar */
+    @keyframes plFadeInCenter {
+      from { opacity: 0; transform: translateX(-50%) translateY(15px); filter: blur(3px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); filter: blur(0); }
+    }
     .pl-progress-wrap {
       position: absolute;
-      bottom: 34px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(320px, 80vw);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 9px;
-      z-index: 5
+      width: 250px;
+      height: 3px;
+      background: rgba(15, 23, 42, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      opacity: 0;
+      animation: plFadeInCenter 0.4s 0.3s ease forwards;
     }
-
-    .pl-progress-track {
-      width: 100%;
-      height: 2.5px;
-      background: rgba(255, 255, 255, .08);
-      border-radius: 2px;
-      overflow: hidden
-    }
-
     .pl-progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #C8180A, #F5A800, #FFCB00);
-      border-radius: 2px;
-      box-shadow: 0 0 10px rgba(245, 168, 0, .5);
-      animation: plProgressFill 4.6s .4s cubic-bezier(.4, 0, .2, 1) forwards
+      background: linear-gradient(90deg, #C8180A, #F5A800);
+      box-shadow: 0 0 10px rgba(245, 168, 0, 0.5);
+      animation: plProgressFill 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
-
     @keyframes plProgressFill {
-      0% {
-        width: 0%
-      }
-
-      30% {
-        width: 25%
-      }
-
-      55% {
-        width: 50%
-      }
-
-      72% {
-        width: 70%
-      }
-
-      100% {
-        width: 100%
-      }
+      0% { width: 0%; }
+      40% { width: 45%; }
+      80% { width: 85%; }
+      100% { width: 100%; }
     }
 
-    .pl-progress-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .20)
-    }
-
-    .pl-progress-label::after {
-      content: '';
-      display: inline-block;
-      width: 18px;
-      text-align: left;
-      animation: plDots 2s steps(7, end) infinite
-    }
-
-    @keyframes plDots {
-      0% {
-        content: ''
-      }
-
-      14% {
-        content: '.'
-      }
-
-      28% {
-        content: '..'
-      }
-
-      42% {
-        content: '...'
-      }
-
-      57% {
-        content: '..'
-      }
-
-      71% {
-        content: '.'
-      }
-
-      85%,
-      100% {
-        content: ''
-      }
-    }
-
-    .pl-logo-wrap {
-      position: relative;
-      z-index: 5;
-      width: 168px;
-      height: 168px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      animation: plLogoIn .9s .1s cubic-bezier(.34, 1.56, .64, 1) both
-    }
-
-    .pl-logo-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: conic-gradient(#E02010 0deg 120deg, #FF7A00 120deg 240deg, #FFCB00 240deg 360deg);
-      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
-      mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
-      animation: plLogoSpin 4.8s linear infinite;
-      box-shadow: 0 0 18px rgba(245, 168, 0, .22)
-    }
-
-    .pl-logo-inner {
-      position: relative;
-      width: 94px;
-      height: 94px;
-      border-radius: 20px;
-      background: #0A0808;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, .45)
-    }
-
-    .pl-logo-img {
-      width: 86px;
-      height: 86px;
-      border-radius: 16px;
-      object-fit: contain;
-      display: block
-    }
-
-    @keyframes plLogoIn {
-      from {
-        opacity: 0;
-        transform: scale(.5);
-        filter: blur(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-        filter: blur(0)
-      }
-    }
-
-    @keyframes plLogoSpin {
-      from {
-        rotate: 0deg
-      }
-
-      to {
-        rotate: 360deg
-      }
-    }
   </style>
   <!-- ═══ Path-based Preloader Toggle ═══ -->
   <style id="preloader-hide-style">
@@ -678,99 +233,57 @@
 <body>
   <!-- ═══ Preloader — renders instantly before React loads ═══ -->
   <div id="preloader">
-    <div class="pl-bar-top"><span></span><span></span><span></span></div>
-    <div class="pl-bg-glow"></div>
-    <div class="pl-grid"></div>
-    <div class="pl-scan"></div>
-    <div id="pl-particles"></div>
-
-    <!-- Logo -->
-    <div class="pl-logo-wrap">
-      <div class="pl-logo-inner">
-        <img class="pl-logo-img" src="/prajakeeya.png" alt="Prajaakeeya" />
+    <div class="pl-orbital-wrap">
+      <div class="pl-ring pl-ring-1"></div>
+      <div class="pl-ring pl-ring-2"></div>
+      <div class="pl-ring pl-ring-3"></div>
+      <div class="pl-core">
+        <img class="pl-logo-img" src="/prajakeeya.png" alt="Prajaakeeya Logo" />
       </div>
     </div>
 
-    <div class="pl-stage">
-
-      <!-- Phase 1: Old System -->
-      <div class="pl-word-old">
-        <div class="pl-old-word" id="pl-old-word">ರಾಜಕೀಯ</div>
-        <div class="pl-old-kannada" id="pl-old-sub">RAJAKEEYA</div>
+    <div class="pl-text-wrap">
+      <div class="pl-title-kn" id="pl-title-kn">ದಿ ರಿಯಲ್ ಪ್ರಜಾಕೀಯ</div>
+      <div class="pl-title" id="pl-title">THE REAL PRAJAAKEEYA</div>
+      <div class="pl-art-row">
+        <div class="pl-art-word" id="pl-art-a"><span>A</span>CCOUNTABILITY (ಹೊಣೆಗಾರಿಕೆ)</div>
+        <div class="pl-art-word" id="pl-art-r"><span>R</span>ESPONSIBILITY (ಜವಾಬ್ದಾರಿ)</div>
+        <div class="pl-art-word" id="pl-art-t"><span>T</span>RANSPARENCY (ಪಾರದರ್ಶಕತೆ)</div>
       </div>
-
-      <!-- Phase 2: New System -->
-      <div class="pl-word-new">
-        <div class="pl-new-prefix" id="pl-new-prefix">ದಿ ರಿಯಲ್</div>
-        <div class="pl-new-word" id="pl-new-word">ಪ್ರಜಾಕೀಯ</div>
-        <div class="pl-new-kannada" id="pl-new-sub">THE REAL PRAJAAKEEYA</div>
-      </div>
-
-      <!-- Tagline (below stage) -->
-      <div class="pl-tagline-wrap">
-        <div class="pl-tagline-divider">
-          <div class="pl-div-line-l"></div>
-          <div class="pl-div-dot">✊</div>
-          <div class="pl-div-line-r"></div>
-        </div>
-        <div class="pl-art-row">
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">A</span>
-            <span class="pl-art-word" id="pl-art-a">Accountability</span>
-          </div>
-          <span class="pl-art-sep">·</span>
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">R</span>
-            <span class="pl-art-word" id="pl-art-r">Responsibility</span>
-          </div>
-          <span class="pl-art-sep">·</span>
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">T</span>
-            <span class="pl-art-word" id="pl-art-t">Transparency</span>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /.pl-stage -->
+    </div>
 
     <div class="pl-progress-wrap">
-      <div class="pl-progress-track">
-        <div class="pl-progress-fill"></div>
-      </div>
-      <div class="pl-progress-label" id="pl-loading">Prajaakeeya Loading</div>
+      <div class="pl-progress-fill"></div>
     </div>
 
-    <!-- Localise preloader based on saved language -->
     <script>
       (function () {
+        // We ensure the language translations are updated instantly if stored
         var t = {
-          kn: { old: 'ರಾಜಕೀಯ', oldSub: 'RAJAKEEYA', prefix: 'ದಿ ರಿಯಲ್', nw: 'ಪ್ರಜಾಕೀಯ', nwSub: 'THE REAL PRAJAAKEEYA', a: 'ಹೊಣೆಗಾರಿಕೆ', r: 'ಜವಾಬ್ದಾರಿ', t: 'ಪಾರದರ್ಶಕತೆ', load: 'ಪ್ರಜಾಕೀಯ ಲೋಡ್ ಆಗುತ್ತಿದೆ' },
-          hi: { old: 'राजनीति', oldSub: 'RAJNEETI', prefix: 'ದಿ ರಿಯಲ್', nw: 'प्रजाकीय', nwSub: 'THE REAL PRAJAAKEEYA', a: 'जवाबदेही', r: 'जिम्मेदारी', t: 'पारदर्शिता', load: 'प्रजाकीय लोड हो रहा है' },
-          te: { old: 'రాజకీయం', oldSub: 'RAJAKEYAM', prefix: 'ದಿ ರಿಯಲ್', nw: 'ప్రజాకీయ', nwSub: 'THE REAL PRAJAAKEEYA', a: 'జవాబుదారీతనం', r: 'బాధ్యత', t: 'పారదర్శకత', load: 'ప్రజాకీయ లోడ్ అవుతోంది' },
-          ta: { old: 'அரசியல்', oldSub: 'ARASIYAL', prefix: 'ದಿ ರಿಯಲ್', nw: 'பிரஜாகீய', nwSub: 'THE REAL PRAJAAKEEYA', a: 'பொறுப்புணர்வு', r: 'பொறுப்பு', t: 'வெளிப்படைத்தன்மை', load: 'பிரஜாகீய ஏற்றுகிறது' },
-          bn: { old: 'রাজনীতি', oldSub: 'RAJNEETI', prefix: 'ದಿ ರಿಯಲ್', nw: 'প্রজাকীয়', nwSub: 'THE REAL PRAJAAKEEYA', a: 'জবাবদিহিতা', r: 'দায়িত্ব', t: 'স্বচ্ছতা', load: 'প্রজাকীয় লোড হচ্ছে' },
-          mr: { old: 'राजकारण', oldSub: 'RAJKARAN', prefix: 'ದಿ ರಿಯಲ್', nw: 'प्रजाकीय', nwSub: 'THE REAL PRAJAAKEEYA', a: 'उत्तरदायित्व', r: 'जबाबदारी', t: 'पारदर्शकता', load: 'प्रजाकीय लोड होत आहे' },
-          gj: { old: 'રાજકારણ', oldSub: 'RAJKARAN', prefix: 'ದಿ ರಿಯಲ್', nw: 'પ્રજાકીય', nwSub: 'THE REAL PRAJAAKEEYA', a: 'જવાબદારી', r: 'જવાબદારી', t: 'પારદર્શિતા', load: 'પ્રજાકીય લોડ થઈ રહ્યું છે' },
-          ma: { old: 'രാജകീയം', oldSub: 'RAJAKEYAM', prefix: 'ದಿ ರಿಯಲ್', nw: 'പ്രജാകീയ', nwSub: 'THE REAL PRAJAAKEEYA', a: 'ഉത്തരവാദിത്തം', r: 'ഉത്തരവാദിത്വം', t: 'സുതാര്യത', load: 'പ്രജാകീയ ലോഡ് ചെയ്യുന്നു' },
-          od: { old: 'ରାଜନୀତି', oldSub: 'RAJNEETI', prefix: 'ದಿ ರಿಯಲ್', nw: 'ପ୍ରଜାକୀୟ', nwSub: 'THE REAL PRAJAAKEEYA', a: 'ଦାୟିତ୍ୱ', r: 'ଉତ୍ତରଦାୟିତ୍ୱ', t: 'ସ୍ୱଚ୍ଛତା', load: 'ପ୍ରଜାକୀୟ ଲୋଡ୍ ହେଉଛି' }
+          kn: { title: 'ದಿ ರಿಯಲ್ ಪ್ರಜಾಕೀಯ', a: 'ಹೊಣೆಗಾರಿಕೆ', r: 'ಜವಾಬ್ದಾರಿ', t: 'ಪಾರದರ್ಶಕತೆ' },
+          hi: { title: 'दि रियल प्रजाकीय', a: 'जवाबदेही', r: 'जिम्मेदारी', t: 'पारदर्शिता' },
+          te: { title: 'ది రియల్ ప్రజాకీయ', a: 'జవాబుదారీతనం', r: 'బాధ్యత', t: 'పారదర్శకత' },
+          ta: { title: 'தி ரியல் பிரஜாகீய', a: 'பொறுப்புணர்வு', r: 'பொறுப்பு', t: 'வெளிப்படைத்தன்மை' },
+          bn: { title: 'দি রিয়েল প্রজাকীয়', a: 'জবাবদিহিতা', r: 'দায়িত্ব', t: 'স্বচ্ছতা' },
+          mr: { title: 'दि रियल प्रजाकीय', a: 'उत्तरदायित्व', r: 'जबाबदारी', t: 'पारदर्शकता' },
+          gj: { title: 'ધ રિયલ પ્રજાકીય', a: 'જવાબદારી', r: 'જવાબદારી', t: 'પારદર્શિતા' },
+          ma: { title: 'ദി റിയൽ പ്രജാകീയ', a: 'ഉത്തരവാദിത്തം', r: 'ഉത്തരവാദിത്വം', t: 'സുതാര്യത' },
+          od: { title: 'ଦି ରିଅଲ୍ ପ୍ରଜାକୀୟ', a: 'ଦାୟିତ୍ୱ', r: 'ଉତ୍ତରଦାୟିତ୍ୱ', t: 'ସ୍ୱଚ୍ଛତା' }
         };
         var lang = (localStorage.getItem('i18nextLng') || 'en').split('-')[0];
-        var d = t[lang];
-        if (!d) return; // English is the default in HTML
-        var s = function (id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
-        s('pl-old-word', d.old);
-        s('pl-old-sub', d.oldSub);
-        s('pl-new-prefix', d.prefix);
-        s('pl-new-word', d.nw);
-        s('pl-new-sub', d.nwSub);
-        s('pl-art-a', d.a);
-        s('pl-art-r', d.r);
-        s('pl-art-t', d.t);
-        s('pl-loading', d.load);
+        
+        // If it's English, we show English with Kannada in brackets (Default)
+        // If it's a specific regional language, we translate fully
+        if (lang !== 'en' && t[lang]) {
+          var d = t[lang];
+          var s = function (id, html) { var e = document.getElementById(id); if (e) e.innerHTML = html; };
+          s('pl-title', d.title);
+          s('pl-art-a', '<span>A</span>CCOUNTABILITY (' + d.a + ')');
+          s('pl-art-r', '<span>R</span>ESPONSIBILITY (' + d.r + ')');
+          s('pl-art-t', '<span>T</span>RANSPARENCY (' + d.t + ')');
+        }
       })();
     </script>
-
-    <div class="pl-bar-bottom"><span></span><span></span><span></span></div>
   </div><!-- /#preloader -->
 
   <div id="root"></div>

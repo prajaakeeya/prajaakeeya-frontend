@@ -170,7 +170,9 @@ const UserRegisterPage = () => {
     // Mark that this OAuth flow started from the Register page so the
     // callback can show the celebration screen for fresh signups.
     sessionStorage.setItem("__FROM_REGISTER__", "1");
-    window.location.href = getGoogleOAuthUrl();
+    // replace() (not href=) so the register page is REPLACED in history, not
+    // stacked — so after sign-in, Back can't re-enter the Google sign-in flow.
+    window.location.replace(getGoogleOAuthUrl());
   };
 
   // Apple sign-in is disabled pending native backend integration.
@@ -245,12 +247,7 @@ const UserRegisterPage = () => {
                 fontSize: { xs: "1.4rem", sm: "1.7rem" },
                 letterSpacing: "0.08em",
                 lineHeight: 1,
-                background: isDark
-                  ? "linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)"
-                  : "linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                color: isDark ? '#FFFFFF' : '#111827',
                 paddingBottom: "6px",
               }}
             >
@@ -285,7 +282,7 @@ const UserRegisterPage = () => {
                   fontSize: "1.05rem",
                   color: isDark
                     ? "rgba(255,255,255,0.88)"
-                    : "rgba(17,24,39,0.85)",
+                    : "rgba(255,255,255,0.88)",
                   mb: 2,
                 }}
               >
@@ -294,12 +291,10 @@ const UserRegisterPage = () => {
 
               <Box
                 sx={{
-                  border: `1px solid ${isDark ? "rgba(245,168,0,0.25)" : "rgba(245,168,0,0.4)"}`,
+                  border: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 2,
                   p: 2,
-                  background: isDark
-                    ? "rgba(245,168,0,0.04)"
-                    : "rgba(245,168,0,0.04)",
+                  background: isDark ? "rgba(255,255,255,0.02)" : "#374151",
                 }}
               >
 
@@ -311,7 +306,7 @@ const UserRegisterPage = () => {
                       sx={{
                         color: isDark
                           ? "rgba(255,255,255,0.35)"
-                          : "rgba(17,24,39,0.35)",
+                          : "rgba(255,255,255,0.35)",
                         "&.Mui-checked": { color: "#F5A800" },
                         py: { xs: 1, sm: 0.25 },
                       }}
@@ -324,7 +319,7 @@ const UserRegisterPage = () => {
                         fontWeight: 600,
                         color: isDark
                           ? "rgba(255,255,255,0.88)"
-                          : "rgba(17,24,39,0.88)",
+                          : "rgba(255,255,255,0.88)",
                         lineHeight: 1.5,
                       }}
                     >
@@ -422,33 +417,24 @@ const UserRegisterPage = () => {
                   textTransform: "none",
                   fontWeight: 700,
                   fontSize: "0.97rem",
-                  border: `1.5px solid ${isDark ? "rgba(255,255,255,0.18)" : "rgba(17,24,39,0.15)"}`,
-                  color: isDark ? "#fff" : "rgba(17,24,39,0.88)",
-                  background: isDark
-                    ? "linear-gradient(135deg, #0A0808 0%, #1C1212 50%, #2A1A0A 100%)"
-                    : "#ffffff",
-                  backdropFilter: "blur(4px)",
-                  boxShadow: isDark
-                    ? "0 4px 18px rgba(0,0,0,0.5)"
-                    : "0 2px 10px rgba(17,24,39,0.12)",
+                  border: isDark ? "1px solid rgba(255,255,255,0.15)" : "1px solid #D1D5DB",
+                  color: isDark ? "#FFFFFF" : "#1F2937",
+                  background: isDark ? "rgba(255,255,255,0.05)" : "#FFFFFF",
+                  boxShadow: isDark ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                   "&:hover": {
-                    border: "1.5px solid #F5A800",
-                    background: isDark
-                      ? "linear-gradient(135deg, #150E0E 0%, #251515 50%, #35200A 100%)"
-                      : "#FFF8F0",
-                    boxShadow: isDark
-                      ? "0 6px 24px rgba(0,0,0,0.55)"
-                      : "0 4px 16px rgba(245,168,0,0.2)",
+                    border: isDark ? "1px solid rgba(255,255,255,0.3)" : "1px solid #9CA3AF",
+                    background: isDark ? "rgba(255,255,255,0.08)" : "#F9FAFB",
+                    boxShadow: isDark ? "none" : "0 2px 4px rgba(0,0,0,0.05)",
                     transform: "translateY(-1px)",
                   },
                   "&.Mui-disabled": {
-                    border: `1.5px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(17,24,39,0.1)"}`,
+                    border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(255,255,255,0.07)",
                     color: isDark
                       ? "rgba(255,255,255,0.25)"
-                      : "rgba(17,24,39,0.35)",
+                      : "rgba(255,255,255,0.25)",
                     background: isDark
                       ? "rgba(255,255,255,0.03)"
-                      : "rgba(17,24,39,0.04)",
+                      : "rgba(255,255,255,0.03)",
                   },
                 }}
               >
@@ -511,11 +497,12 @@ const UserRegisterPage = () => {
                   fontWeight: 700,
                   fontSize: "0.88rem",
                   textTransform: "none",
-                  border: `1.5px solid ${isDark ? "rgba(245,168,0,0.4)" : "rgba(245,168,0,0.5)"}`,
-                  color: "#F5A800",
+                  border: isDark ? "1px solid rgba(255,255,255,0.12)" : "1px solid #E5E7EB",
+                  color: isDark ? "#9CA3AF" : "#6B7280",
                   "&:hover": {
-                    border: "1.5px solid #F5A800",
-                    bgcolor: "rgba(245,168,0,0.08)",
+                    border: isDark ? "1px solid rgba(255,255,255,0.25)" : "1px solid #D1D5DB",
+                    bgcolor: isDark ? "rgba(255,255,255,0.03)" : "#F9FAFB",
+                    color: isDark ? "#FFFFFF" : "#374151",
                   },
                 }}
               >

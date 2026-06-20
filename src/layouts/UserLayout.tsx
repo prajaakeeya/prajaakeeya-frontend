@@ -100,16 +100,12 @@ const UserLayout = () => {
   );
 
   // Theme-aware colour helpers
-  const navBg = isDark
-    ? 'radial-gradient(130% 140% at 0% 0%, rgba(200,24,10,0.2) 0%, rgba(10,8,8,1) 55%), radial-gradient(120% 130% at 100% 0%, rgba(37,58,154,0.16) 0%, rgba(10,8,8,1) 55%)'
-    : `linear-gradient(135deg, #fff 0%, #FFF8F0 100%)`;
 
   const subtleText = isDark ? 'rgba(255,255,255,0.52)' : 'rgba(17,24,39,0.45)';
 
   return (
     <Box sx={{ minHeight: '100dvh', bgcolor: 'background.default' }}>
       <AppBar position="sticky" elevation={0} sx={{
-        background: navBg,
         color: isDark ? 'white' : 'text.primary',
         borderBottom: `1px solid ${theme.palette.divider}`,
         '&::before': isDark ? {
@@ -121,10 +117,6 @@ const UserLayout = () => {
           backgroundSize: '44px 44px',
         } : {},
       }}>
-        {/* Tri-colour top accent */}
-        <Box sx={{ display: 'flex', height: '3px' }}>
-          {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
 
         <Container maxWidth="xl" sx={{ px: { xs: 1, sm: 2 } }}>
           <Toolbar sx={{ justifyContent: 'space-between', py: { xs: 0.9, sm: 1.2 }, minHeight: { xs: 56, sm: 72 }, px: { xs: 1 } }}>
@@ -138,7 +130,7 @@ const UserLayout = () => {
                   aria-label="go back"
                   sx={{
                     display: { xs: 'flex', sm: 'none' },
-                    color: isDark ? BRAND.yellow : BRAND.saffron,
+                    color: isDark ? theme.palette.primary.main : theme.palette.primary.main,
                     p: 0.8, borderRadius: 2,
                     background: `linear-gradient(135deg,rgba(200,24,10,.18),rgba(245,168,0,.14))`,
                     border: `1px solid ${theme.palette.divider}`,
@@ -181,7 +173,7 @@ const UserLayout = () => {
                 aria-label="toggle theme"
                 sx={{
                   width: 36, height: 36,
-                  color: isDark ? BRAND.yellow : BRAND.saffron,
+                  color: isDark ? theme.palette.primary.main : theme.palette.primary.main,
                 }}>
                 {isDark ? <LightModeIcon /> : <DarkModeIcon />}
               </IconButton>
@@ -194,7 +186,7 @@ const UserLayout = () => {
                   fontFamily: FF,
                   fontWeight: 800,
                   fontSize: '0.9rem',
-                  color: isDark ? BRAND.yellow : BRAND.saffron,
+                  color: isDark ? theme.palette.primary.main : theme.palette.primary.main,
                 }}
               />
 
@@ -233,7 +225,7 @@ const UserLayout = () => {
                       sx={{
                         height: 18, fontSize: '0.64rem', fontWeight: 700, fontFamily: FF,
                         bgcolor: isDark ? 'rgba(245,168,0,0.16)' : 'rgba(245,168,0,0.15)',
-                        color: isDark ? '#ffe4aa' : BRAND.brown,
+                        color: isDark ? '#ffe4aa' : BRAND.green,
                         border: `1px solid rgba(245,168,0,0.36)`,
                       }}
                     />
@@ -256,7 +248,7 @@ const UserLayout = () => {
                   sx={{
                     width: 34, height: 34,
                     bgcolor: displayUser.profilePicture ? 'transparent' : 'primary.main',
-                    border: `2px solid ${isDark ? 'rgba(245,168,0,0.55)' : BRAND.yellow}`,
+                    border: `2px solid ${isDark ? 'rgba(245,168,0,0.55)' : theme.palette.primary.main}`,
                   }}
                 >
                   {!displayUser.profilePicture && (displayName?.charAt(0).toUpperCase() || 'U')}
@@ -304,7 +296,7 @@ const UserLayout = () => {
                       py: 0.9,
                       fontSize: { sm: '0.8rem', md: '0.9rem' },
                       color: active
-                        ? (isDark ? BRAND.yellow : BRAND.saffron)
+                        ? (isDark ? theme.palette.primary.main : theme.palette.primary.main)
                         : (isDark ? 'rgba(255,255,255,0.72)' : 'text.secondary'),
                       bgcolor: active ? 'rgba(245,168,0,0.12)' : 'transparent',
                       '& .MuiButton-startIcon': { mr: 0.6 },
@@ -340,7 +332,7 @@ const UserLayout = () => {
           // Solid opaque base so page content scrolling underneath never shows
           // through; the gradient sits on top via backgroundImage.
           backgroundColor: isDark ? '#0a0808' : '#ffffff',
-          backgroundImage: navBg,
+          background: isDark ? "rgba(10,8,8,0.95)" : "rgba(255,255,255,0.95)",
           borderTop: `1px solid ${theme.palette.divider}`,
           pb: 'calc(8px + env(safe-area-inset-bottom))',
         }}
@@ -364,7 +356,7 @@ const UserLayout = () => {
               color: isDark ? '#fff' : 'rgba(17,24,39,0.5)',
             },
             '& .MuiBottomNavigationAction-root.Mui-selected': {
-              color: isDark ? BRAND.yellow : BRAND.saffron,
+              color: isDark ? theme.palette.primary.main : theme.palette.primary.main,
             },
             '& .MuiBottomNavigationAction-label': {
               mt: 0,

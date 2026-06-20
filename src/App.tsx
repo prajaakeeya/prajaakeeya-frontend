@@ -181,14 +181,14 @@ const App = () => {
   }, [isAuthenticated, token]);
 
   useEffect(() => {
-    // Dismiss the preloader after the animation completes (~5 s)
+    // Dismiss the preloader after the animation completes (~2 s)
     // Only if on the root path where the preloader is shown.
     if (
       location.pathname === "/" ||
       location.pathname === "/index.html" ||
       location.pathname === "/loading"
     ) {
-      const t = setTimeout(dismissPreloader, 5000);
+      const t = setTimeout(dismissPreloader, 2000);
       return () => clearTimeout(t);
     } else {
       // If direct link to another page, dismiss immediately

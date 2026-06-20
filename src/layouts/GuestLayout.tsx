@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar, Box, Toolbar, Typography, Button, Container, IconButton, useTheme, Avatar,
 } from '@mui/material';
@@ -19,6 +19,7 @@ const GuestLayout = () => {
   const { t } = useTranslation();
   const { mode, toggleTheme } = useThemeStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isDark = mode === 'dark';
   const { user, logout } = useAuthStore();
@@ -196,9 +197,13 @@ const GuestLayout = () => {
         </Container>
       </AppBar>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 } }}>
+      {location.pathname === '/' ? (
         <Outlet />
-      </Container>
+      ) : (
+        <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 } }}>
+          <Outlet />
+        </Container>
+      )}
     </Box>
   );
 };
