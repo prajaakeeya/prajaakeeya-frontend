@@ -16,6 +16,8 @@ import { getTheme } from '../theme';
 interface ProvidersOptions extends Omit<RenderOptions, 'wrapper'> {
   // Initial URL the in-memory router starts at (default '/').
   route?: string;
+  // Optional route state passed to MemoryRouter initial entry.
+  state?: Record<string, unknown>;
 }
 
 // Wraps children in the app's MUI theme + an in-memory router.
@@ -30,9 +32,14 @@ function AllProviders({ children, route = '/' }: { children: ReactNode; route?: 
 }
 
 export function renderWithProviders(ui: ReactElement, options: ProvidersOptions = {}) {
-  const { route, ...rest } = options;
+  const { route, state, ...rest } = options;
+  const entry = state ? { pathname: route || '/', state } : (route || '/');
   return render(ui, {
-    wrapper: ({ children }) => <AllProviders route={route}>{children}</AllProviders>,
+    wrapper: ({ children }) => (
+      <ThemeProvider theme={getTheme('light')}>
+        <MemoryRouter initialEntries={[entry]}>{children}</MemoryRouter>
+      </ThemeProvider>
+    ),
     ...rest,
   });
 }
