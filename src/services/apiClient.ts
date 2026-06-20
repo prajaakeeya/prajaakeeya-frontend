@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as Sentry from '@sentry/react';
 import useAuthStore from '../store/useAuthStore';
 
 const apiHost = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
@@ -35,6 +36,22 @@ apiClient.interceptors.response.use(
         (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout')));
     if (isNetworkOrTimeout) {
       error.message = GENERIC_ERROR_MESSAGE;
+    }
+    // Report API failures to Sentry for diagnostics. Skip 401 (expected auth
+    // expiry → handled above) and other 4xx client errors (validation, not
+    // found, etc.) to avoid noise; capture server errors (5xx) and network/
+    // timeout failures. Status/method/path are attached as context; request and
+    // response bodies are deliberately NOT sent to avoid leaking sensitive data.
+    const status = error.response?.status;
+    const shouldReport = isNetworkOrTimeout || (typeof status === 'number' && status >= 500);
+    if (shouldReport && status !== 401) {
+      Sentry.captureException(error, {
+        tags: { kind: 'api', status: status ?? 'network' },
+        extra: {
+          method: error.config?.method,
+          url: error.config?.url,
+        },
+      });
     }
     return Promise.reject(error);
   }

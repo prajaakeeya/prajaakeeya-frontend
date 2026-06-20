@@ -27,5 +27,24 @@ export function initSentry(): void {
     // from. Set by CI/Amplify; harmless when undefined.
     release: import.meta.env.VITE_SENTRY_RELEASE,
     sendDefaultPii: false,
+    // Performance monitoring: captures page-load and navigation transactions
+    // plus outgoing request spans, so slow page loads and slow API calls show
+    // up under Sentry → Performance. Sample 20% of transactions to keep volume
+    // (and quota) reasonable in production; override via VITE_SENTRY_TRACES_RATE.
+    integrations: [Sentry.browserTracingIntegration()],
+    tracesSampleRate: Number(import.meta.env.VITE_SENTRY_TRACES_RATE ?? 0.2),
   });
+}
+
+// Attach the authenticated user to all subsequent Sentry events so errors can
+// be correlated to a specific account. Only non-PII identifiers are sent (id +
+// role); email/phone/name are intentionally omitted to match sendDefaultPii:false.
+// No-op until Sentry is initialised, so safe to call in dev.
+export function setSentryUser(user: { id?: string | number; role?: string } | null): void {
+  if (!import.meta.env.VITE_SENTRY_DSN || !import.meta.env.PROD) return;
+  if (!user || user.id == null) {
+    Sentry.setUser(null);
+    return;
+  }
+  Sentry.setUser({ id: String(user.id), ...(user.role ? { role: user.role } : {}) });
 }
