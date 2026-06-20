@@ -202,7 +202,7 @@ const UserLoginPage = () => {
       topContent={
         <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
           <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya" sx={{ height: { xs: 64, sm: 80 }, objectFit: 'contain' }} />
-          <Typography sx={{ fontFamily: '"Bebas Neue", "Impact", sans-serif', fontSize: { xs: '1.4rem', sm: '1.7rem' }, letterSpacing: '0.08em', lineHeight: 1, background: isDark ? 'linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)' : 'linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+          <Typography sx={{ fontFamily: '"Bebas Neue", "Impact", sans-serif', fontSize: { xs: '1.4rem', sm: '1.7rem' }, letterSpacing: '0.08em', lineHeight: 1, color: isDark ? '#FFFFFF' : '#111827' }}>
             The Real Prajaakeeya
           </Typography>
         </Box>

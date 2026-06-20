@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Stack, Typography, useTheme, keyframes } from '@mui/material';
+import { Box, Button, Stack, Typography, useTheme, keyframes, Grid } from '@mui/material';
 import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,11 @@ const amountPulse = keyframes`
   }
 `;
 
+const slideUp = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const OathPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -25,13 +30,16 @@ const OathPage: React.FC = () => {
   const isDark = theme.palette.mode === 'dark';
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const isKannada = i18n.language === 'kn';
-  const strongText = isDark ? 'rgba(255,255,255,0.88)' : 'rgba(17,24,39,0.92)';
-  const mutedText = isDark ? 'rgba(255,255,255,0.35)' : 'rgba(17,24,39,0.62)';
+  const strongText = isDark ? 'rgba(255,255,255,0.95)' : 'rgba(17,24,39,0.95)';
 
-  const oathParagraphs = [
-    t('pages.login.oath.para0'),
-    t('pages.login.oath.para1'),
+  const oathPoints = [
+    t('pages.login.oath.point1'),
+    t('pages.login.oath.point2'),
+    t('pages.login.oath.point3'),
+    t('pages.login.oath.point4'),
   ];
+  
+  const workerText = t('pages.login.oath.para1');
 
   return (
     <Box
@@ -39,11 +47,7 @@ const OathPage: React.FC = () => {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: isDark
-          ? 'radial-gradient(ellipse at 50% 0%, rgba(200,24,10,0.10) 0%, transparent 60%), #0A0808'
-          : 'radial-gradient(ellipse at 50% 0%, rgba(200,24,10,0.06) 0%, transparent 60%), #FFFFFF',
+        bgcolor: isDark ? '#0A0808' : '#F3F4F6',
         px: 2,
         pt: 9,
         pb: 4,
@@ -54,8 +58,9 @@ const OathPage: React.FC = () => {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 400,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         px: 2, py: 1.2,
-        bgcolor: isDark ? 'rgba(10,8,8,0.92)' : 'rgba(255,255,255,0.92)',
+        bgcolor: isDark ? 'rgba(10,8,8,0.85)' : 'rgba(255,255,255,0.85)',
         backdropFilter: 'blur(12px)',
+        borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`
       }}>
         <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya" sx={{ height: 40 }} />
         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -86,142 +91,207 @@ const OathPage: React.FC = () => {
         </Box>
       </Box>
 
-      <Stack spacing={3} alignItems="center" sx={{ maxWidth: 560, width: '100%' }}>
-        <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-          <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya" sx={{ height: { xs: 64, sm: 80 }, objectFit: 'contain' }} />
-          <Typography sx={{ fontFamily: '"Bebas Neue", "Impact", sans-serif', fontSize: { xs: '1.4rem', sm: '1.7rem' }, letterSpacing: '0.08em', lineHeight: 1.4, px: 2, py: 0.5, background: isDark ? 'linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)' : 'linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            {t('pages.login.oath.title')}
-          </Typography>
-          <Typography
+      <Grid container spacing={4} sx={{ maxWidth: 1200, margin: '0 auto', flexGrow: 1, alignItems: 'center' }}>
+        
+        {/* LEFT COLUMN: The Oath Points */}
+        <Grid item xs={12} md={7} lg={7}>
+          <Stack spacing={2.5}>
+            {oathPoints.map((text, idx) => (
+              <Box
+                key={idx}
+                sx={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  p: { xs: 2, sm: 3 },
+                  borderRadius: '16px',
+                  background: isDark 
+                    ? 'rgba(255,255,255,0.03)'
+                    : '#1F2937',
+                  border: isDark 
+                    ? '1px solid rgba(255,255,255,0.08)'
+                    : '1px solid #374151',
+                  boxShadow: isDark 
+                    ? '0 8px 32px rgba(0,0,0,0.4)'
+                    : '0 2px 8px rgba(0,0,0,0.04)',
+                  animation: `${slideUp} 0.5s ease backwards`,
+                  animationDelay: `${idx * 0.1}s`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: 100,
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid #4B5563',
+                    boxShadow: isDark 
+                      ? '0 12px 40px rgba(0,0,0,0.6)'
+                      : '0 12px 24px rgba(0,0,0,0.08)',
+                  }
+                }}
+              >
+                {/* Large Watermark Number */}
+                <Typography
+                  sx={{
+                    position: 'absolute',
+                    left: { xs: -10, sm: -5 },
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontFamily: '"Bebas Neue", sans-serif',
+                    fontSize: { xs: '6rem', sm: '8rem' },
+                    lineHeight: 1,
+                    color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.04)',
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                    fontWeight: 900
+                  }}
+                >
+                  {idx + 1}
+                </Typography>
+                
+                {/* Point Text */}
+                <Typography
+                  sx={{
+                    position: 'relative',
+                    zIndex: 1,
+                    fontSize: { xs: '1rem', sm: '1.1rem' },
+                    color: isDark ? 'rgba(255,255,255,0.95)' : '#F9FAFB',
+                    lineHeight: 1.6,
+                    fontFamily: isKannada ? '"Tiro Kannada", serif' : '"Mukta", sans-serif',
+                    fontWeight: 600,
+                    pl: { xs: 5, sm: 7 }, // padding to avoid the watermark slightly if needed
+                  }}
+                >
+                  {text}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </Grid>
+
+        {/* RIGHT COLUMN: The Agreement Card */}
+        <Grid item xs={12} md={5} lg={5}>
+          <Box
             sx={{
-              fontFamily: '"Bebas Neue", "Impact", sans-serif',
-              fontSize: { xs: '1.1rem', sm: '1.3rem' },
-              letterSpacing: '0.25em',
-              color: isDark ? '#ffffff' : '#000000',
-              textShadow: isDark ? '0 0 4px rgba(255,255,255,0.4)' : 'none',
-              textTransform: 'uppercase',
+              p: { xs: 3, sm: 4 },
+              borderRadius: '24px',
+              background: isDark 
+                ? 'rgba(255,255,255,0.02)' 
+                : '#1F2937',
+              border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #374151',
+              boxShadow: isDark 
+                ? '0 24px 64px rgba(0,0,0,0.6)' 
+                : '0 12px 32px rgba(0,0,0,0.05)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              animation: `${slideUp} 0.7s ease backwards`,
+              animationDelay: '0.4s',
             }}
           >
-            {t('forms.aspirant.defaults.party')}
-          </Typography>
-        </Box>
-
-        <Stack spacing={1.5} sx={{ width: '100%' }}>
-          {oathParagraphs.map((text, idx) => (
-            <Box
-              key={idx}
+            <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya" sx={{ height: { xs: 64, sm: 80 }, objectFit: 'contain', mb: 2 }} />
+            
+            <Typography sx={{ 
+              fontFamily: '"Bebas Neue", "Impact", sans-serif', 
+              fontSize: { xs: '1.6rem', sm: '2rem' }, 
+              letterSpacing: '0.08em', 
+              lineHeight: 1.2, 
+              mb: 0.5,
+              textAlign: 'center',
+              color: isDark ? '#FFFFFF' : '#F9FAFB'
+            }}>
+              {t('pages.login.oath.title')}
+            </Typography>
+            
+            <Typography
               sx={{
-                display: 'flex',
-                gap: 1.25,
-                alignItems: 'flex-start',
-                p: '10px 12px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, rgba(200,24,10,0.18), rgba(245,168,0,0.12))',
-                border: '1px solid rgba(245,168,0,0.28)',
+                fontFamily: '"Bebas Neue", "Impact", sans-serif',
+                fontSize: { xs: '1.2rem', sm: '1.4rem' },
+                letterSpacing: '0.25em',
+                color: isDark ? '#9CA3AF' : '#9CA3AF',
+                textShadow: isDark ? '0 0 4px rgba(255,255,255,0.4)' : 'none',
+                textTransform: 'uppercase',
+                mb: 4,
+                textAlign: 'center'
+              }}
+            >
+              {t('forms.aspirant.defaults.party')}
+            </Typography>
+
+            <Box
+              sx={{
+                width: '100%',
+                p: '16px',
+                borderRadius: '12px',
+                background: isDark ? 'rgba(255,255,255,0.04)' : '#374151',
+                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #4B5563',
+                mb: 4,
               }}
             >
               <Typography
-                component="span"
-                sx={{ color: '#F5A800', flexShrink: 0, fontSize: '0.9rem', mt: '3px' }}
-              >
-                ✊
-              </Typography>
-              <Typography
                 sx={{
-                  fontSize: isKannada ? '0.88rem' : '0.875rem',
-                  color: strongText,
-                  lineHeight: 1.75,
+                  fontSize: isKannada ? '1rem' : '1.05rem',
+                  color: isDark ? 'rgba(255,255,255,0.95)' : '#F9FAFB',
+                  lineHeight: 1.6,
                   fontFamily: isKannada ? '"Tiro Kannada", serif' : 'inherit',
                   fontWeight: 600,
+                  textAlign: 'center'
                 }}
               >
-                {idx === 0
-                  ? (() => {
-                      const amountRegex = /(₹[\d,]+)/;
-                      const match = text.match(amountRegex);
-                      if (!match) return text;
-                      const amount = match[0];
-                      const parts = text.split(amount);
-                      return (
-                        <>
-                          {parts[0]}
-                          <Box
-                            component="span"
-                            sx={{
-                              fontWeight: 900,
-                              fontSize: '1.15em',
-                              background: isDark
-                                ? 'linear-gradient(90deg, #FFD700, #FF8C00, #FFD700)'
-                                : 'linear-gradient(90deg, #E65100, #F57C00, #E65100)',
-                              backgroundSize: '200% auto',
-                              backgroundClip: 'text',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              animation: `${amountPulse} 2.5s ease-in-out infinite`,
-                              display: 'inline',
-                            }}
-                          >
-                            {amount}
-                          </Box>
-                          {parts[1]}
-                        </>
-                      );
-                    })()
-                  : (() => {
-                      const workerPhrase = 'I Want A WORKER ';
-                      if (!text.includes(workerPhrase)) return text;
-                      const parts = text.split(workerPhrase);
-                      return (
-                        <>
-                          <Box component="span" sx={{
-                            fontSize: '1.45em',
-                            fontFamily: '"Bebas Neue", sans-serif',
-                            ...(isDark ? {
-                              color: '#FFD700',
-                              textShadow: '0 0 20px rgba(255,215,0,.35)',
-                            } : {
-                              background: 'linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              backgroundClip: 'text',
-                            }),
-                            display: 'inline',
-                          }}>
-                            {workerPhrase}
-                          </Box>
-                          {parts[1]}
-                        </>
-                      );
-                    })()}
+                {(() => {
+                  const workerPhrase = 'I Want A WORKER ';
+                  if (!workerText.includes(workerPhrase)) return workerText;
+                  const parts = workerText.split(workerPhrase);
+                  return (
+                    <>
+                      <Box component="span" sx={{
+                        fontSize: '1.45em',
+                        fontFamily: '"Bebas Neue", sans-serif',
+                        ...(isDark ? {
+                          color: '#FFD700',
+                        } : {
+                          color: '#FCD34D',
+                        }),
+                        display: 'inline',
+                        letterSpacing: '1px',
+                        lineHeight: 1.2
+                      }}>
+                        {workerPhrase}
+                      </Box>
+                      <br/>
+                      {parts[1]}
+                    </>
+                  );
+                })()}
               </Typography>
             </Box>
-          ))}
-        </Stack>
 
-        <Button
-          variant="contained"
-          size="large"
-          fullWidth
-          onClick={() => navigate('/register', { state: { fromPledge: true } })}
-          sx={{
-            mt: 2,
-            py: 1.4,
-            fontWeight: 700,
-            fontSize: '1rem',
-            borderRadius: '12px',
-            color: '#fff',
-            background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-            boxShadow: '0 8px 28px rgba(200,24,10,0.35)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-              boxShadow: '0 10px 34px rgba(200,24,10,0.5)',
-            },
-          }}
-        >
-          {isKannada ? 'ಒಪ್ಪಿಗೆ ಮತ್ತು ಮುಂದುವರಿಯಿರಿ' : 'Agree and Proceed'}
-        </Button>
-
-      </Stack>
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              onClick={() => navigate('/register', { state: { fromPledge: true } })}
+              sx={{
+                py: 1.6,
+                fontWeight: 800,
+                fontSize: '1.1rem',
+                letterSpacing: '1px',
+                borderRadius: '14px',
+                color: '#fff',
+                background: isDark ? 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)' : '#E02010',
+                boxShadow: isDark ? '0 8px 28px rgba(200,24,10,0.35)' : 'none',
+                textTransform: 'uppercase',
+                '&:hover': {
+                  background: isDark ? 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)' : '#C8180A',
+                  boxShadow: isDark ? '0 10px 34px rgba(200,24,10,0.5)' : '0 4px 12px rgba(224,32,16,0.2)',
+                  transform: 'translateY(-2px)'
+                },
+                transition: 'all 0.2s'
+              }}
+            >
+              {isKannada ? 'ಒಪ್ಪಿಗೆ ಮತ್ತು ಮುಂದುವರಿಯಿರಿ' : 'Agree and Proceed'}
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
