@@ -5,6 +5,7 @@ import apiClient from '../services/apiClient';
 import { fetchProfile } from '../services/authService';
 import { getWardById } from '../services/wardService';
 import { isMockMode } from '../config/appMode';
+import { setSentryUser } from '../config/sentry';
 
 interface AuthState {
   token: string | null;
@@ -45,6 +46,7 @@ const useAuthStore = create<AuthState>()(
         };
 
         set({ token, user: normalizedUser, isAdmin: normalizedUser.role === 'admin', isAuthenticated: true });
+        setSentryUser({ id: normalizedUser.id, role: normalizedUser.role });
       },
       // Clear the current session (in-memory state + persisted localStorage)
       // WITHOUT triggering a full-page reload. Use this when you need to drop
@@ -53,6 +55,7 @@ const useAuthStore = create<AuthState>()(
       // was previously logged in.
       clearSession: () => {
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
+        setSentryUser(null);
         delete apiClient.defaults.headers.common.Authorization;
         const preserveKeys = ['theme-storage', 'i18nextLng'];
         for (let i = 0; i < localStorage.length; i++) {
@@ -83,6 +86,7 @@ const useAuthStore = create<AuthState>()(
           /* best-effort — backend also self-prunes stale tokens */
         }
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
+        setSentryUser(null);
         delete apiClient.defaults.headers.common.Authorization;
         // Clear all localStorage except theme, language, and civic raised state
         const preserveKeys = ['theme-storage', 'i18nextLng'];
@@ -139,6 +143,7 @@ const useAuthStore = create<AuthState>()(
             }
           }
           set({ user: normalizedUser, isAdmin: normalizedUser.role === 'admin', isAuthenticated: true });
+          setSentryUser({ id: normalizedUser.id, role: normalizedUser.role });
         } catch (err) {
           console.warn('[auth] fetchProfile failed', err);
         }
@@ -153,6 +158,7 @@ const useAuthStore = create<AuthState>()(
           apiClient.defaults.headers.common.Authorization = `Bearer ${state.token}`;
           state.isAuthenticated = true;
           state.isAdmin = state.user.role === 'admin';
+          setSentryUser({ id: (state.user as any).id, role: state.user.role });
         }
       }
     }
