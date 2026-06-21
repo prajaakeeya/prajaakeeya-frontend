@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, ElementType } from "react";
 import { useTranslation } from "react-i18next";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";
 import AuthFooter from "./AuthFooter";
@@ -15,21 +15,12 @@ import LanguageSelector from "./LanguageSelector";
 import { BRAND, PARTICLE_COLORS } from "../theme";
 import useThemeStore from "../store/useThemeStore";
 
-// ── Static data ───────────────────────────────────────────────────────────────
-
-const SOCIAL_LINKS_BASE = [
-  { alt: "Facebook", href: "#" },
-  { alt: "X", href: "#" },
-  { alt: "YouTube", href: "#" },
-  { alt: "Instagram", href: "#" },
-];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface SplitAuthLayoutProps {
   leftTitle?: string;
   leftSubtitle?: string;
-  leftButtonText?: string;
   onLeftButtonClick?: () => void;
   reverse?: boolean;
   children: ReactNode;
@@ -37,6 +28,7 @@ interface SplitAuthLayoutProps {
   onRegisterToggle?: () => void;
   cardTitle?: string;
   showFooter?: boolean;
+  underCardContent?: ReactNode;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -49,6 +41,7 @@ export default function SplitAuthLayout({
   onRegisterToggle,
   cardTitle,
   showFooter = true,
+  underCardContent,
 }: SplitAuthLayoutProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
@@ -64,9 +57,7 @@ export default function SplitAuthLayout({
   const cardShadow = isDark
     ? "0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(200,24,10,0.25), inset 0 1px 0 rgba(255,255,255,0.06)"
     : "0 24px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(200,24,10,0.12), inset 0 1px 0 rgba(255,255,255,0.8)";
-  const subHeadingColor = isDark
-    ? "rgba(255,255,255,0.45)"
-    : theme.palette.text.secondary;
+
   const panelTextDim = isDark
     ? "rgba(255,255,255,0.55)"
     : "rgba(17,24,39,0.55)";
@@ -76,29 +67,7 @@ export default function SplitAuthLayout({
   const gridColor = isDark ? "rgba(255,255,255,0.014)" : "rgba(17,24,39,0.025)";
   const loaderTrack = isDark ? "rgba(255,255,255,0.07)" : "rgba(17,24,39,0.08)";
   const footerText = isDark ? "rgba(255,255,255,0.65)" : "rgba(17,24,39,0.65)";
-  const socialLinks = useMemo(
-    () => [
-      {
-        ...SOCIAL_LINKS_BASE[0],
-        src: "https://cdn.simpleicons.org/facebook/1877F2",
-      },
-      {
-        ...SOCIAL_LINKS_BASE[1],
-        src: isDark
-          ? "https://cdn.simpleicons.org/x/ffffff"
-          : "https://cdn.simpleicons.org/x/111827",
-      },
-      {
-        ...SOCIAL_LINKS_BASE[2],
-        src: "https://cdn.simpleicons.org/youtube/FF0000",
-      },
-      {
-        ...SOCIAL_LINKS_BASE[3],
-        src: "https://cdn.simpleicons.org/instagram/E4405F",
-      },
-    ],
-    [isDark],
-  );
+  
 
   // Stable particle data
   const particles = useMemo(
@@ -119,7 +88,7 @@ export default function SplitAuthLayout({
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        height: "100vh",
         width: "100vw",
         background: bg,
         display: "flex",
@@ -217,7 +186,7 @@ export default function SplitAuthLayout({
 
       {/* ── Radial center glow ── */}
       <Box
-        component={motion.div as any}
+        component={motion.div as ElementType}
         animate={{ scale: [1, 1.15, 1], opacity: [0.8, 1, 0.8] }}
         transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
         sx={{
@@ -239,7 +208,7 @@ export default function SplitAuthLayout({
       {particles.map((p) => (
         <Box
           key={p.id}
-          component={motion.div as any}
+          component={motion.div as ElementType}
           initial={{ y: 0, opacity: 0 }}
           animate={{ y: "-105vh", opacity: [0, p.opacity, p.opacity * 0.6, 0] }}
           transition={{
@@ -265,7 +234,7 @@ export default function SplitAuthLayout({
 
       {/* ── Language + Theme toggles ── */}
       <Box
-        component={motion.div as any}
+        component={motion.div as ElementType}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
@@ -337,24 +306,37 @@ export default function SplitAuthLayout({
         </Box>
       </Box>
 
-      {/* ══════════════════════════════════════════════════════════════════
-                LEFT PANEL — Branding (desktop only)
-            ══════════════════════════════════════════════════════════════════ */}
-      {!isMobile && (
-        <Box
-          component={motion.div as any}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          sx={{
-            width: { md: "52%", lg: "50%" },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            pt: "60px",
-            pb: "28px",
-            overflowY: "auto",
+      {/* ── Scrollable Content Wrapper ── */}
+      <Box
+        sx={{
+          height: "100vh",
+          width: "100vw",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          position: "relative",
+          zIndex: 3,
+          pb: { xs: "120px", md: "80px" },
+        }}
+      >
+        {/* ══════════════════════════════════════════════════════════════════
+                  LEFT PANEL — Branding (desktop only)
+              ══════════════════════════════════════════════════════════════════ */}
+        {!isMobile && (
+          <Box
+            component={motion.div as ElementType}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            sx={{
+              width: { md: "52%", lg: "50%" },
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              pt: "20px",
+              pb: "60px",
+              minHeight: "100vh",
             zIndex: 3,
             position: "relative",
             flexShrink: 0,
@@ -384,7 +366,7 @@ export default function SplitAuthLayout({
               Prajaakeeya
             </Typography>
             <Box
-              component={motion.div as any}
+              component={motion.div as ElementType}
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
               sx={{
@@ -399,7 +381,7 @@ export default function SplitAuthLayout({
 
           {/* Logo ring */}
           <Box
-            component={motion.div as any}
+            component={motion.div as ElementType}
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.75, ease: [0.34, 1.56, 0.64, 1] }}
@@ -457,7 +439,7 @@ export default function SplitAuthLayout({
 
           {/* App name */}
           <Box
-            component={motion.div as any}
+            component={motion.div as ElementType}
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -498,7 +480,7 @@ export default function SplitAuthLayout({
 
           {/* Divider with fist */}
           <Box
-            component={motion.div as any}
+            component={motion.div as ElementType}
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.45 }}
@@ -537,7 +519,7 @@ export default function SplitAuthLayout({
 
           {/* Loader + footer */}
           <Box
-            component={motion.div as any}
+            component={motion.div as ElementType}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.9 }}
@@ -563,7 +545,7 @@ export default function SplitAuthLayout({
               }}
             >
               <Box
-                component={motion.div as any}
+                component={motion.div as ElementType}
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 2.5, delay: 1, ease: [0.4, 0, 0.2, 1] }}
@@ -617,15 +599,14 @@ export default function SplitAuthLayout({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          p: isMobile ? "70px 20px 16px" : "80px 48px 24px",
+          p: isMobile ? "65px 20px 100px" : "70px 48px 100px",
           zIndex: 5,
           position: "relative",
-          minHeight: isMobile ? "auto" : "100vh",
+          minHeight: "100vh",
         }}
       >
         <Box
-          component={motion.div as any}
+          component={motion.div as ElementType}
           initial={{ opacity: 0, y: 36, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -634,6 +615,8 @@ export default function SplitAuthLayout({
             maxWidth: 480,
             display: "flex",
             flexDirection: "column",
+            mt: "2vh",
+            mb: "auto",
           }}
         >
           {topContent && <Box sx={{ mb: 2 }}>{topContent}</Box>}
@@ -647,13 +630,7 @@ export default function SplitAuthLayout({
               overflow: "hidden",
             }}
           >
-            {/* Conic accent bar */}
-            <Box
-              sx={{
-                height: 4,
-                background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)`,
-              }}
-            />
+
 
             {/* Card title (when no tabs) */}
             {!onLeftButtonClick && cardTitle && (
@@ -777,41 +754,40 @@ export default function SplitAuthLayout({
             <Box
               sx={{
                 px: isMobile ? 3 : 5,
-                pb: isMobile ? 12 : 5,
+                pb: 5,
                 pt: 3,
-                maxHeight: "calc(100vh - 180px)",
-                overflowY: "auto",
-                "&::-webkit-scrollbar": { width: "4px" },
-                "&::-webkit-scrollbar-track": { background: "transparent" },
-                "&::-webkit-scrollbar-thumb": {
-                  background: "rgba(245,168,0,0.3)",
-                  borderRadius: "4px",
-                },
               }}
             >
               {children}
             </Box>
           </Box>
+          {underCardContent && (
+            <Box sx={{ width: "100%", mt: 2.5 }}>
+              {underCardContent}
+            </Box>
+          )}
         </Box>
-
-        {/* Footer - fixed at bottom */}
-        {showFooter && (
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: 4,
-              left: 0,
-              right: 0,
-              zIndex: 350,
-              bgcolor: isDark ? "rgba(8,6,10,0.92)" : "rgba(255,255,255,0.92)",
-              backdropFilter: "blur(12px)",
-              borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(17,24,39,0.08)"}`,
-            }}
-          >
-            <AuthFooter />
-          </Box>
-        )}
       </Box>
+
+      </Box>
+
+      {/* Footer - fixed at bottom */}
+      {showFooter && (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 4,
+            left: 0,
+            right: 0,
+            zIndex: 350,
+            bgcolor: isDark ? "rgba(8,6,10,0.92)" : "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(12px)",
+            borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(17,24,39,0.08)"}`,
+          }}
+        >
+          <AuthFooter />
+        </Box>
+      )}
     </Box>
   );
 }

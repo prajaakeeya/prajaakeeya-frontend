@@ -38,3 +38,23 @@ h4 {
 }
 
 /* Desktop uses the component's static layout by default */
+
+/* ── Global custom scrollbar ──────────────────────────────────────────────── */
+/* Thin amber scrollbar applied everywhere — consistent with the brand palette */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 168, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 168, 0, 0.55);
+}
