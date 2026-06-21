@@ -7,7 +7,8 @@ const baseURL = normalizedHost ? `${normalizedHost}/api` : '/api';
 
 const apiClient = axios.create({
   baseURL,
-  timeout: 60000
+  timeout: 60000,
+  withCredentials: true
 });
 
 apiClient.interceptors.request.use((config) => {

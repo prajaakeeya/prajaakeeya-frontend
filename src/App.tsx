@@ -115,7 +115,8 @@ const RedirectIfAuth = ({ children }: { children: React.ReactElement }) => {
 
 const App = () => {
   const { t } = useTranslation();
-  const { isAdmin, isAuthenticated, token, fetchProfile } = useAuthStore();
+  const { isAdmin, isAuthenticated, token, user, fetchProfile } = useAuthStore();
+  const userId = user?.id;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -165,11 +166,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // On page reload / first mount, if we have a persisted token, fetch fresh user data
-    if (token) {
+    // On page reload / first mount, verify any in-memory bearer token or
+    // cookie-backed session before treating persisted user data as trusted.
+    if (token || userId) {
       void fetchProfile();
     }
-  }, [token, fetchProfile]);
+  }, [token, userId, fetchProfile]);
 
   useEffect(() => {
     // Wire web push (FCM) for the signed-in user: registers silently if the

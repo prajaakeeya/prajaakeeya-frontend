@@ -733,9 +733,22 @@
       "votersCanLoginWithGoogle": "ನಾಗರಿಕರು Google ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು",
       "verifyOtp": "OTP ಪರಿಶೀಲಿಸಿ",
       "continueAsGuest": "ವೀಕ್ಷಕರಾಗಿ ಮುಂದುವರಿಯಿರಿ (ಓದಲು ಮಾತ್ರ)",
-      "bengaluruNotice": "ವೋಟರ್ ರೆಜಿಸ್ಟ್ರೇಷನ್ ಈಗ ಸದ್ಯಕ್ಕೆ ಬೆಂಗಳೂರಿನ ವಾರ್ಡ್ ಗಳಿಗೆ ಮಾತ್ರ ( GBA, ಬಿಬಿಎಂಪಿ )\nಮುಂದೆ ಬೇರೆ ಕ್ಷೇತ್ರಗಳ ನಾಗರಿಕರಿಗೆ ತೆರೆಯಲ್ಪಡುತ್ತದೆ."
+      "bengaluruNotice": "ವೋಟರ್ ರೆಜಿಸ್ಟ್ರೇಷನ್ ಈಗ ಸದ್ಯಕ್ಕೆ ಬೆಂಗಳೂರಿನ ವಾರ್ಡ್ ಗಳಿಗೆ ಮಾತ್ರ ( GBA, ಬಿಬಿಎಂಪಿ )\nಮುಂದೆ ಬೇರೆ ಕ್ಷೇತ್ರಗಳ ನಾಗರಿಕರಿಗೆ ತೆರೆಯಲ್ಪಡುತ್ತದೆ.",
+      "otpDivider": "ಅಥವಾ",
+      "identifierLabel": "ಇಮೇಲ್ ಅಥವಾ (+91) ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
+      "identifierPlaceholder": "ಇಮೇಲ್ ಅಥವಾ 10-ಅಂಕಿಗಳ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ",
+      "enterOtp": "OTP ನಮೂದಿಸಿ",
+      "changeIdentifier": "ಬೇರೆ ಇಮೇಲ್ ಅಥವಾ ಫೋನ್ ಬಳಸಿ",
+      "otpSendFailed": "OTP ಕಳುಹಿಸಲು ವಿಫಲವಾಯಿತು",
+      "otpVerifyFailed": "ತಪ್ಪಾದ OTP ಅಥವಾ ಏನೋ ತಪ್ಪಾಗಿದೆ",
+      "didntReceiveCode": "ಕೋಡ್ ಬರಲಿಲ್ಲವೇ?",
+      "resendInSeconds": "{{seconds}} ಸೆಕೆಂಡಿನಲ್ಲಿ ಮರುಕಳುಹಿಸಿ",
+      "userNotRegistered": "ಬಳಕೆದಾರರು ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿಲ್ಲ.",
+      "clickHereToRegister": "ನೋಂದಾಯಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ"
     },
     "register": {
+      "userAlreadyRegistered": "ಬಳಕೆದಾರರು ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿದ್ದಾರೆ.",
+      "clickHereToLogin": "ಲಾಗಿನ್ ಮಾಡಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ",
       "leftTitle": "ಪ್ರಜಾಕೀಯ ಗೆ ಸ್ವಾಗತ",
       "leftSubtitle": "ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಪ್ರವೇಶಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.",
       "loginButton": "ಲಾಗಿನ್",

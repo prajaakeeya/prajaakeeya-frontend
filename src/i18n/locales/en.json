@@ -100,7 +100,8 @@
     "facebookLink": "Please enter a valid Facebook URL (e.g. https://facebook.com/yourprofile)",
     "linkedinLink": "Please enter a valid LinkedIn URL (e.g. https://linkedin.com/in/yourprofile)",
     "twitterLink": "Please enter a valid Twitter/X URL (e.g. https://twitter.com/yourprofile)",
-    "whatsappNumber": "Please enter a valid 10-digit WhatsApp number"
+    "whatsappNumber": "Please enter a valid 10-digit WhatsApp number",
+    "identifierInvalid": "Please enter a valid 10-digit phone number or email address"
   },
   "menu": {
     "dashboard": "Home",
@@ -1591,9 +1592,22 @@
       "votersCanLoginWithGoogle": "Citizens can sign in with Google",
       "verifyOtp": "Verify OTP",
       "continueAsGuest": "Continue as Guest (Read only)",
-      "bengaluruNotice": "Voter registration is currently open only for Bengaluru wards (GBA, BBMP).\nIt will be opened for citizens in other constituencies soon."
+      "bengaluruNotice": "Voter registration is currently open only for Bengaluru wards (GBA, BBMP).\nIt will be opened for citizens in other constituencies soon.",
+      "otpDivider": "OR",
+      "identifierLabel": "Email or (+91) Mobile Number",
+      "identifierPlaceholder": "Enter email or 10-digit number",
+      "enterOtp": "Enter OTP",
+      "changeIdentifier": "Use a different email or phone",
+      "otpSendFailed": "Failed to send OTP",
+      "otpVerifyFailed": "Invalid OTP or something went wrong",
+      "didntReceiveCode": "Didn't receive code?",
+      "resendInSeconds": "Resend in {{seconds}}s",
+      "userNotRegistered": "User not registered.",
+      "clickHereToRegister": "Click here to register"
     },
     "register": {
+      "userAlreadyRegistered": "User already registered.",
+      "clickHereToLogin": "Click here to login",
       "leftTitle": "Welcome to Prajakeeya",
       "leftSubtitle": "Sign in to access your dashboard.",
       "loginButton": "Login",
