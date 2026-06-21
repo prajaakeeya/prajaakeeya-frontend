@@ -35,10 +35,12 @@ vi.mock('../services/authService', () => ({
 }));
 
 vi.mock('../components/SplitAuthLayout', () => ({
-  default: ({ children, topContent }: any) => (
+  default: ({ children, topContent, cardTitle, underCardContent }: any) => (
     <div>
       {topContent}
+      {cardTitle && <h1>{cardTitle}</h1>}
       {children}
+      {underCardContent}
     </div>
   ),
 }));

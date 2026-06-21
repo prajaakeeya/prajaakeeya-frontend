@@ -98,6 +98,30 @@ export const requestRegisterOtp = (payload: RegisterOtpPayload) =>
 export const verifyRegisterOtp = (payload: VerifyRegisterOtpPayload) =>
   apiClient.post('/auth/register/verify-otp', payload);
 
+export interface SendOtpPayloadUnified {
+  email?: string;
+  phone?: string;
+  purpose?: 'login' | 'register';
+}
+
+export interface VerifyOtpPayloadUnified {
+  email?: string;
+  phone?: string;
+  otp: string;
+  verificationId?: string;
+  purpose?: 'login' | 'register';
+}
+
+export const sendOtpUnified = async (payload: SendOtpPayloadUnified) => {
+  const { data } = await apiClient.post<{ message: string; verificationId?: string }>('/auth/send-otp', payload);
+  return data;
+};
+
+export const verifyOtpUnified = async (payload: VerifyOtpPayloadUnified) => {
+  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/verify-otp', payload);
+  return data;
+};
+
 export const verifyOtp = async (payload: VerifyOtpPayload) => {
   const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/verify-otp', payload);
   return data;

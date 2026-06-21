@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Portal from "@mui/material/Portal";
 import { useForm } from "react-hook-form";
@@ -14,17 +14,23 @@ import {
   useTheme,
   Checkbox,
   FormControlLabel,
+  Divider,
 } from "@mui/material";
-import {
-  Close as CloseIcon,
-  InfoOutlined as InfoIcon,
-} from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getGoogleOAuthUrl } from "../services/authService";
+import {
+  getGoogleOAuthUrl,
+  sendOtpUnified,
+  verifyOtpUnified,
+} from "../services/authService";
 import useAuthStore from "../store/useAuthStore";
 import * as yup from "yup";
 import SplitAuthLayout from "../components/SplitAuthLayout";
+import GoogleSignInButton from "../components/GoogleSignInButton";
+import OtpInput from "../components/OtpInput";
+import { useOtp } from "../hooks/useOtp";
+import { darkFieldSx } from "../utils/authStyles";
+
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";
 interface RegisterForm {
   name: string;
@@ -39,17 +45,24 @@ const UserRegisterPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [step, setStep] = useState<1 | 2>(1);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ReactNode>("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [appleLoading, setAppleLoading] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<"google" | "phone" | "email">(
+    "google",
+  );
+  const [identifier, setIdentifier] = useState(() => {
+    return searchParams.get("identifier") || "";
+  });
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [verificationId, setVerificationId] = useState("");
   const [showCelebration, setShowCelebration] = useState(false);
   const [pendingAuth, setPendingAuth] = useState<{
     token: string;
     user: any;
   } | null>(null);
   const [consented, setConsented] = useState(false);
-  const [firebaseIdToken, setFirebaseIdToken] = useState<string | null>(null);
 
   const fireworkShows = useMemo(() => {
     const palette = [
@@ -114,9 +127,6 @@ const UserRegisterPage = () => {
   const isInWebView =
     typeof window !== "undefined" &&
     /ReactNative/i.test(navigator.userAgent || "");
-  const isAppleDevice =
-    typeof navigator !== "undefined" &&
-    /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
   // If the OAuth callback detected a freshly-created account, it redirects
   // here with ?celebrate=1 and stashes the token+user in sessionStorage.
   // Show the celebration screen; the Continue button will finalize auth.
@@ -146,7 +156,6 @@ const UserRegisterPage = () => {
       try {
         const googleUser = JSON.parse(stored);
         if (googleUser.name) setValue("name", googleUser.name);
-        if (googleUser.idToken) setFirebaseIdToken(googleUser.idToken);
         setStep(2);
       } catch (e) {
         // ignore parse errors
@@ -154,6 +163,120 @@ const UserRegisterPage = () => {
       sessionStorage.removeItem("__GOOGLE_AUTH__");
     }
   }, [setValue]);
+
+  useEffect(() => {
+    if (otpTimer <= 0) return;
+    const timer = setInterval(() => {
+      setOtpTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [otpTimer]);
+
+  const onRequestOtp = async () => {
+    setError("");
+    const isPhone = /^\d{10}$/.test(identifier);
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+
+    if (!isPhone && !isEmail) {
+      setError(t("validation.identifierInvalid"));
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (isPhone) {
+        const response = await sendOtpUnified({ phone: identifier, purpose: "register" });
+        setLoginMethod("phone");
+        if (response.verificationId) setVerificationId(response.verificationId);
+      } else {
+        const response = await sendOtpUnified({ email: identifier, purpose: "register" });
+        setLoginMethod("email");
+        if (response.verificationId) setVerificationId(response.verificationId);
+      }
+      setOtpSent(true);
+      setOtpTimer(60);
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { status?: number; data?: { message?: string; error?: string } };
+        message?: string;
+      };
+      const apiMessage =
+        apiError?.response?.data?.message ||
+        apiError?.response?.data?.error ||
+        apiError?.message;
+      if (apiError?.response?.status === 409) {
+        setError(
+          <>
+            {t("pages.register.userAlreadyRegistered")}{" "}
+            <span
+              onClick={() => navigate(`/login?identifier=${encodeURIComponent(identifier)}`)}
+              style={{
+                textDecoration: "underline",
+                color: "#F5A800",
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              {t("pages.register.clickHereToLogin")}
+            </span>
+          </>
+        );
+      } else {
+        setError(apiMessage || t("pages.login.otpSendFailed"));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onVerifyOtp = async (otpCode: string) => {
+    setError("");
+    setLoading(true);
+    try {
+      let token, user;
+
+      if (loginMethod === "phone") {
+        const response = await verifyOtpUnified({
+          phone: identifier,
+          verificationId,
+          otp: otpCode,
+          purpose: "register",
+        });
+        token = response.token;
+        user = response.user;
+      } else {
+        const response = await verifyOtpUnified({
+          email: identifier,
+          verificationId,
+          otp: otpCode,
+          purpose: "register",
+        });
+        token = response.token;
+        user = response.user;
+      }
+
+      if (token && user) {
+        setPendingAuth({ token, user });
+        setShowCelebration(true);
+      }
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string; error?: string } };
+        message?: string;
+      };
+      const apiMessage =
+        apiError?.response?.data?.message ||
+        apiError?.response?.data?.error ||
+        apiError?.message;
+      setError(apiMessage || t("pages.login.otpVerifyFailed"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const { otp, otpValues, otpRefs, handleOtpChange, handleOtpKeyDown, handleOtpPaste, resetOtp } =
+    useOtp(onVerifyOtp);
 
   // Handle Google Sign-In — redirect to backend OAuth entry point.
   // Backend handles consent + user creation, then redirects to
@@ -175,10 +298,6 @@ const UserRegisterPage = () => {
     window.location.replace(getGoogleOAuthUrl());
   };
 
-  // Apple sign-in is disabled pending native backend integration.
-  const handleAppleSignIn = () => {
-    setError("Apple sign-in is temporarily unavailable.");
-  };
 
   // Details form (step 2) is no longer reachable under the backend OAuth flow
   // — user creation happens server-side during the OAuth callback. Kept as a
@@ -188,30 +307,7 @@ const UserRegisterPage = () => {
     setError("Registration flow has moved to Google sign-in.");
   };
 
-  const darkFieldSx = {
-    "& .MuiOutlinedInput-root": {
-      borderRadius: 2,
-      background: isDark ? "rgba(255,255,255,0.04)" : "rgba(17,24,39,0.03)",
-      "& fieldset": {
-        borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(17,24,39,0.18)",
-      },
-      "&:hover fieldset": {
-        borderColor: isDark ? "rgba(255,255,255,0.25)" : "rgba(17,24,39,0.35)",
-      },
-      "&.Mui-focused fieldset": { borderColor: "#F5A800" },
-      "&.Mui-disabled": {
-        background: isDark ? "rgba(255,255,255,0.02)" : "rgba(17,24,39,0.02)",
-      },
-    },
-    "& .MuiInputLabel-root": {
-      color: isDark ? "rgba(255,255,255,0.45)" : "rgba(17,24,39,0.55)",
-    },
-    "& .MuiInputLabel-root.Mui-focused": { color: "#F5A800" },
-    "& .MuiInputBase-input": { color: isDark ? "#fff" : "rgba(15,23,42,0.94)" },
-    "& .MuiSelect-icon": {
-      color: isDark ? "rgba(255,255,255,0.45)" : "rgba(17,24,39,0.55)",
-    },
-  };
+
 
   return (
     <>
@@ -220,11 +316,36 @@ const UserRegisterPage = () => {
         leftSubtitle={t("pages.register.leftSubtitle")}
         cardTitle={
           step === 1
-            ? undefined
+            ? t("pages.register.registerWithSocial")
             : step === 2
               ? t("pages.register.yourDetails")
               : t("pages.register.selfieVerification")
         }
+        underCardContent={
+          step === 1 && !otpSent && (
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate("/guest/dashboard")}
+              sx={{
+                py: 1,
+                borderRadius: "10px",
+                fontWeight: 700,
+                fontSize: "0.88rem",
+                textTransform: "uppercase",
+                border: `1.5px solid ${isDark ? "rgba(245,168,0,0.4)" : "rgba(245,168,0,0.5)"}`,
+                color: "#F5A800",
+                "&:hover": {
+                  border: "1.5px solid #F5A800",
+                  bgcolor: "rgba(245,168,0,0.08)",
+                },
+              }}
+            >
+              {t("pages.register.continueAsGuest")}
+            </Button>
+          )
+        }
+
         topContent={
           <Box
             sx={{
@@ -232,32 +353,42 @@ const UserRegisterPage = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 1,
+              gap: 1.5,
             }}
           >
             <Box
-              component="img"
-              src={prajakeeyaLogo}
-              alt="Prajaakeeya"
-              sx={{ height: { xs: 64, sm: 80 }, objectFit: "contain" }}
-            />
-            <Typography
               sx={{
-                fontFamily: '"Bebas Neue", "Impact", sans-serif',
-                fontSize: { xs: "1.4rem", sm: "1.7rem" },
-                letterSpacing: "0.08em",
-                lineHeight: 1,
-                background: isDark
-                  ? "linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)"
-                  : "linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                paddingBottom: "6px",
+                textAlign: "center",
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 1,
               }}
             >
-              {t("pages.login.oath.title")}
-            </Typography>
+              <Box
+                component="img"
+                src={prajakeeyaLogo}
+                alt="Prajaakeeya"
+                sx={{ height: { xs: 64, sm: 80 }, objectFit: "contain" }}
+              />
+              <Typography
+                sx={{
+                  fontFamily: '"Bebas Neue", "Impact", sans-serif',
+                  fontSize: { xs: "1.4rem", sm: "1.7rem" },
+                  letterSpacing: "0.08em",
+                  lineHeight: 1,
+                  background: isDark
+                    ? "linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)"
+                    : "linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  paddingBottom: "6px",
+                }}
+              >
+                {t("pages.login.oath.title")}
+              </Typography>
+            </Box>
           </Box>
         }
       >
@@ -280,42 +411,31 @@ const UserRegisterPage = () => {
                 </Alert>
               )}
 
-              <Typography
-                sx={{
-                  textAlign: "center",
-                  fontWeight: 700,
-                  fontSize: "1.05rem",
-                  color: isDark
-                    ? "rgba(255,255,255,0.88)"
-                    : "rgba(17,24,39,0.85)",
-                  mb: 2,
-                }}
-              >
-                {t("pages.register.registerWithSocial")}
-              </Typography>
-
               <Box
                 sx={{
                   border: `1px solid ${isDark ? "rgba(245,168,0,0.25)" : "rgba(245,168,0,0.4)"}`,
                   borderRadius: 2,
-                  p: 2,
+                  px: 0.5,
+                  py: 2,
                   background: isDark
                     ? "rgba(245,168,0,0.04)"
                     : "rgba(245,168,0,0.04)",
                 }}
               >
-
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={consented}
                       onChange={(e) => setConsented(e.target.checked)}
+                      disableRipple
+                      disabled={loading || otpSent}
                       sx={{
                         color: isDark
                           ? "rgba(255,255,255,0.35)"
                           : "rgba(17,24,39,0.35)",
                         "&.Mui-checked": { color: "#F5A800" },
                         py: { xs: 1, sm: 0.25 },
+                        "&:hover": { bgcolor: "transparent" },
                       }}
                     />
                   }
@@ -378,166 +498,222 @@ const UserRegisterPage = () => {
                     </Typography>
                   }
                   sx={{
-                    alignItems: "flex-start",
+                    alignItems: "center",
                     mx: 0,
                   }}
                 />
               </Box>
 
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={handleGoogleSignIn}
-                disabled={googleLoading || appleLoading || !consented}
-                startIcon={
-                  googleLoading ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    <Box
-                      component="span"
-                      sx={{ display: "flex", alignItems: "center" }}
-                    >
-                      <svg width="20" height="20" viewBox="0 0 48 48">
-                        <path
-                          fill="#FFC107"
-                          d="M43.6 20.5H42V20H24v8h11.3C33.7 33 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.9 29.3 5 24 5 12.9 5 4 13.9 4 25s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.6-.4-3.8-.1-.4-.4-.7-1-.7z"
-                        />
-                        <path
-                          fill="#FF3D00"
-                          d="M6.3 15.2l6.6 4.8C14.7 16.5 19 14 24 14c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.9 29.3 5 24 5 16.3 5 9.6 9.2 6.3 15.2z"
-                        />
-                        <path
-                          fill="#4CAF50"
-                          d="M24 45c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 36.5 26.8 37.5 24 37.5c-5.2 0-9.6-3.5-11.2-8.2l-6.5 5C9.7 40.8 16.4 45 24 45z"
-                        />
-                        <path
-                          fill="#1976D2"
-                          d="M43.6 20.5H42V20H24v8h11.3c-.7 2-2.1 3.7-3.8 4.9l6.2 5.2C42.6 34.5 44 30 44 25c0-1.3-.1-2.6-.4-3.8-.1-.4-.4-.7-1-.7z"
-                        />
-                      </svg>
-                    </Box>
-                  )
-                }
-                sx={{
-                  py: 1.3,
-                  borderRadius: "10px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  fontSize: "0.97rem",
-                  border: `1.5px solid ${isDark ? "rgba(255,255,255,0.18)" : "rgba(17,24,39,0.15)"}`,
-                  color: isDark ? "#fff" : "rgba(17,24,39,0.88)",
-                  background: isDark
-                    ? "linear-gradient(135deg, #0A0808 0%, #1C1212 50%, #2A1A0A 100%)"
-                    : "#ffffff",
-                  backdropFilter: "blur(4px)",
-                  boxShadow: isDark
-                    ? "0 4px 18px rgba(0,0,0,0.5)"
-                    : "0 2px 10px rgba(17,24,39,0.12)",
-                  "&:hover": {
-                    border: "1.5px solid #F5A800",
-                    background: isDark
-                      ? "linear-gradient(135deg, #150E0E 0%, #251515 50%, #35200A 100%)"
-                      : "#FFF8F0",
-                    boxShadow: isDark
-                      ? "0 6px 24px rgba(0,0,0,0.55)"
-                      : "0 4px 16px rgba(245,168,0,0.2)",
-                    transform: "translateY(-1px)",
-                  },
-                  "&.Mui-disabled": {
-                    border: `1.5px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(17,24,39,0.1)"}`,
-                    color: isDark
-                      ? "rgba(255,255,255,0.25)"
-                      : "rgba(17,24,39,0.35)",
-                    background: isDark
-                      ? "rgba(255,255,255,0.03)"
-                      : "rgba(17,24,39,0.04)",
-                  },
-                }}
-              >
-                {t("pages.login.socialGoogle")}
-              </Button>
+              <Stack spacing={2.5}>
+                {!otpSent && (
+                  <>
+                    <GoogleSignInButton
+                      loading={googleLoading}
+                      disabled={!consented}
+                      onClick={handleGoogleSignIn}
+                    />
 
-              {/* {isAppleDevice && (
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleAppleSignIn}
-                  disabled={appleLoading || googleLoading || !consented}
-                  startIcon={appleLoading ? <CircularProgress size={20} color="inherit" /> : (
-                    <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.52-3.23 0-1.44.62-2.2.44-3.06-.4C3.79 16.17 4.36 9.02 8.93 8.76c1.28.07 2.17.72 2.92.77.98-.2 1.92-.87 3.01-.79 1.28.1 2.25.6 2.88 1.53-2.64 1.58-2.01 5.05.37 6.02-.48 1.27-.73 1.84-1.37 2.96-.86 1.5-2.08 3-3.69 3.03zM12.05 8.68c-.15-2.23 1.66-4.15 3.74-4.34.27 2.55-2.31 4.45-3.74 4.34z" />
-                      </svg>
+                    <Divider
+                      sx={{
+                        color: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.5)",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          px: 1,
+                          color: isDark
+                            ? "rgba(255,255,255,0.5)"
+                            : "rgba(0,0,0,0.6)",
+                        }}
+                      >
+                        {t("pages.login.otpDivider")}
+                      </Typography>
+                    </Divider>
+                  </>
+                )}
+
+                {!otpSent ? (
+                  <>
+                    <TextField
+                      fullWidth
+                      label={t("pages.login.identifierLabel")}
+                      placeholder={t("pages.login.identifierPlaceholder")}
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      disabled={loading || !consented}
+                      sx={darkFieldSx(isDark, theme)}
+                    />
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      disabled={loading || !consented || identifier.length < 5}
+                      onClick={onRequestOtp}
+                      sx={{
+                        py: 1.3,
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        fontWeight: 700,
+                        fontSize: "0.97rem",
+                        borderColor: isDark ? "rgba(255,255,255,0.18)" : "rgba(17,24,39,0.18)",
+                        color: isDark ? "#FFFFFF" : "#111827",
+                        bgcolor: isDark ? "rgba(255,255,255,0.03)" : "transparent",
+                        transition: "all 0.2s ease",
+                        "&:hover": {
+                          borderColor: isDark ? "rgba(255,255,255,0.35)" : "rgba(17,24,39,0.35)",
+                          bgcolor: isDark ? "rgba(255,255,255,0.07)" : "rgba(17,24,39,0.03)",
+                        },
+                        "&.Mui-disabled": {
+                          borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(17,24,39,0.08)",
+                          color: isDark ? "rgba(255,255,255,0.25)" : "rgba(17,24,39,0.35)",
+                          bgcolor: isDark ? "rgba(255,255,255,0.02)" : "rgba(17,24,39,0.02)",
+                        },
+                      }}
+                    >
+                      {loading ? (
+                        <CircularProgress size={18} color="inherit" />
+                      ) : (
+                        t("pages.login.sendOtp")
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <OtpInput
+                      otpValues={otpValues}
+                      otpRefs={otpRefs}
+                      onChange={handleOtpChange}
+                      onKeyDown={handleOtpKeyDown}
+                      onPaste={handleOtpPaste}
+                      disabled={loading}
+                      label={t("pages.login.enterOtp")}
+                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: isDark
+                            ? "rgba(255,255,255,0.7)"
+                            : "text.secondary",
+                        }}
+                      >
+                        {otpTimer > 0
+                          ? t("pages.login.resendInSeconds", { seconds: otpTimer })
+                          : t("pages.login.didntReceiveCode")}
+                      </Typography>
+                      <Button
+                        variant="text"
+                        disabled={otpTimer > 0 || loading}
+                        onClick={onRequestOtp}
+                        sx={{
+                          textTransform: "none",
+                          color: "#F5A800",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {t("pages.login.resendOtp")}
+                      </Button>
                     </Box>
-                  )}
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      disabled={loading || otp.length !== 4}
+                      onClick={() => onVerifyOtp(otp)}
+                      sx={{
+                        py: 1.3,
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        fontWeight: 700,
+                        fontSize: "0.97rem",
+                        borderColor: isDark ? "rgba(255,255,255,0.18)" : "rgba(17,24,39,0.18)",
+                        color: isDark ? "#FFFFFF" : "#111827",
+                        bgcolor: isDark ? "rgba(255,255,255,0.03)" : "transparent",
+                        transition: "all 0.2s ease",
+                        "&:hover": {
+                          borderColor: isDark ? "rgba(255,255,255,0.35)" : "rgba(17,24,39,0.35)",
+                          bgcolor: isDark ? "rgba(255,255,255,0.07)" : "rgba(17,24,39,0.03)",
+                        },
+                        "&.Mui-disabled": {
+                          borderColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(17,24,39,0.08)",
+                          color: isDark ? "rgba(255,255,255,0.25)" : "rgba(17,24,39,0.35)",
+                          bgcolor: isDark ? "rgba(255,255,255,0.02)" : "rgba(17,24,39,0.02)",
+                        },
+                      }}
+                    >
+                      {loading ? (
+                        <CircularProgress size={18} color="inherit" />
+                      ) : (
+                        t("pages.login.verifyOtp")
+                      )}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      onClick={() => {
+                        setOtpSent(false);
+                        resetOtp();
+                        setError("");
+                      }}
+                      disabled={loading}
+                      sx={{
+                        py: 1,
+                        borderRadius: "10px",
+                        textTransform: "none",
+                        borderColor: isDark
+                          ? "rgba(255,255,255,0.2)"
+                          : "rgba(0,0,0,0.2)",
+                        color: isDark
+                          ? "rgba(255,255,255,0.7)"
+                          : "rgba(0,0,0,0.7)",
+                      }}
+                    >
+                      {t("pages.login.changeIdentifier")}
+                    </Button>
+                  </>
+                )}
+
+              {/* Bottom actions — always visible / shown under step 1 form */}
+              <Stack spacing={2} sx={{ mt: 3 }}>
+                <Divider
                   sx={{
-                    py: 1.3,
-                    borderRadius: '10px',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    fontSize: '0.97rem',
-                    border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(17,24,39,0.15)'}`,
-                    color: isDark ? '#fff' : 'rgba(17,24,39,0.88)',
-                    background: isDark
-                      ? 'linear-gradient(135deg, #0A0808 0%, #1C1212 50%, #2A1A0A 100%)'
-                      : '#ffffff',
-                    backdropFilter: 'blur(4px)',
-                    boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.5)' : '0 2px 10px rgba(17,24,39,0.12)',
-                    '&:hover': {
-                      border: '1.5px solid #F5A800',
-                      background: isDark
-                        ? 'linear-gradient(135deg, #150E0E 0%, #251515 50%, #35200A 100%)'
-                        : '#FFF8F0',
-                      boxShadow: isDark ? '0 6px 24px rgba(0,0,0,0.55)' : '0 4px 16px rgba(245,168,0,0.2)',
-                      transform: 'translateY(-1px)',
-                    },
-                    '&.Mui-disabled': {
-                      border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.07)' : 'rgba(17,24,39,0.1)'}`,
-                      color: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(17,24,39,0.35)',
-                      background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(17,24,39,0.04)',
-                    },
+                    borderColor: isDark
+                      ? "rgba(255,255,255,0.08)"
+                      : "rgba(17,24,39,0.1)",
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    fontSize: "0.82rem",
+                    color: isDark ? "rgba(255,255,255,0.35)" : "rgba(17,24,39,0.62)",
                   }}
                 >
-                  {t('pages.login.socialApple')}
-                </Button>
-              )} */}
-
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => navigate("/guest/dashboard")}
-                sx={{
-                  mt: 1,
-                  py: 0.75,
-                  borderRadius: 50,
-                  fontWeight: 700,
-                  fontSize: "0.88rem",
-                  textTransform: "none",
-                  border: `1.5px solid ${isDark ? "rgba(245,168,0,0.4)" : "rgba(245,168,0,0.5)"}`,
-                  color: "#F5A800",
-                  "&:hover": {
-                    border: "1.5px solid #F5A800",
-                    bgcolor: "rgba(245,168,0,0.08)",
-                  },
-                }}
-              >
-                {(() => {
-                  const label = t("pages.register.continueAsGuest");
-                  const match = label.match(/^(.*?)\s*\((.+)\)\s*$/);
-                  const main = match ? match[1] : label;
-                  const sub = match ? `(${match[2]})` : "";
-                  return (
-                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: 1.1 }}>
-                      <Box component="span">{main}</Box>
-                      {sub && (
-                        <Box component="span" sx={{ fontSize: "0.7rem", fontWeight: 500, opacity: 0.85 }}>
-                          {sub}
-                        </Box>
-                      )}
-                    </Box>
-                  );
-                })()}
-              </Button>
+                  {t("pages.register.alreadyHaveAccount")}{" "}
+                  <Box
+                    component="span"
+                    onClick={() => {
+                      if (!otpSent) navigate("/login");
+                    }}
+                    sx={{
+                      color: "#F5A800",
+                      fontWeight: 600,
+                      cursor: otpSent ? "not-allowed" : "pointer",
+                      opacity: otpSent ? 0.5 : 1,
+                      "&:hover": { textDecoration: otpSent ? "none" : "underline" },
+                    }}
+                  >
+                    {t("pages.register.signIn")}
+                  </Box>
+                </Typography>
+              </Stack>
+              </Stack>
             </Stack>
           )}
 
@@ -567,7 +743,7 @@ const UserRegisterPage = () => {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                   disabled={loading}
-                  sx={darkFieldSx}
+                  sx={darkFieldSx(isDark, theme)}
                 />
 
                 <Button
