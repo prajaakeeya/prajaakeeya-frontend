@@ -9,6 +9,14 @@ import LanguageSelector from '../components/LanguageSelector';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
 import unlockImg from '../assets/images/unlock.png';
 
+// Screen-reader-only style: keeps the element in the accessibility tree while
+// removing it visually. Used for the page's semantic <h1> (the visible brand is
+// an image, so the heading would otherwise be missing for AT and SEO).
+const visuallyHidden: React.CSSProperties = {
+  position: 'absolute', width: 1, height: 1, padding: 0, margin: -1,
+  overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0,
+};
+
 /* ═══════════════ ICONS ═══════════════ */
 
 const LockIcon = ({ isDark: _isDark }: { isDark: boolean }) => (
@@ -131,6 +139,19 @@ const CSS = `
   .enter-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#C8180A 0%,#E8720A 50%,#F5A800 100%);border:none;border-radius:16px;padding:16px;cursor:pointer;font-size:15px;font-weight:700;color:#fff;letter-spacing:.5px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 24px rgba(200,80,10,.35);transition:transform .15s ease,box-shadow .15s ease}
   .enter-btn:active{transform:scale(.97);box-shadow:0 2px 12px rgba(200,80,10,.2)}
   .enter-btn:hover{background:linear-gradient(135deg,#df210f 0%,#f08010 50%,#ffbe1a 100%);box-shadow:0 6px 32px rgba(200,80,10,.5)}
+
+  /* Respect users who ask for less motion (WCAG 2.3.3): freeze the looping
+     decorative animations and make the entrance reveals instant. Scoped to the
+     landing page via .pjk-home so the rest of the app is untouched. */
+  @media (prefers-reduced-motion: reduce){
+    .pjk-home *,
+    .pjk-home *::before,
+    .pjk-home *::after{
+      animation-duration:.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;
+    }
+  }
 `;
 
 /* ═══════════════ MAIN ═══════════════ */
@@ -279,7 +300,13 @@ const HomePage: React.FC = () => {
         </Box>
       </Box>
 
-      <div style={S.root}>
+      <div style={S.root} className="pjk-home">
+
+        {/* Semantic page heading (visually hidden — the visible brand is the
+            logo image, so AT/SEO would otherwise have no <h1>). */}
+        <h1 style={visuallyHidden}>
+          {t('pages.landing.homePage.title')} — {t('pages.landing.homePage.tagline')}
+        </h1>
 
         {/* ═══ NO ENTRY CARD ═══ */}
         <section className={`anim-up ${step >= 1 ? 'on' : ''}`} style={{ transitionDelay: '0s' }}>
