@@ -170,7 +170,7 @@ const UserRegisterPage = () => {
     // Mark that this OAuth flow started from the Register page so the
     // callback can show the celebration screen for fresh signups.
     sessionStorage.setItem("__FROM_REGISTER__", "1");
-    window.location.href = getGoogleOAuthUrl();
+    window.location.replace(getGoogleOAuthUrl());
   };
 
   // Apple sign-in is disabled pending native backend integration.

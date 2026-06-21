@@ -144,7 +144,7 @@ const UserLoginPage = () => {
     setGoogleLoading(true);
     // Clear any stale auth before starting the OAuth flow
     logout();
-    window.location.href = getGoogleOAuthUrl();
+    window.location.replace(getGoogleOAuthUrl());
   };
 
   useEffect(() => {
