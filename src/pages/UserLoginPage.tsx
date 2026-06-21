@@ -27,7 +27,7 @@ import {
 
 const UserLoginPage = () => {
   const { t } = useTranslation();
-  const { setAuth, logout } = useAuthStore();
+  const { setAuth, clearSession } = useAuthStore();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const theme = useTheme();
@@ -73,8 +73,8 @@ const UserLoginPage = () => {
         user = response.user;
       }
 
-      if (token && user) {
-        logout();
+      if (user) {
+        clearSession();
         setRedirecting(true);
         setAuth(token, user);
         navigate("/user/dashboard", { replace: true });
@@ -114,7 +114,7 @@ const UserLoginPage = () => {
     }
     setGoogleLoading(true);
     // Clear any stale auth before starting the OAuth flow
-    logout();
+    clearSession();
     // Use replace() (not href=) so the login page is REPLACED in history rather
     // than stacked. Combined with the callback's navigate(..., { replace: true }),
     // the whole OAuth round-trip leaves nothing on the back stack — so after sign-in,

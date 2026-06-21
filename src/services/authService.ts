@@ -56,7 +56,7 @@ export interface RegisterVoterResponse {
 }
 
 export const loginWithEpic = async (payload: EpicLoginPayload) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/login', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/login', payload);
   return data;
 };
 
@@ -90,6 +90,17 @@ export const getGoogleOAuthUrl = (): string => {
   return `${host}/api/auth/google?state=${encodeURIComponent(state)}`;
 };
 
+export const consumeGoogleOAuthState = (returnedState: string | null): boolean => {
+  const expectedState = sessionStorage.getItem(GOOGLE_OAUTH_STATE_KEY);
+  sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);
+  return Boolean(expectedState && returnedState && expectedState === returnedState);
+};
+
+export const exchangeGoogleOAuthCode = async (payload: { code: string; state: string }) => {
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/google/exchange', payload);
+  return data;
+};
+
 export const requestAdminOtp = (payload: AdminLoginPayload) => apiClient.post('/auth/admin/login', payload);
 
 export const requestRegisterOtp = (payload: RegisterOtpPayload) =>
@@ -118,12 +129,12 @@ export const sendOtpUnified = async (payload: SendOtpPayloadUnified) => {
 };
 
 export const verifyOtpUnified = async (payload: VerifyOtpPayloadUnified) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/verify-otp', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/verify-otp', payload);
   return data;
 };
 
 export const verifyOtp = async (payload: VerifyOtpPayload) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/verify-otp', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/verify-otp', payload);
   return data;
 };
 
@@ -133,7 +144,7 @@ export const sendAspirantOtp = async (payload: AspirantSendOtpPayload) => {
 };
 
 export const verifyAspirantLoginOtp = async (payload: AspirantVerifyOtpPayload) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/aspirant/verify-otp', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/aspirant/verify-otp', payload);
   return data;
 };
 
@@ -143,12 +154,12 @@ export const resendAspirantOtp = async (payload: AspirantSendOtpPayload) => {
 };
 
 export const verifyAdminOtp = async (payload: AdminVerifyOtpPayload) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/admin/verify-otp', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/admin/verify-otp', payload);
   return data;
 };
 
 export const adminLoginWithPassword = async (payload: { email: string; password: string }) => {
-  const { data } = await apiClient.post<{ token: string; user: AuthUser }>('/auth/admin/login', payload);
+  const { data } = await apiClient.post<{ token?: string; user: AuthUser }>('/auth/admin/login', payload);
   return data;
 };
 

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AuthUser } from '../types/auth';
-import apiClient from '../services/apiClient';
 import { fetchProfile } from '../services/authService';
 import { getWardById } from '../services/wardService';
 import { isMockMode } from '../config/appMode';
@@ -11,11 +10,28 @@ interface AuthState {
   user: AuthUser | null;
   isAdmin: boolean;
   isAuthenticated: boolean;
-  setAuth: (token: string, user: AuthUser) => void;
+  setAuth: (token: string | null | undefined, user: AuthUser) => void;
   clearSession: () => void;
   logout: () => Promise<void>;
   fetchProfile: () => Promise<void>;
 }
+
+const normalizeAuthUser = (user: AuthUser): AuthUser => ({
+  ...user,
+  aspirantWardNumber: user.aspirantWardNumber,
+  wardId: user.ward?.id ?? user.wardId,
+  wardNumber: user.ward?.number ?? user.wardNumber,
+  wardName: user.ward?.name ?? user.wardName,
+  assembly: user.ward?.assembly ?? user.assembly,
+  ward: user.ward ?? {
+    id: user.wardId,
+    number: user.wardNumber,
+    name: user.wardName,
+    assembly: user.assembly,
+    parliamentary: user.parliamentary,
+    state: user.state,
+  },
+});
 
 const useAuthStore = create<AuthState>()(
   persist(
@@ -25,26 +41,10 @@ const useAuthStore = create<AuthState>()(
       isAdmin: false,
       isAuthenticated: false,
       setAuth: (token, user) => {
-        apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
         // Normalize user to ensure ward fields are available whether API returns nested `ward` or top-level wardName/wardNumber
-        const normalizedUser: any = {
-          ...user,
-          aspirantWardNumber: (user as any).aspirantWardNumber,
-          wardId: (user as any).ward?.id ?? user.wardId,
-          wardNumber: (user as any).ward?.number ?? user.wardNumber,
-          wardName: (user as any).ward?.name ?? user.wardName,
-          assembly: (user as any).ward?.assembly ?? user.assembly,
-          ward: (user as any).ward ?? {
-            id: user.wardId,
-            number: user.wardNumber,
-            name: user.wardName,
-            assembly: user.assembly,
-            parliamentary: user.parliamentary,
-            state: user.state
-          }
-        };
+        const normalizedUser = normalizeAuthUser(user);
 
-        set({ token, user: normalizedUser, isAdmin: normalizedUser.role === 'admin', isAuthenticated: true });
+        set({ token: token ?? null, user: normalizedUser, isAdmin: normalizedUser.role === 'admin', isAuthenticated: true });
       },
       // Clear the current session (in-memory state + persisted localStorage)
       // WITHOUT triggering a full-page reload. Use this when you need to drop
@@ -53,7 +53,6 @@ const useAuthStore = create<AuthState>()(
       // was previously logged in.
       clearSession: () => {
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
-        delete apiClient.defaults.headers.common.Authorization;
         const preserveKeys = ['theme-storage', 'i18nextLng'];
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
@@ -83,7 +82,6 @@ const useAuthStore = create<AuthState>()(
           /* best-effort — backend also self-prunes stale tokens */
         }
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
-        delete apiClient.defaults.headers.common.Authorization;
         // Clear all localStorage except theme, language, and civic raised state
         const preserveKeys = ['theme-storage', 'i18nextLng'];
         // Preserve all civic_raised_* keys so hand-raise history survives logout
@@ -103,7 +101,7 @@ const useAuthStore = create<AuthState>()(
       },
       fetchProfile: async () => {
         const state = get();
-        if (!state.token) return;
+        if (!state.token && !state.user) return;
         if (isMockMode) {
           if (state.user) {
             set({ isAdmin: state.user.role === 'admin', isAuthenticated: true });
@@ -112,9 +110,9 @@ const useAuthStore = create<AuthState>()(
         }
         try {
           const response = await fetchProfile();
-          const apiUser = response.data as any;
+          const apiUser = response.data;
           // Normalize nested ward object into top-level fields if present
-          const normalizedUser: any = {
+          const normalizedUser: AuthUser = {
             ...apiUser,
             aspirantId: apiUser.aspirantId,
             wardId: apiUser.ward?.id ?? apiUser.wardId,
@@ -126,7 +124,7 @@ const useAuthStore = create<AuthState>()(
           if ((normalizedUser.wardNumber === undefined || normalizedUser.wardName === undefined) && normalizedUser.wardId) {
             try {
               const wardResp = await getWardById(normalizedUser.wardId as number);
-              const wardData = (wardResp && (wardResp as any).data) || null;
+              const wardData = (wardResp.data ?? null) as Partial<NonNullable<AuthUser['ward']>> | null;
               if (wardData) {
                 normalizedUser.wardNumber = normalizedUser.wardNumber ?? wardData.number;
                 normalizedUser.wardName = normalizedUser.wardName ?? wardData.name;
@@ -134,8 +132,8 @@ const useAuthStore = create<AuthState>()(
                 normalizedUser.parliamentary = normalizedUser.parliamentary ?? wardData.parliamentary;
                 normalizedUser.state = normalizedUser.state ?? wardData.state;
               }
-            } catch (e) {
-              console.warn('[auth] fetch ward by id failed', e);
+            } catch (error) {
+              console.warn('[auth] fetch ward by id failed', error);
             }
           }
           set({ user: normalizedUser, isAdmin: normalizedUser.role === 'admin', isAuthenticated: true });
@@ -146,13 +144,19 @@ const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({ token: state.token, user: state.user }),
+      version: 2,
+      partialize: (state) => ({ user: state.user }),
+      migrate: (persistedState) => {
+        const state = persistedState as Partial<AuthState> | undefined;
+        return { user: state?.user ?? null };
+      },
       onRehydrateStorage: () => (state) => {
-        // On page refresh, if we have a token and user, restore auth state
-        if (state?.token && state?.user) {
-          apiClient.defaults.headers.common.Authorization = `Bearer ${state.token}`;
-          state.isAuthenticated = true;
-          state.isAdmin = state.user.role === 'admin';
+        // Never trust persisted auth data for access control. The user object is
+        // kept only so App can attempt a cookie-backed /auth/me refresh.
+        if (state) {
+          state.token = null;
+          state.isAuthenticated = false;
+          state.isAdmin = false;
         }
       }
     }

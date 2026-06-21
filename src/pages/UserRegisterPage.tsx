@@ -30,11 +30,55 @@ import GoogleSignInButton from "../components/GoogleSignInButton";
 import OtpInput from "../components/OtpInput";
 import { useOtp } from "../hooks/useOtp";
 import { darkFieldSx } from "../utils/authStyles";
-
+import { AuthUser } from "../types/auth";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";
+
 interface RegisterForm {
   name: string;
 }
+
+interface PendingAuth {
+  token?: string | null;
+  user: AuthUser;
+}
+
+interface GoogleAuthBridgeUser {
+  name?: string;
+}
+
+type WebViewWindow = Window & {
+  ReactNativeWebView?: {
+    postMessage: (message: string) => void;
+  };
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const isAuthUser = (value: unknown): value is AuthUser => {
+  if (!isRecord(value)) return false;
+  const role = value.role;
+  return (
+    typeof value.id === "number" &&
+    typeof value.name === "string" &&
+    (role === "admin" || role === "voter" || role === "aspirant")
+  );
+};
+
+const parsePendingAuth = (value: string): PendingAuth | null => {
+  const parsed: unknown = JSON.parse(value);
+  if (!isRecord(parsed) || !isAuthUser(parsed.user)) return null;
+
+  return {
+    token: typeof parsed.token === "string" ? parsed.token : null,
+    user: parsed.user,
+  };
+};
+
+const parseGoogleAuthBridgeUser = (value: string): GoogleAuthBridgeUser | null => {
+  const parsed: unknown = JSON.parse(value);
+  return isRecord(parsed) ? { name: typeof parsed.name === "string" ? parsed.name : undefined } : null;
+};
 
 const UserRegisterPage = () => {
   const { t, i18n } = useTranslation();
@@ -58,10 +102,7 @@ const UserRegisterPage = () => {
   const [otpTimer, setOtpTimer] = useState(0);
   const [verificationId, setVerificationId] = useState("");
   const [showCelebration, setShowCelebration] = useState(false);
-  const [pendingAuth, setPendingAuth] = useState<{
-    token: string;
-    user: any;
-  } | null>(null);
+  const [pendingAuth, setPendingAuth] = useState<PendingAuth | null>(null);
   const [consented, setConsented] = useState(false);
 
   const fireworkShows = useMemo(() => {
@@ -135,8 +176,8 @@ const UserRegisterPage = () => {
     const stored = sessionStorage.getItem("__PENDING_AUTH__");
     if (!stored) return;
     try {
-      const parsed = JSON.parse(stored);
-      if (parsed?.token && parsed?.user) {
+      const parsed = parsePendingAuth(stored);
+      if (parsed) {
         setPendingAuth(parsed);
         setShowCelebration(true);
       }
@@ -154,10 +195,10 @@ const UserRegisterPage = () => {
     const stored = sessionStorage.getItem("__GOOGLE_AUTH__");
     if (stored) {
       try {
-        const googleUser = JSON.parse(stored);
-        if (googleUser.name) setValue("name", googleUser.name);
+        const googleUser = parseGoogleAuthBridgeUser(stored);
+        if (googleUser?.name) setValue("name", googleUser.name);
         setStep(2);
-      } catch (e) {
+      } catch {
         // ignore parse errors
       }
       sessionStorage.removeItem("__GOOGLE_AUTH__");
@@ -234,7 +275,8 @@ const UserRegisterPage = () => {
     setError("");
     setLoading(true);
     try {
-      let token, user;
+      let token: string | null | undefined;
+      let user: AuthUser | undefined;
 
       if (loginMethod === "phone") {
         const response = await verifyOtpUnified({
@@ -256,7 +298,7 @@ const UserRegisterPage = () => {
         user = response.user;
       }
 
-      if (token && user) {
+      if (user) {
         setPendingAuth({ token, user });
         setShowCelebration(true);
       }
@@ -284,7 +326,7 @@ const UserRegisterPage = () => {
   const handleGoogleSignIn = () => {
     setError("");
     if (isInWebView) {
-      (window as any).ReactNativeWebView?.postMessage(
+      (window as WebViewWindow).ReactNativeWebView?.postMessage(
         JSON.stringify({ type: "GOOGLE_SIGN_IN", url: getGoogleOAuthUrl() }),
       );
       return;
