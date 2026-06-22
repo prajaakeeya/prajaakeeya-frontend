@@ -109,7 +109,10 @@
     "myMeetingLinks": "My Meetings",
     "chatWithCitizens": "Chat with Citizens",
     "post": "Meet Citizens",
-    "directMeetRequests": "Direct Meet Requests"
+    "directMeetRequests": "Direct Meet Requests",
+    "shareApp": "Share App",
+    "shareText": "Let us build a responsible, money-free and advertisement-free democracy together. Install the official Prajaakeeya app:",
+    "shareCopied": "App link copied to clipboard"
   },
   "adminLogin": {
     "title": "Admin Access",
