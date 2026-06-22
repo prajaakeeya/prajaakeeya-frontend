@@ -25,7 +25,11 @@ const GENERIC_ERROR_MESSAGE = 'Something went wrong, Please try after sometime';
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Only force-logout on 401 when a session actually exists (an expired/
+    // revoked token). A guest with no token hitting an auth-protected endpoint
+    // also gets a 401 — logging them out hard-reloads to "/", which is why
+    // "Continue as guest" appeared to bounce back home (#47). Just reject.
+    if (error.response?.status === 401 && useAuthStore.getState().token) {
       useAuthStore.getState().logout();
     }
     const isNetworkOrTimeout =
