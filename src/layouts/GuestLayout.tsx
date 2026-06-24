@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar, Box, Toolbar, Typography, Button, Container, IconButton, useTheme, Avatar,
 } from '@mui/material';
@@ -19,6 +19,7 @@ const GuestLayout = () => {
   const { t } = useTranslation();
   const { mode, toggleTheme } = useThemeStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isDark = mode === 'dark';
   const { user, logout } = useAuthStore();
@@ -127,7 +128,10 @@ const GuestLayout = () => {
                     variant="contained"
                     size="small"
                     startIcon={<RegisterIcon />}
-                    onClick={() => navigate('/register')}
+                    onClick={() => {
+                      sessionStorage.setItem('__RETURN_TO__', location.pathname);
+                      navigate('/register');
+                    }}
                     sx={{ fontFamily: FF, minHeight: 36, px: 2 }}
                   >
                     Register

@@ -86,7 +86,13 @@ const AuthCallbackPage = () => {
       } else {
         setAuth(token, user);
       }
-      navigate('/user/dashboard', { replace: true });
+      
+      // Check if there's a saved return path (e.g., from guest dashboard)
+      const returnTo = sessionStorage.getItem('__RETURN_TO__');
+      sessionStorage.removeItem('__RETURN_TO__');
+      // Security: only allow internal relative paths
+      const isSafeInternal = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//');
+      navigate(isSafeInternal ? returnTo : '/user/dashboard', { replace: true });
     } catch (e) {
       console.error('Failed to parse auth callback params', e);
     }
