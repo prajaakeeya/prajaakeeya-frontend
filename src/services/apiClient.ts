@@ -1,4 +1,5 @@
-import axios from 'axios';
+import xior from 'xior';
+import xiorProgressPlugin from 'xior/plugins/progress';
 import * as Sentry from '@sentry/react';
 import useAuthStore from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
@@ -7,7 +8,14 @@ const apiHost = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_UR
 const normalizedHost = apiHost ? String(apiHost).replace(/\/+$/g, '') : '';
 const baseURL = normalizedHost ? `${normalizedHost}/api` : '/api';
 
-const apiClient = axios.create({
+function describeNetworkError(error: any): string {
+  const method = error?.config?.method?.toUpperCase() || '?';
+  const url = error?.config?.url || '?';
+  const reason = error?.message || error?.name || 'Network error';
+  return `[${error?.name || 'NetworkError'}] ${method} ${url} — ${reason}`;
+}
+
+const apiClient = xior.create({
   baseURL,
   timeout: 60000,
   // COOKIE_AUTH: send the httpOnly `session` cookie on every request. Without
@@ -15,6 +23,8 @@ const apiClient = axios.create({
   // legacy mode (auth rides on the Authorization header instead).
   withCredentials: COOKIE_AUTH,
 });
+
+apiClient.plugins.use(xiorProgressPlugin());
 
 apiClient.interceptors.request.use((config) => {
   // In cookie mode the JWT lives in an httpOnly cookie the browser attaches
@@ -28,22 +38,20 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-const GENERIC_ERROR_MESSAGE = 'Something went wrong, Please try after sometime';
-
 // COOKIE_AUTH refresh de-dupe: access tokens are short-lived (~15 min), so a
 // 401 normally just means "token expired" rather than "logged out". We attempt
 // a single /auth/refresh and retry the original request. This shared promise
 // ensures that if several requests 401 at once, only ONE refresh fires and the
 // rest await the same result — otherwise concurrent refreshes would race and
 // rotate each other's cookies. Reset to null once settled so the next genuine
-// expiry can refresh again. A separate bare axios instance avoids re-entering
+// expiry can refresh again. A separate bare xior instance avoids re-entering
 // this interceptor (and a circular import on authService).
 let refreshing: Promise<unknown> | null = null;
-const refreshClient = axios.create({ baseURL, timeout: 60000, withCredentials: true });
+const refreshClient = xior.create({ baseURL, timeout: 60000, withCredentials: true });
 
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error) => {
+  async (error: any) => {
     if (COOKIE_AUTH && error.response?.status === 401) {
       const original = error.config;
       // "Soft" auth endpoints: a 401 here is normal ("not logged in" / session
@@ -95,7 +103,7 @@ apiClient.interceptors.response.use(
         error.message === 'Network Error' ||
         (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout')));
     if (isNetworkOrTimeout) {
-      error.message = GENERIC_ERROR_MESSAGE;
+      error.message = describeNetworkError(error);
     }
     // Report API failures to Sentry for diagnostics. Skip 401 (expected auth
     // expiry → handled above) and other 4xx client errors (validation, not
@@ -114,7 +122,7 @@ apiClient.interceptors.response.use(
       });
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
