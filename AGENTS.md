@@ -8,23 +8,23 @@ Guidance for AI coding agents (Claude Code, Cursor, Copilot, etc.) working in th
 
 - **What:** Frontend SPA/PWA for *Prajaakeeya*, a multi-election democratic platform (voters, aspirants, guests, admins).
 - **Stack:** React 18 + TypeScript + Vite 5 + MUI 5 + Zustand + React Router 6 + React Hook Form/Yup + Axios + i18next (en/kn) + vite-plugin-pwa.
-- **Node:** 20.x. **Package managers:** npm locally (`package-lock.json`), yarn on the Amplify deploy (`yarn.lock`) — both lockfiles are committed; keep them in sync when changing deps.
+- **Node:** 20.x. **Package manager:** pnpm only (`pnpm-lock.yaml`).
 
 ---
 
 ## Commands
 
 ```bash
-npm install            # install deps
-npm run dev            # dev server → http://localhost:5173 (proxies /api → :3000)
-npm run build          # tsc -b && vite build  → dist/   (MUST pass before commit)
-npm run lint           # ESLint over src
-npm run test:run       # run full Vitest suite once (CI uses this)
-npm test               # Vitest watch mode
-npm run test:coverage  # tests + coverage report
+pnpm install            # install deps
+pnpm run dev            # dev server → http://localhost:5173 (proxies /api → :3000)
+pnpm run build          # tsc -b && vite build  → dist/   (MUST pass before commit)
+pnpm run lint           # ESLint over src
+pnpm run test:run       # run full Vitest suite once (CI uses this)
+pnpm test               # Vitest watch mode
+pnpm run test:coverage  # tests + coverage report
 ```
 
-After any change, the bar to clear is: **`npm run lint` clean, `npm run test:run` green, `npm run build` succeeds.**
+After any change, the bar to clear is: **`pnpm run lint` clean, `pnpm run test:run` green, `pnpm run build` succeeds.**
 
 ---
 
@@ -69,7 +69,7 @@ After any change, the bar to clear is: **`npm run lint` clean, `npm run test:run
 ## Repo-specific gotchas (important)
 
 - **The production build type-checks test files.** `tsc -b` compiles `src/test/`, so a test-file type error or a missing test dependency will **break the deploy build** — not just the tests. Keep test files type-clean.
-- **`@testing-library/react@16` needs `@testing-library/dom` as an explicit dep.** It's a peer dependency that yarn does not auto-install. It must stay declared in `package.json`, or the Amplify (yarn) build fails with "no exported member 'screen'".
+- **`@testing-library/react@16` needs `@testing-library/dom` as an explicit dep.** It's a peer dependency that pnpm does not auto-install. It must stay declared in `package.json`, or the Amplify build fails with "no exported member 'screen'".
 - **jsdom polyfills** for `matchMedia`, `IntersectionObserver`, `ResizeObserver`, `scrollTo`, and `localStorage`/`sessionStorage` are set up in [`src/test/setupTests.ts`](src/test/setupTests.ts). Don't re-stub them; add new global stubs there if needed.
 - **App mode:** `VITE_APP_MODE` is `api` or `mock` (default `mock` if unset) — see [`src/config/appMode.ts`](src/config/appMode.ts). Mock mode renders built-in demo data with no backend.
 - **MUI `<Collapse>` / dialogs keep children mounted** — assert on state classes (e.g. `MuiCollapse-hidden`) or visibility, not on DOM absence.
@@ -79,7 +79,7 @@ After any change, the bar to clear is: **`npm run lint` clean, `npm run test:run
 
 ## Deployment & CI
 
-- **Two pipelines:** (1) **AWS Amplify** auto-builds/deploys on push to `main`/`staging` (`yarn install` → `yarn build`); (2) **GitHub Actions** [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs lint + tests and gates an S3/CloudFront deploy (`needs: test`).
+- **Two pipelines:** (1) **AWS Amplify** auto-builds/deploys on push to `main`/`staging` (`pnpm install` → `pnpm run build`); (2) **GitHub Actions** [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs lint + tests and gates an S3/CloudFront deploy (`needs: test`).
 - `main` = production, `staging` = staging.
 - Don't push directly to `main`. Branch from `staging`, PR into `staging`.
 

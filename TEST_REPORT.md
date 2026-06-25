@@ -46,9 +46,9 @@ Configuration: [`vite.config.js`](vite.config.js) (`test` block) · [`src/test/s
 ## 3. How to run
 
 ```bash
-npm test              # watch mode (re-runs on file change)
-npm run test:run      # run once (used by CI)
-npm run test:coverage # run once + coverage report (HTML in /coverage)
+pnpm test              # watch mode (re-runs on file change)
+pnpm run test:run      # run once (used by CI)
+pnpm run test:coverage # run once + coverage report (HTML in /coverage)
 ```
 
 ---
@@ -135,7 +135,7 @@ Full pages rendered with mocked services + routing. Routes noted for traceabilit
 
 ## 8. Continuous Integration
 
-The deploy workflow [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs a **`test` job** (lint + `npm run test:run`) that the **`deploy` job depends on** (`needs: test`). A failing test blocks the deployment — satisfying the requirement *"deploy only after tests pass."*
+The deploy workflow [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs a **`test` job** (lint + `pnpm run test:run`) that the **`deploy` job depends on** (`needs: test`). A failing test blocks the deployment — satisfying the requirement *"deploy only after tests pass."*
 
 ---
 

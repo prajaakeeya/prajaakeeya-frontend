@@ -1,0 +1,9 @@
+# pnpm-workspace.yaml — Prajaakeeya Frontend
+# Packages not listed here cause exit code 1 (ERR_PNPM_IGNORED_BUILDS).
+# Setting to `false` means "reviewed, not needed" → clean exit 0.
+
+allowBuilds:
+  "@firebase/util": false  # no-op unless FIREBASE_WEBAPP_CONFIG env var is set
+  "@sentry/cli": false     # only needed for Sentry source-map uploads at build time
+  esbuild: false           # native binary comes via @esbuild/* optional dep; postinstall is a no-op fallback
+  protobufjs: false        # pure lint warning, no downloads or side effects
