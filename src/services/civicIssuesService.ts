@@ -89,11 +89,22 @@ export const raiseHandForCategoryByElectionConstituency = async (
 /** Submit a new civic issue */
 export const createIssue = async (
   wardNumber: string | number,
-  payload: { title: string; description: string }
+  payload: { title: string; description: string; attachments?: File[] }
 ): Promise<CivicIssue> => {
-  const resp = await apiClient.post<CivicIssue>(`/issues/${toWardParam(wardNumber)}`, {
-    title: payload.title.trim(),
-    description: payload.description.trim(),
+  const formData = new FormData();
+  formData.append('title', payload.title.trim());
+  formData.append('description', payload.description.trim());
+
+  if (payload.attachments && payload.attachments.length > 0) {
+    payload.attachments.forEach(file => {
+      formData.append('attachments', file);
+    });
+  }
+
+  const resp = await apiClient.post<CivicIssue>(`/issues/${toWardParam(wardNumber)}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   });
   return resp.data;
 };

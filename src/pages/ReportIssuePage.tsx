@@ -16,6 +16,8 @@ import {
   ReportProblem as ReportProblemIcon,
   Send as SendIcon,
   CheckCircle as CheckCircleIcon,
+  AttachFile as AttachFileIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -50,6 +52,41 @@ const ReportIssuePage: React.FC = () => {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
+
+  const MAX_ATTACHMENTS = 5;
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        setError(`File type "${file.type}" is not allowed. Accepted: JPG, PNG, WebP, MP4, MOV`);
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`File "${file.name}" exceeds 10MB limit`);
+        continue;
+      }
+      if (attachments.length + newFiles.length >= MAX_ATTACHMENTS) {
+        setError(`Maximum ${MAX_ATTACHMENTS} files allowed`);
+        break;
+      }
+      newFiles.push(file);
+    }
+
+    setAttachments(prev => [...prev, ...newFiles]);
+    e.target.value = '';
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
 
   // Colours
   const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
@@ -87,7 +124,7 @@ const ReportIssuePage: React.FC = () => {
     const title = selectedCategories.join(', ');
     setSubmitting(true);
     try {
-      await createIssue(wardNumber, { title, description });
+      await createIssue(wardNumber, { title, description, attachments });
       setDone(true);
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Failed to submit. Please try again.');
@@ -289,6 +326,54 @@ const ReportIssuePage: React.FC = () => {
                     {description.length}/{DESC_MAX}
                   </Typography>
                 </Box>
+              </Box>
+
+              {/* Photo/Video Attachments */}
+              <Box>
+                <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, mb: 0.8, fontSize: '0.92rem' }}>
+                  Photos / Videos <Box component="span" sx={{ fontWeight: 400, color: textDim, fontSize: '0.78rem' }}>(optional, max {MAX_ATTACHMENTS} files)</Box>
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                  {attachments.map((file, index) => (
+                    <Chip
+                      key={index}
+                      icon={<AttachFileIcon sx={{ fontSize: 16 }} />}
+                      label={file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name}
+                      onDelete={() => removeAttachment(index)}
+                      deleteIcon={<CloseIcon sx={{ fontSize: 16 }} />}
+                      sx={{
+                        fontFamily: FF, fontSize: '0.78rem',
+                        bgcolor: isDark ? 'rgba(245,168,0,0.1)' : 'rgba(245,168,0,0.08)',
+                        border: `1px solid ${borderSubtle}`,
+                      }}
+                    />
+                  ))}
+                </Box>
+                {attachments.length < MAX_ATTACHMENTS && (
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<AttachFileIcon />}
+                    disabled={submitting}
+                    sx={{
+                      fontFamily: FF, fontSize: '0.83rem', textTransform: 'none',
+                      borderColor: borderSubtle, color: textMid,
+                      '&:hover': { borderColor: GOLD, bgcolor: 'rgba(245,168,0,0.04)' },
+                    }}
+                  >
+                    Add Photos/Videos
+                    <input
+                      type="file"
+                      hidden
+                      multiple
+                      accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"
+                      onChange={handleFileSelect}
+                    />
+                  </Button>
+                )}
+                <Typography sx={{ fontFamily: FF, fontSize: '0.72rem', color: textDim, mt: 0.5 }}>
+                  Accepted: JPG, PNG, WebP, MP4, MOV (max 10MB each)
+                </Typography>
               </Box>
 
               {/* Submitting progress */}
