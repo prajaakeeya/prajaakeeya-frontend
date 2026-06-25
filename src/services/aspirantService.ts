@@ -13,16 +13,6 @@ export interface AspirantPayload {
   address?: string;
   gender?: string;
   phone?: string;
-  identityBackground?: string;
-  resignationPledge?: string;
-  financialIntegrity?: string;
-  noHighCommand?: string;
-  technicalCompetence?: string;
-  transparency?: string;
-  emergencyProtocol?: string;
-  expertConsultation?: string;
-  voterFeedback?: string;
-  primaryRule?: string;
   meetingLink?: string | null;
   instagramLink?: string | null;
   facebookLink?: string | null;
@@ -33,6 +23,44 @@ export interface AspirantPayload {
 }
 
 export const registerAspirant = (payload: AspirantPayload) => apiClient.post('/aspirants', payload);
+export const declareCandidacy = (aspirantId: number, electionId: number, constituencyId: number) =>
+  apiClient.patch(`/aspirants/${aspirantId}/candidacy`, { electionId, constituencyId });
+
+export interface AspirantCandidacy {
+  id: number;
+  aspirantId: number;
+  electionId: number;
+  constituencyId: number;
+  wardId: number | null;
+  electionName: string | null;
+  electionType: string | null;
+  constituencyName: string | null;
+}
+
+export const listCandidacies = (aspirantId: number) =>
+  apiClient.get<AspirantCandidacy[]>(`/aspirants/${aspirantId}/candidacies`);
+export const removeCandidacy = (candidacyId: number) =>
+  apiClient.delete(`/aspirants/candidacies/${candidacyId}`);
+
+export interface AspirantProposal {
+  id: number;
+  aspirantId: number;
+  title: string;
+  details: string;
+  createdAt: number;
+  updatedAt: number;
+  supportCount: number;
+  isSupportedByMe: boolean;
+}
+
+export const listProposals = (aspirantId: number) =>
+  apiClient.get<AspirantProposal[]>(`/aspirants/${aspirantId}/proposals`);
+export const createProposal = (aspirantId: number, title: string, details: string) =>
+  apiClient.post(`/aspirants/${aspirantId}/proposals`, { title, details });
+export const supportProposal = (proposalId: number) =>
+  apiClient.post(`/aspirants/proposals/${proposalId}/support`);
+export const unsupportProposal = (proposalId: number) =>
+  apiClient.delete(`/aspirants/proposals/${proposalId}/support`);
 export const getAllAspirants = (page = 1, limit = 20, search?: string) =>
   apiClient.get<{ data: AdminAspirant[]; total: number; page: number; limit: number; totalPages: number }>(
     '/aspirants/all', { params: { page, limit, ...(search ? { search } : {}) } }

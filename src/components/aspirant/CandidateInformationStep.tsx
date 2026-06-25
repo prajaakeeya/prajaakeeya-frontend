@@ -15,6 +15,8 @@ import {
   useTheme,
   Alert,
   Tooltip,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -226,6 +228,11 @@ const CandidateInformationStep = ({
   const [loadingGpTaluks, setLoadingGpTaluks] = useState(false);
   const [loadingGpGrams, setLoadingGpGrams] = useState(false);
   const [loadingGpVillages, setLoadingGpVillages] = useState(false);
+
+  // When checked, the aspirant explicitly defers constituency selection —
+  // registers idle regardless of any constituency already saved on their
+  // profile. Overrides the tab-driven auto-fill below.
+  const [registerIdle, setRegisterIdle] = useState(false);
 
   // Derive current election type and minimum age for validation
   const selectedElectionForAge = elections.find((e) => String(e.id) === String(watchedElectionId));
@@ -549,6 +556,14 @@ const CandidateInformationStep = ({
   // empty electionId and refuse to advance even when /auth/me already has
   // the saved value populated in the UI.
   const handleNextClick = async () => {
+    if (registerIdle) {
+      setValue('electionId', '', { shouldValidate: true });
+      setValue('constituencyId', '', { shouldValidate: true });
+      clearErrors?.(['electionId', 'constituencyId']);
+      await Promise.resolve();
+      onNext();
+      return;
+    }
     let resolved = activeElection;
     if (!resolved?.id && activeElectionType) {
       try {
@@ -560,15 +575,20 @@ const CandidateInformationStep = ({
         // ignore — fall through and let parent's trigger surface the error.
       }
     }
-    if (resolved?.id != null) {
+    // Only set electionId when there's also a constituency to pair it with
+    // — otherwise the paired-optional validation (electionId requires
+    // constituencyId and vice versa) rejects a value the user never actually
+    // chose, just because it happens to be the active tab's election.
+    if (resolved?.id != null && activeConstituencyForUser?.id != null) {
       setValue('electionId', resolved.id, {
         shouldValidate: true, shouldDirty: true, shouldTouch: true,
       });
-    }
-    if (activeConstituencyForUser?.id != null) {
       setValue('constituencyId', activeConstituencyForUser.id, {
         shouldValidate: true, shouldDirty: true, shouldTouch: true,
       });
+    } else {
+      setValue('electionId', '', { shouldValidate: true });
+      setValue('constituencyId', '', { shouldValidate: true });
     }
     clearErrors?.(['electionId', 'constituencyId']);
     // Yield a microtask so the form-state writes commit before the parent's
@@ -584,6 +604,11 @@ const CandidateInformationStep = ({
   // error from a prior submit attempt, and `trigger` re-runs the validator
   // synchronously so handleNext()'s subsequent trigger() sees the new values.
   useEffect(() => {
+    if (registerIdle) {
+      setValue('electionId', '');
+      setValue('constituencyId', '');
+      return;
+    }
     if (activeElection?.id != null && activeConstituencyForUser?.id != null) {
       setValue('electionId', activeElection.id, {
         shouldValidate: true, shouldDirty: true, shouldTouch: true,
@@ -597,22 +622,18 @@ const CandidateInformationStep = ({
       // Next.
       trigger?.(['electionId', 'constituencyId']).catch(() => {});
     } else {
-      // Only one side resolved (or neither) — clear the form values without
-      // emitting a fresh validation error. The empty-state CTA already tells
-      // the user what to do.
-      if (activeElection?.id != null) {
-        setValue('electionId', activeElection.id);
-      } else {
-        setValue('electionId', '');
-      }
-      if (activeConstituencyForUser?.id != null) {
-        setValue('constituencyId', activeConstituencyForUser.id);
-      } else {
-        setValue('constituencyId', '');
-      }
+      // Only one side resolved (or neither) — clear BOTH form values. Setting
+      // electionId alone (from the active tab) while constituencyId stays
+      // empty would make the pair invalid per the paired-optional validation
+      // (you can't have an election without a constituency), even though the
+      // user never actually selected anything — they just have no saved
+      // constituency for whichever tab happens to be active. The empty-state
+      // CTA already tells the user what to do.
+      setValue('electionId', '');
+      setValue('constituencyId', '');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, activeElection?.id, activeConstituencyForUser?.id]);
+  }, [activeTab, activeElection?.id, activeConstituencyForUser?.id, registerIdle]);
 
   // Ordered field groups for animated rendering
   const fields: Array<{ id: string; colXs: number; colMd: number; node: React.ReactNode }> = [
@@ -832,9 +853,44 @@ const CandidateInformationStep = ({
               letterSpacing: '0.06em', textTransform: 'uppercase',
             }}>
               {t('forms.aspirant.electionContext', { defaultValue: 'Election & Constituency' })}
-              <Box component="span" sx={{ color: 'error.main', ml: 0.5 }}>*</Box>
+              <Box component="span" sx={{ color: textSecondary, ml: 0.5, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>
+                {t('forms.aspirant.electionContextOptional', { defaultValue: '(optional — can be set later)' })}
+              </Box>
             </Typography>
 
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={registerIdle}
+                  onChange={(e) => setRegisterIdle(e.target.checked)}
+                  sx={{ color: GOLD, '&.Mui-checked': { color: GOLD } }}
+                />
+              }
+              label={
+                <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: textPrimary }}>
+                  {t('forms.aspirant.registerIdle', {
+                    defaultValue: "I haven't decided my constituency yet — register me as idle for now",
+                  })}
+                </Typography>
+              }
+            />
+
+            {registerIdle ? (
+              <Box sx={{
+                p: { xs: 1.5, sm: 2 },
+                borderRadius: 2,
+                border: `1px dashed ${isDark ? 'rgba(245,168,0,0.45)' : 'rgba(245,168,0,0.55)'}`,
+                bgcolor: isDark ? 'rgba(245,168,0,0.04)' : 'rgba(245,168,0,0.05)',
+              }}>
+                <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: textPrimary }}>
+                  {t('forms.aspirant.registerIdleNote', {
+                    defaultValue:
+                      "You'll register without a constituency. Once an election is announced, declare one or more constituencies from your profile — you can run in multiple races at once.",
+                  })}
+                </Typography>
+              </Box>
+            ) : (
+            <>
             <Stack direction="row" spacing={{ xs: 1, sm: 1.5 }}>
               {tabs.map(({ key, label, Icon, inactiveImg, activeImg }) => {
                 const isActive = activeTab === key;
@@ -955,7 +1011,7 @@ const CandidateInformationStep = ({
                 <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: textPrimary, mb: 1 }}>
                   {t('forms.aspirant.constituencyMissing', {
                     type: missingTypeLabel,
-                    defaultValue: `If you want to contest, update your ${missingTypeLabel} constituency in your profile.`,
+                    defaultValue: `You can register without picking a ${missingTypeLabel} constituency now — set it later, in your profile, once an election is announced.`,
                   })}
                 </Typography>
                 <Button
@@ -973,8 +1029,10 @@ const CandidateInformationStep = ({
                 </Button>
               </Box>
             )}
+            </>
+            )}
 
-            {errors.constituencyId && missing && (
+            {!registerIdle && errors.constituencyId && missing && (
               <Typography sx={{ color: 'rgba(255,80,80,0.85)', fontSize: '0.72rem', fontFamily: FF }}>
                 {t((errors.constituencyId as any).message || 'validation.required')}
               </Typography>

@@ -209,23 +209,6 @@ const AspirantRegistrationPage = () => {
       if (aspirantResp.occupation) setValue('occupation', aspirantResp.occupation);
       if (aspirantResp.manifesto) setValue('manifesto', aspirantResp.manifesto);
       if (aspirantResp.address) setValue('address', aspirantResp.address);
-
-      const backendAnswers = [
-        aspirantResp.identityBackground || '',
-        aspirantResp.resignationPledge || '',
-        aspirantResp.noHighCommand || '',
-        aspirantResp.technicalCompetence || '',
-        aspirantResp.transparency || '',
-        aspirantResp.emergencyProtocol || '',
-        aspirantResp.expertConsultation || '',
-        aspirantResp.voterFeedback || '',
-        aspirantResp.primaryRule || ''
-      ];
-
-      const hasBackendAnswers = backendAnswers.some(a => a.trim().length > 0);
-      if (hasBackendAnswers) {
-        setAnswers(backendAnswers);
-      }
     } catch (e) {
       console.warn('Failed to restore from aspirantResp', e);
     }
@@ -308,15 +291,6 @@ const AspirantRegistrationPage = () => {
       twitterLink: values.twitterLink || null,
       whatsappNumber: values.whatsappNumber || null,
       sopAgreed: true,
-      identityBackground: answers[0] || '',
-      resignationPledge: answers[1] || '',
-      noHighCommand: answers[2] || '',
-      technicalCompetence: answers[3] || '',
-      transparency: answers[4] || '',
-      emergencyProtocol: answers[5] || '',
-      expertConsultation: answers[6] || '',
-      voterFeedback: answers[7] || '',
-      primaryRule: answers[8] || ''
     };
 
     // console.info('Submitting aspirant payload:', payload);

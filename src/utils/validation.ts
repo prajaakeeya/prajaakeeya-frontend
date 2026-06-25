@@ -46,8 +46,26 @@ export const getMinAgeForElectionType = (electionType: string): number =>
 export const createAspirantSchema = (getElectionType: () => string) => yup.object({
   name: yup.string().required('validation.required'),
   manifesto: yup.string().required('validation.required'),
-  electionId: yup.number().typeError('validation.required').required('validation.required'),
-  constituencyId: yup.number().typeError('validation.required').required('validation.required'),
+  // Optional — an aspirant can register before an election is announced and
+  // declare their constituency later. If one of the pair is set, the other
+  // must be too (you can't have a constituency without an election or vice versa).
+  // The form's default value is '' (not undefined). yup.number()'s *built-in*
+  // coercion runs before any .transform() we add, and it casts '' to NaN —
+  // so by the time our transform sees the value, it's already NaN, not ''.
+  // Catch NaN (not '') and map it to undefined so an empty field is treated
+  // as "not provided" rather than an invalid number.
+  electionId: yup.number()
+    .transform((value) => (typeof value === 'number' && Number.isNaN(value) ? undefined : value))
+    .typeError('validation.required').optional()
+    .test('election-with-constituency', 'validation.required', function (value) {
+      return !this.parent.constituencyId || value !== undefined;
+    }),
+  constituencyId: yup.number()
+    .transform((value) => (typeof value === 'number' && Number.isNaN(value) ? undefined : value))
+    .typeError('validation.required').optional()
+    .test('constituency-with-election', 'validation.required', function (value) {
+      return !this.parent.electionId || value !== undefined;
+    }),
   phone: yup.string().optional().test(
     'phone-optional',
     'validation.phone',

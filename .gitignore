@@ -32,6 +32,9 @@ coverage
 .DS_Store
 Thumbs.db
 
+# AI tooling / editor assistants
+.claude/
+
 # Cache / tooling
 .cache
 .eslintcache

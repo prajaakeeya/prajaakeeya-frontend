@@ -4,7 +4,7 @@ import {
     Box, Typography, CircularProgress, Avatar, Card, CardContent,
     Stack, Chip, Divider, Button, Grid, useTheme, useMediaQuery,
     Tooltip, LinearProgress, Dialog, IconButton as MuiIconButton,
-    Alert
+    Alert, TextField
 } from '@mui/material';
 import {
     ArrowBack as ArrowBackIcon,
@@ -26,11 +26,31 @@ import {
     Share as ShareIcon,
     Visibility as VisibilityIcon,
     InfoOutlined as InfoOutlinedIcon,
+    Lightbulb as LightbulbIcon,
+    ThumbUp as ThumbUpIcon,
+    ThumbUpOffAlt as ThumbUpOffAltIcon,
+    Add as AddIcon,
+    DeleteOutline as DeleteOutlineIcon,
+    HowToReg as HowToRegIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { getAspirantById } from '../services/aspirantService';
+import {
+    getAspirantById,
+    listProposals,
+    createProposal,
+    supportProposal,
+    unsupportProposal,
+    listCandidacies,
+    removeCandidacy,
+    declareCandidacy,
+    type AspirantProposal,
+    type AspirantCandidacy,
+} from '../services/aspirantService';
+import { fetchElections, type Election } from '../services/electionService';
 import { BRAND } from '../theme';
 import SopAgreementCard from '../components/aspirant/SopAgreementCard';
+import ConstituencyPickerDialog from '../components/ConstituencyPickerDialog';
+import useAuthStore from '../store/useAuthStore';
 import { safeUrl } from '../utils/safeUrl';
 
 const FF = "'Baloo 2', sans-serif";
@@ -127,6 +147,22 @@ const AspirantViewDetailsPage: React.FC = () => {
     const [photoOpen, setPhotoOpen] = useState(false);
     const [pdfViewUrl, setPdfViewUrl] = useState<string | null>(null);
 
+    const { user, fetchProfile } = useAuthStore();
+    const [proposals, setProposals] = useState<AspirantProposal[]>([]);
+    const [proposalsLoading, setProposalsLoading] = useState(true);
+    const [supportBusyId, setSupportBusyId] = useState<number | null>(null);
+    const [newProposalOpen, setNewProposalOpen] = useState(false);
+    const [newProposalTitle, setNewProposalTitle] = useState('');
+    const [newProposalDetails, setNewProposalDetails] = useState('');
+    const [creatingProposal, setCreatingProposal] = useState(false);
+    const [proposalError, setProposalError] = useState('');
+
+    const [candidacies, setCandidacies] = useState<AspirantCandidacy[]>([]);
+    const [candidaciesLoading, setCandidaciesLoading] = useState(true);
+    const [removingCandidacyId, setRemovingCandidacyId] = useState<number | null>(null);
+    const [candidacyPickerOpen, setCandidacyPickerOpen] = useState(false);
+    const [candidacySyncing, setCandidacySyncing] = useState(false);
+
     const border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)';
     const cardBg = isDark
         ? 'linear-gradient(160deg, rgba(20,24,34,0.97) 0%, rgba(13,17,28,0.98) 100%)'
@@ -140,6 +176,132 @@ const AspirantViewDetailsPage: React.FC = () => {
             .catch((err: any) => setError(err?.response?.data?.message || err?.message || 'Failed to load'))
             .finally(() => setLoading(false));
     }, [id]);
+
+    const refreshProposals = () => {
+        if (!id || id === '0') return;
+        setProposalsLoading(true);
+        listProposals(Number(id))
+            .then((resp) => setProposals(resp?.data || []))
+            .catch(() => setProposals([]))
+            .finally(() => setProposalsLoading(false));
+    };
+
+    useEffect(() => {
+        // The demo aspirant (id=0) isn't a real DB row — its example proposals
+        // come embedded on the aspirant object itself, not the live API.
+        if (id === '0') {
+            if (aspirant?.proposals) {
+                setProposals(aspirant.proposals);
+                setProposalsLoading(false);
+            }
+            return;
+        }
+        refreshProposals();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, aspirant]);
+
+    const isOwner = Boolean(user?.id && aspirant?.userId && user.id === aspirant.userId);
+
+    const handleToggleSupport = async (proposal: AspirantProposal) => {
+        setSupportBusyId(proposal.id);
+        try {
+            if (proposal.isSupportedByMe) {
+                await unsupportProposal(proposal.id);
+            } else {
+                await supportProposal(proposal.id);
+            }
+            refreshProposals();
+        } catch (e) {
+            // best-effort — leave the list as-is on failure
+        } finally {
+            setSupportBusyId(null);
+        }
+    };
+
+    const handleCreateProposal = async () => {
+        if (!id || !newProposalTitle.trim() || !newProposalDetails.trim()) {
+            setProposalError('Title and details are required.');
+            return;
+        }
+        setCreatingProposal(true);
+        setProposalError('');
+        try {
+            await createProposal(Number(id), newProposalTitle.trim(), newProposalDetails.trim());
+            setNewProposalTitle('');
+            setNewProposalDetails('');
+            setNewProposalOpen(false);
+            refreshProposals();
+        } catch (e: any) {
+            setProposalError(e?.response?.data?.message || 'Failed to create proposal');
+        } finally {
+            setCreatingProposal(false);
+        }
+    };
+
+    const refreshCandidacies = () => {
+        if (!id || id === '0') return;
+        setCandidaciesLoading(true);
+        listCandidacies(Number(id))
+            .then((resp) => setCandidacies(resp?.data || []))
+            .catch(() => setCandidacies([]))
+            .finally(() => setCandidaciesLoading(false));
+    };
+
+    useEffect(() => {
+        refreshCandidacies();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
+
+    const handleRemoveCandidacy = async (candidacyId: number) => {
+        setRemovingCandidacyId(candidacyId);
+        try {
+            await removeCandidacy(candidacyId);
+            refreshCandidacies();
+            // The aspirant's "primary" electionId/constituencyId may have
+            // changed (fell back to another candidacy, or reverted to idle).
+            if (id) getAspirantById(Number(id)).then((resp) => setAspirant(resp?.data)).catch(() => {});
+        } catch {
+            // best-effort — leave the list as-is on failure
+        } finally {
+            setRemovingCandidacyId(null);
+        }
+    };
+
+    // After the picker dialog saves the user's profile constituencies, declare
+    // a candidacy for every election type that now has a resolved constituency
+    // — each election type maps to its own row, so this is additive: picking
+    // a new type doesn't remove any previously-declared candidacy.
+    const handleCandidacySaved = async () => {
+        if (!id) return;
+        setCandidacySyncing(true);
+        try {
+            await fetchProfile();
+            const [electionsResp, freshUser] = await Promise.all([
+                fetchElections(),
+                Promise.resolve(useAuthStore.getState().user),
+            ]);
+            const elections: Election[] = Array.isArray(electionsResp.data) ? electionsResp.data : [];
+            const byType = (type: string) => elections.find((e) => e.type === type)?.id;
+
+            const pairs: Array<{ electionId?: number; constituencyId?: number }> = [
+                { electionId: byType('lok_sabha'), constituencyId: (freshUser as any)?.lokSabhaConstituency?.id },
+                { electionId: byType('state_assembly'), constituencyId: (freshUser as any)?.stateAssemblyConstituency?.id },
+                { electionId: byType('municipal_corporation'), constituencyId: (freshUser as any)?.municipalCorporationConstituency?.id },
+                { electionId: byType('gram_panchayat'), constituencyId: (freshUser as any)?.gramPanchayatConstituency?.id },
+            ];
+            for (const p of pairs) {
+                if (p.electionId != null && p.constituencyId != null) {
+                    await declareCandidacy(Number(id), p.electionId, p.constituencyId);
+                }
+            }
+            refreshCandidacies();
+            getAspirantById(Number(id)).then((resp) => setAspirant(resp?.data)).catch(() => {});
+        } catch {
+            // best-effort
+        } finally {
+            setCandidacySyncing(false);
+        }
+    };
 
     if (loading) return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
@@ -351,6 +513,144 @@ const AspirantViewDetailsPage: React.FC = () => {
                                 {aspirant.manifesto}
                             </Typography>
                         </Box>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* ── PROJECT PROPOSALS ─────────────────────────── */}
+            <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
+                    <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.8 }}>
+                            <SectionHeader icon={<LightbulbIcon fontSize="small" />} title="Project Proposals" />
+                            {isOwner && !aspirant.isDemo && (
+                                <Button
+                                    size="small"
+                                    startIcon={<AddIcon fontSize="small" />}
+                                    onClick={() => setNewProposalOpen(true)}
+                                    sx={{ color: BRAND.saffron, fontFamily: FF, fontWeight: 700, textTransform: 'none' }}
+                                >
+                                    New
+                                </Button>
+                            )}
+                        </Stack>
+
+                        {proposalsLoading ? (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                                <CircularProgress size={24} />
+                            </Box>
+                        ) : proposals.length === 0 ? (
+                            <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary', textAlign: 'center', py: 1 }}>
+                                {isOwner
+                                    ? 'No proposals yet — add a project or policy idea for citizens to back.'
+                                    : 'This aspirant hasn\'t posted any project proposals yet.'}
+                            </Typography>
+                        ) : (
+                            <Stack spacing={1.5}>
+                                {proposals.map((p) => (
+                                    <Box
+                                        key={p.id}
+                                        sx={{
+                                            p: 2, borderRadius: 2,
+                                            bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.03)',
+                                            border: `1px solid ${border}`,
+                                            borderLeft: `4px solid ${isDark ? BRAND.yellow : BRAND.saffron}`,
+                                        }}
+                                    >
+                                        <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.95rem', color: 'text.primary', mb: 0.5 }}>
+                                            {p.title}
+                                        </Typography>
+                                        <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', lineHeight: 1.65, color: 'text.primary', whiteSpace: 'pre-line', mb: 1.2 }}>
+                                            {p.details}
+                                        </Typography>
+                                        <Stack direction="row" alignItems="center" spacing={1.5}>
+                                            {!isOwner && user && !aspirant.isDemo && (
+                                                <Button
+                                                    size="small"
+                                                    variant={p.isSupportedByMe ? 'contained' : 'outlined'}
+                                                    startIcon={
+                                                        supportBusyId === p.id
+                                                            ? <CircularProgress size={14} color="inherit" />
+                                                            : p.isSupportedByMe ? <ThumbUpIcon fontSize="small" /> : <ThumbUpOffAltIcon fontSize="small" />
+                                                    }
+                                                    disabled={supportBusyId === p.id}
+                                                    onClick={() => handleToggleSupport(p)}
+                                                    sx={{
+                                                        fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                                                        ...(p.isSupportedByMe
+                                                            ? { bgcolor: BRAND.saffron, '&:hover': { bgcolor: BRAND.saffron } }
+                                                            : { color: BRAND.saffron, borderColor: BRAND.saffron }),
+                                                    }}
+                                                >
+                                                    {p.isSupportedByMe ? 'Supporting' : 'Support'}
+                                                </Button>
+                                            )}
+                                            <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: 'text.secondary' }}>
+                                                {p.supportCount} {p.supportCount === 1 ? 'supporter' : 'supporters'}
+                                            </Typography>
+                                        </Stack>
+                                    </Box>
+                                ))}
+                            </Stack>
+                        )}
+                    </CardContent>
+                </Card>
+
+            {/* ── MY CANDIDACIES (owner only) ─────────────────────────── */}
+            {isOwner && !aspirant.isDemo && (
+                <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
+                    <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.8 }}>
+                            <SectionHeader icon={<HowToRegIcon fontSize="small" />} title="My Candidacies" />
+                            <Button
+                                size="small"
+                                startIcon={candidacySyncing ? <CircularProgress size={14} /> : <AddIcon fontSize="small" />}
+                                onClick={() => setCandidacyPickerOpen(true)}
+                                disabled={candidacySyncing}
+                                sx={{ color: BRAND.saffron, fontFamily: FF, fontWeight: 700, textTransform: 'none' }}
+                            >
+                                Add Candidacy
+                            </Button>
+                        </Stack>
+
+                        {candidaciesLoading ? (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                                <CircularProgress size={24} />
+                            </Box>
+                        ) : candidacies.length === 0 ? (
+                            <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary', textAlign: 'center', py: 1 }}>
+                                You haven't declared any candidacies yet — you're registered as idle. Add one once an election is announced, and run in multiple races at once if you like.
+                            </Typography>
+                        ) : (
+                            <Stack spacing={1.5}>
+                                {candidacies.map((c) => (
+                                    <Box
+                                        key={c.id}
+                                        sx={{
+                                            p: 1.5, borderRadius: 2,
+                                            bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.03)',
+                                            border: `1px solid ${border}`,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1,
+                                        }}
+                                    >
+                                        <Box sx={{ minWidth: 0 }}>
+                                            <Typography sx={{ fontFamily: FF, fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.10em', color: isDark ? BRAND.yellow : BRAND.saffron, textTransform: 'uppercase' }}>
+                                                {c.electionName || 'Election'}
+                                            </Typography>
+                                            <Typography sx={{ fontFamily: FF, fontSize: '0.92rem', fontWeight: 700, color: 'text.primary' }}>
+                                                {c.constituencyName || `Constituency #${c.constituencyId}`}
+                                            </Typography>
+                                        </Box>
+                                        <MuiIconButton
+                                            size="small"
+                                            disabled={removingCandidacyId === c.id}
+                                            onClick={() => handleRemoveCandidacy(c.id)}
+                                        >
+                                            {removingCandidacyId === c.id ? <CircularProgress size={18} /> : <DeleteOutlineIcon fontSize="small" />}
+                                        </MuiIconButton>
+                                    </Box>
+                                ))}
+                            </Stack>
+                        )}
                     </CardContent>
                 </Card>
             )}
@@ -697,6 +997,63 @@ const AspirantViewDetailsPage: React.FC = () => {
                         style={{ width: '100%', height: '100%', border: 'none' }}
                     />
                 )}
+            </Dialog>
+
+            {/* Add Candidacy Dialog — reuses the profile constituency picker; saving
+                it declares a candidacy for every election type that resolves. */}
+            <ConstituencyPickerDialog
+                open={candidacyPickerOpen}
+                onClose={() => setCandidacyPickerOpen(false)}
+                onSaved={handleCandidacySaved}
+            />
+
+            {/* Create Proposal Dialog */}
+            <Dialog
+                open={newProposalOpen}
+                onClose={() => { setNewProposalOpen(false); setProposalError(''); }}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{ sx: { borderRadius: 3 } }}
+            >
+                <Box sx={{ p: 3 }}>
+                    <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '1.1rem', mb: 2 }}>
+                        New Project Proposal
+                    </Typography>
+                    {proposalError && <Alert severity="error" sx={{ mb: 2 }}>{proposalError}</Alert>}
+                    <Stack spacing={2}>
+                        <TextField
+                            fullWidth
+                            label="Title"
+                            value={newProposalTitle}
+                            onChange={(e) => setNewProposalTitle(e.target.value)}
+                            disabled={creatingProposal}
+                        />
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={8}
+                            label="Details (Markdown supported)"
+                            placeholder="What you'll do, citing publicly available data/documents, and how it's achievable with no or minimal government funding."
+                            value={newProposalDetails}
+                            onChange={(e) => setNewProposalDetails(e.target.value)}
+                            disabled={creatingProposal}
+                        />
+                    </Stack>
+                    <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ mt: 3 }}>
+                        <Button onClick={() => { setNewProposalOpen(false); setProposalError(''); }} disabled={creatingProposal}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleCreateProposal}
+                            disabled={creatingProposal}
+                            startIcon={creatingProposal ? <CircularProgress size={16} color="inherit" /> : undefined}
+                            sx={{ bgcolor: BRAND.saffron, '&:hover': { bgcolor: BRAND.saffron } }}
+                        >
+                            Create
+                        </Button>
+                    </Stack>
+                </Box>
             </Dialog>
 
         </Box>

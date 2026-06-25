@@ -64,6 +64,13 @@ vi.mock('../services/aspirantService', () => ({
       },
     }),
   ),
+  listProposals: vi.fn(() => Promise.resolve({ data: [] })),
+  createProposal: vi.fn(() => Promise.resolve({ data: {} })),
+  supportProposal: vi.fn(() => Promise.resolve({ data: {} })),
+  unsupportProposal: vi.fn(() => Promise.resolve({ data: {} })),
+  listCandidacies: vi.fn(() => Promise.resolve({ data: [] })),
+  removeCandidacy: vi.fn(() => Promise.resolve({ data: {} })),
+  declareCandidacy: vi.fn(() => Promise.resolve({ data: {} })),
 }));
 
 describe('AspirantViewDetailsPage', () => {
