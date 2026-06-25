@@ -30,12 +30,12 @@ Requires **Node.js 20.x**.
 ```bash
 git clone git@github.com:prajaakeeya/prajaakeeya-frontend.git
 cd prajaakeeya-frontend
-npm install
+pnpm install
 cp .env.example .env     # then fill in values
-npm run dev
+pnpm run dev
 ```
 
-> The repo commits a **`yarn.lock`** because the Amplify deploy uses yarn. If you change dependencies, update **both** lockfiles (`npm install` for `package-lock.json`, `yarn install` for `yarn.lock`) so local and CI stay in sync.
+> This project uses **pnpm** as the sole package manager. The lockfile is `pnpm-lock.yaml`. If you change dependencies, run `pnpm install` to update it. Before committing, ensure `pnpm run build` passes.
 
 ---
 
@@ -83,7 +83,7 @@ Keep the summary in the imperative mood (“add”, not “added”) and under ~
 ## Code style
 
 - **TypeScript, strict mode.** Avoid `any` where a real type is reasonable; prefer explicit prop interfaces.
-- **Linting:** run `npm run lint`. Fix errors before pushing (warnings are tolerated but don't add new ones gratuitously).
+- **Linting:** run `pnpm run lint`. Fix errors before pushing (warnings are tolerated but don't add new ones gratuitously).
 - **Components:** functional components + hooks. Co-locate component-specific helpers; put shared logic in `src/utils` or `src/hooks`.
 - **Styling:** use MUI’s `sx` prop / theme tokens (see [`src/theme/`](src/theme/)). Don’t hard-code brand colors — use the `BRAND` tokens.
 - **State:** local UI state with `useState`; cross-cutting state via the Zustand stores in [`src/store/`](src/store/).
@@ -136,9 +136,9 @@ it('renders and reacts to a click', async () => {
 Run them:
 
 ```bash
-npm test              # watch while developing
-npm run test:run      # one-shot (what CI runs)
-npm run test:coverage # with coverage
+pnpm test              # watch while developing
+pnpm run test:run      # one-shot (what CI runs)
+pnpm run test:coverage # with coverage
 ```
 
 ---
@@ -148,9 +148,9 @@ npm run test:coverage # with coverage
 Make sure all of these pass locally:
 
 ```bash
-npm run lint        # no errors
-npm run test:run    # all tests green
-npm run build       # tsc -b && vite build succeeds
+pnpm run lint        # no errors
+pnpm run test:run    # all tests green
+pnpm run build       # tsc -b && vite build succeeds
 ```
 
 The build type-checks test files too, so a broken test type will fail the build — keep them clean.

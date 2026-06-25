@@ -34,9 +34,9 @@ function scrubUrl(value: string): string {
 export function initSentry(): void {
   const dsn = import.meta.env.VITE_SENTRY_DSN;
   // Only run in built/deployed apps with a DSN configured. import.meta.env.PROD
-  // is false under the Vite dev server, so `npm run dev` never sends events —
+  // is false under the Vite dev server, so `pnpm run dev` never sends events —
   // keeping the dashboard free of developer-machine noise. To test locally,
-  // build and serve the production bundle: `npm run build && npm run preview`.
+  // build and serve the production bundle: `pnpm run build && pnpm run preview`.
   if (!dsn || !import.meta.env.PROD) return;
 
   Sentry.init({
