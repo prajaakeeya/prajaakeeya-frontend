@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+﻿import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   Box,
@@ -25,7 +25,9 @@ const GOLDD = 'rgba(245,168,0,0.45)';
 const DARK = BRAND.black;                     // '#0A0808'
 const DARK2 = 'rgba(255,255,255,0.03)';
 const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 
 
@@ -72,7 +74,6 @@ const DeclarationStep = ({
 
   return (
     <Box sx={{ position: 'relative' }}>
-
       {/* ── Main card ──────────────────────────────────────────────────── */}
       <Box sx={{
         bgcolor: DARK, borderRadius: 2, overflow: 'hidden',
@@ -108,12 +109,12 @@ const DeclarationStep = ({
             </Box>
             <Box>
               <Typography sx={{
-                fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.1rem', sm: '1.35rem' },
+                fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.1rem', sm: '1.35rem' },
                 color: textPrimary, lineHeight: 1.2,
               }}>
                 {t('forms.aspirant.declaration.title')}
               </Typography>
-              <Typography sx={{ fontFamily: FF, fontSize: '0.82rem', color: textSecondary, mt: '2px' }}>
+              <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.82rem', color: textSecondary, mt: '2px' }}>
                 {t('forms.aspirant.declaration.subtitle')}
               </Typography>
             </Box>
@@ -134,7 +135,7 @@ const DeclarationStep = ({
               border: `1.5px solid ${cardSubtleBorder}`,
             }}>
               <Typography sx={{
-                fontFamily: FF, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
+                fontFamily: FF_BODY, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
                 lineHeight: 1.7,
                 color: isDark ? 'rgba(255,255,255,0.75)' : 'rgba(15,23,42,0.82)',
               }}>
@@ -142,7 +143,7 @@ const DeclarationStep = ({
               </Typography>
 
               <Typography sx={{
-                fontFamily: FF, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
+                fontFamily: FF_BODY, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
                 lineHeight: 1.7,
                 mt: 1.5,
                 color: isDark ? 'rgba(255,255,255,0.75)' : 'rgba(15,23,42,0.82)',
@@ -150,7 +151,7 @@ const DeclarationStep = ({
                 {t('forms.aspirant.declaration.checkbox.agreed1')}
               </Typography>
                <Typography sx={{
-                fontFamily: FF, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
+                fontFamily: FF_BODY, fontSize: { xs: '0.8rem', sm: '0.88rem' }, fontWeight: 500,
                 lineHeight: 1.7,
                 mt: 1.5,
                 color: isDark ? 'rgba(255,255,255,0.75)' : 'rgba(15,23,42,0.82)',
@@ -182,7 +183,7 @@ const DeclarationStep = ({
                 }
                 label={
                   <Typography sx={{
-                    fontFamily: FF, fontWeight: 700, fontSize: '0.92rem',
+                    fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.92rem',
                     color: declarationChecks.agreed
                       ? '#4caf50'
                       : (isDark ? 'rgba(255,255,255,0.7)' : 'rgba(15,23,42,0.78)'),
@@ -201,12 +202,16 @@ const DeclarationStep = ({
 
         {/* ── Signature / Place / Date ── */}
         <Box sx={{ px: { xs: 2, sm: 4 }, pb: 3 }}>
-          {/* <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.82rem', color: textSecondary, letterSpacing: '2px', textTransform: 'uppercase', mb: 2 }}>
+          {/* <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.82rem', color: textSecondary, letterSpacing: '2px', textTransform: 'uppercase', mb: 2 }}>
             Name
           </Typography> */}
 
           <Grid container spacing={2}>
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 5
+              }}>
               <TextField
                 fullWidth
                 label={t('forms.aspirant.declaration.signature.label')}
@@ -214,9 +219,11 @@ const DeclarationStep = ({
                 value={digitalSignature}
                 onChange={e => setDigitalSignature(e.target.value)}
                 helperText={t('forms.aspirant.declaration.signature.placeholder')}
-                InputLabelProps={{ sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF } }}
-                inputProps={{ style: { fontFamily: FF, color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontStyle: digitalSignature ? 'italic' : 'normal' } }}
-                FormHelperTextProps={{ sx: { color: GOLDD, fontFamily: FF, fontSize: '0.72rem' } }}
+                slotProps={{
+                  inputLabel: { sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF_BODY } },
+                  htmlInput: { style: { fontFamily: FF_BODY, color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontStyle: digitalSignature ? 'italic' : 'normal' } },
+                  formHelperText: { sx: { color: GOLDD, fontFamily: FF_BODY, fontSize: '0.72rem' } }
+                }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     background: fieldBg,
@@ -224,10 +231,13 @@ const DeclarationStep = ({
                     '&:hover fieldset': { borderColor: GOLDD },
                     '&.Mui-focused fieldset': { borderColor: GOLD, borderWidth: '1.5px' },
                   },
-                }}
-              />
+                }} />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4
+              }}>
               <Box
                 sx={{
                   height: 56,
@@ -249,8 +259,10 @@ const DeclarationStep = ({
                   icon={<CheckBoxOutlineBlankIcon sx={{ color: GOLD, fontSize: 24 }} />}
                   checkedIcon={<CheckBoxIcon sx={{ color: '#2fbf71', fontSize: 24 }} />}
                   sx={{ p: 0 }}
-                  inputProps={{
-                    'aria-label': t('forms.aspirant.declaration.sopAgreeLabel') || 'I have read and agree to the SOP',
+                  slotProps={{
+                    input: {
+                      'aria-label': t('forms.aspirant.declaration.sopAgreeLabel') || 'I have read and agree to the SOP',
+                    }
                   }}
                 />
                 <Box
@@ -266,7 +278,7 @@ const DeclarationStep = ({
                   }}
                 >
                   <Typography sx={{
-                    fontFamily: FF, fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.15,
+                    fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.15,
                     color: sopAgreed ? '#2fbf71' : (isDark ? '#fff' : 'rgba(15,23,42,0.92)'),
                   }}>
                     {sopAgreed
@@ -274,7 +286,7 @@ const DeclarationStep = ({
                       : (t('forms.aspirant.declaration.sopAgree') || 'Agree to SOP')}
                   </Typography>
                   <Typography sx={{
-                    fontFamily: FF, fontSize: '0.7rem', mt: '2px',
+                    fontFamily: FF_BODY, fontSize: '0.7rem', mt: '2px',
                     color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.6)',
                   }}>
                     {sopAgreed
@@ -313,14 +325,20 @@ const DeclarationStep = ({
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 3
+              }}>
               <TextField
                 fullWidth
                 label={t('forms.aspirant.declaration.signature.date')}
                 value={new Date().toLocaleDateString()}
                 disabled
-                InputLabelProps={{ sx: { color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.68)', fontFamily: FF } }}
-                inputProps={{ style: { fontFamily: FF, color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)' } }}
+                slotProps={{
+                  inputLabel: { sx: { color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.68)', fontFamily: FF_BODY } },
+                  htmlInput: { style: { fontFamily: FF_BODY, color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)' } }
+                }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)',
@@ -333,8 +351,7 @@ const DeclarationStep = ({
                     color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)',
                     WebkitTextFillColor: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)',
                   },
-                }}
-              />
+                }} />
             </Grid>
           </Grid>
         </Box>
@@ -349,7 +366,7 @@ const DeclarationStep = ({
 
           {/* Completion hint */}
           <Typography sx={{
-            fontFamily: FF, fontSize: '0.78rem', color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(15,23,42,0.6)',
+            fontFamily: FF_BODY, fontSize: '0.78rem', color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(15,23,42,0.6)',
             display: { xs: 'none', sm: 'block' },
           }}>
             {canProceed
@@ -369,7 +386,7 @@ const DeclarationStep = ({
                   onClick={onCancel}
                   sx={{
                     height: 44,
-                    fontFamily: FF, fontWeight: 600, textTransform: 'none', borderRadius: '8px',
+                    fontFamily: FF_BODY, fontWeight: 600, textTransform: 'none', borderRadius: '8px',
                     borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                     color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
                     '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -389,7 +406,7 @@ const DeclarationStep = ({
                 onClick={onBack}
                 sx={{
                   height: 44,
-                  fontFamily: FF, fontWeight: 600, textTransform: 'none', borderRadius: '8px',
+                  fontFamily: FF_BODY, fontWeight: 600, textTransform: 'none', borderRadius: '8px',
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.74)',
                   '&:hover': {
@@ -417,7 +434,7 @@ const DeclarationStep = ({
                   onClick={onSubmit}
                   sx={{
                     height: 44,
-                    fontFamily: FF, fontWeight: 800, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 800, textTransform: 'none',
                     borderRadius: '8px',
                     background: canProceed ? 'linear-gradient(135deg,#C8180A,#F5A800)' : undefined,
                     boxShadow: canProceed ? '0 4px 22px rgba(200,24,10,0.4)' : 'none',

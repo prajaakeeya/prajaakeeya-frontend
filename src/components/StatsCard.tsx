@@ -28,9 +28,23 @@ const StatsCard = ({ label, value, icon, color = 'primary' }: StatsCardProps) =>
       }}
     >
       <CardContent>
-        <Stack direction="row" spacing={2} alignItems="flex-start" justifyContent="space-between">
-          <Box flex={1}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: "flex-start",
+            justifyContent: "space-between"
+          }}>
+          <Box sx={{
+            flex: 1
+          }}>
+            <Typography
+              variant="subtitle2"
+              gutterBottom
+              sx={{
+                color: "text.secondary",
+                fontWeight: 500
+              }}>
               {label}
             </Typography>
             <Typography

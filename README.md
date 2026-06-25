@@ -29,9 +29,9 @@
 
 | Area | Technology |
 |------|-----------|
-| Framework | [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
+| Framework | [React 19](https://react.dev/) + [TypeScript 6](https://www.typescriptlang.org/) |
 | Build tool | [Vite 5](https://vitejs.dev/) |
-| UI | [MUI 5](https://mui.com/) + [Emotion](https://emotion.sh/) |
+| UI | [MUI 9](https://mui.com/) + [Emotion](https://emotion.sh/) |
 | Routing | [React Router 6](https://reactrouter.com/) |
 | State | [Zustand](https://github.com/pmndrs/zustand) (with `persist`) |
 | Forms & validation | [React Hook Form](https://react-hook-form.com/) + [Yup](https://github.com/jquense/yup) |
@@ -57,7 +57,7 @@
 
 ## Prerequisites
 
-- **Node.js 20.x** (the CI/build pipeline uses Node 20)
+- **Node.js 24.17.0** (the runtime uses Node 24 LTS)
 - **npm** (local development) — the project also commits a **`yarn.lock`** because the Amplify deploy pipeline uses **yarn**. Use whichever you prefer locally, but keep lockfiles in sync.
 
 ---

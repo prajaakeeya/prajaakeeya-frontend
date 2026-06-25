@@ -178,7 +178,9 @@ const AdminMunicipalityPage: React.FC = () => {
                     {items.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                          <Typography color="text.secondary">No municipalities found</Typography>
+                          <Typography sx={{
+                            color: "text.secondary"
+                          }}>No municipalities found</Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -209,7 +211,6 @@ const AdminMunicipalityPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
       {/* Create / Edit Dialog */}
       <Dialog open={formOpen} onClose={closeForm} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? 'Edit Municipality' : 'Add Municipality'}</DialogTitle>
@@ -247,7 +248,6 @@ const AdminMunicipalityPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
         <DialogTitle>Delete Municipality</DialogTitle>

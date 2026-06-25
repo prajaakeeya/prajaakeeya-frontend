@@ -6,9 +6,19 @@ const ErrorPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" minHeight="100vh" flexDirection="column" gap={2}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        flexDirection: "column",
+        gap: 2
+      }}>
       <Typography variant="h3">404</Typography>
-      <Typography color="text.secondary">{t('pages.error.title')}</Typography>
+      <Typography sx={{
+        color: "text.secondary"
+      }}>{t('pages.error.title')}</Typography>
       <Button variant="contained" onClick={() => navigate('/')}>
         {t('pages.error.back')}
       </Button>

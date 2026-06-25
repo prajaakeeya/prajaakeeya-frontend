@@ -126,7 +126,13 @@ const AspirantPostsPage: React.FC = () => {
     if (loading) {
         return (
             <Container maxWidth="lg" sx={{ py: 4, px: 0 }}>
-                <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        minHeight: "400px"
+                    }}>
                     <CircularProgress />
                 </Box>
             </Container>
@@ -158,7 +164,6 @@ const AspirantPostsPage: React.FC = () => {
             <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
                 {t('userDashboard.aspirant.tabs.posts') || 'Posts'}
             </Typography>
-
             <AspirantPostsTab
                 posts={posts}
                 postsLoading={postsLoading}
@@ -166,7 +171,6 @@ const AspirantPostsPage: React.FC = () => {
                 setDirectMeetOpen={setDirectMeetOpen}
                 aspirantId={aspirantProfile?.id}
             />
-
             {/* Direct Meet Dialog */}
             <Dialog open={directMeetOpen} onClose={() => setDirectMeetOpen(false)} fullWidth maxWidth="sm">
                 <DialogTitle>{t('userDashboard.aspirant.createDirectPost') || 'Create Direct Meet Post'}</DialogTitle>
@@ -196,21 +200,22 @@ const AspirantPostsPage: React.FC = () => {
                                 if (val && val < todayDateMin) return;
                                 setDmDate(val);
                             }}
-                            inputProps={{ min: todayDateMin }}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                                htmlInput: { min: todayDateMin }
+                            }}
                             sx={{
                                 '& input': { color: isDark ? '#fff' : undefined },
                                 '& input[type="date"]::-webkit-calendar-picker-indicator': { filter: isDark ? 'invert(1) contrast(1.6)' : 'none' },
                                 '& input[type="date"]::-webkit-clear-button, & input[type="date"]::-webkit-inner-spin-button': { WebkitAppearance: 'none' }
-                            }}
-                        />
+                            }} />
                         <TextField
                             label={t('userDashboard.aspirant.dmTime') || 'Time'}
                             type="time"
                             fullWidth
                             value={dmTime}
                             onChange={(e) => setDmTime(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{ inputLabel: { shrink: true } }}
                             sx={{
                                 '& input': { color: isDark ? '#fff' : undefined },
                                 '& input[type="time"]::-webkit-calendar-picker-indicator': { filter: isDark ? 'invert(1) contrast(1.6)' : 'none' },
@@ -223,7 +228,7 @@ const AspirantPostsPage: React.FC = () => {
                             fullWidth
                             value={dmEndTime}
                             onChange={(e) => setDmEndTime(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{ inputLabel: { shrink: true } }}
                             sx={{
                                 '& input': { color: isDark ? '#fff' : undefined },
                                 '& input[type="time"]::-webkit-calendar-picker-indicator': { filter: isDark ? 'invert(1) contrast(1.6)' : 'none' },
@@ -241,7 +246,6 @@ const AspirantPostsPage: React.FC = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
             {/* Success Snackbar */}
             <Snackbar open={dmSavedOpen} autoHideDuration={3000} onClose={() => setDmSavedOpen(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
                 <Alert severity="success" onClose={() => setDmSavedOpen(false)}>

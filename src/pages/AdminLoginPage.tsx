@@ -7,11 +7,13 @@ import {
 } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import ContrastIcon from '@mui/icons-material/Contrast';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
 import { adminLoginWithPassword } from '../services/authService';
+import { COOKIE_AUTH } from '../config/authMode';
 import { isMockMode } from '../config/appMode';
 import * as yup from 'yup';
 import { emailSchema } from '../utils/validation';
@@ -66,7 +68,10 @@ const AdminLoginPage = () => {
         setAuth(dummyToken, dummyUser as any);
       } else {
         const { token, user } = await adminLoginWithPassword({ email: values.email, password: values.password });
-        setAuth(token, user);
+        // Cookie mode: the admin/login response sets the httpOnly session cookie;
+        // the returned `token` is only for native/mobile clients, so ignore it on
+        // web and keep client state token-free. Legacy mode pins the Bearer token.
+        setAuth(COOKIE_AUTH ? '' : token, user);
       }
 
       navigate('/admin/users', { replace: true });
@@ -111,7 +116,13 @@ const AdminLoginPage = () => {
       }}
     >
       {/* Theme toggle */}
-      <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+      <Tooltip title={
+        mode === 'dark'
+          ? 'Switch to light mode'
+          : mode === 'light'
+          ? 'Switch to grey mode'
+          : 'Switch to dark mode'
+      }>
         <IconButton
           onClick={toggleTheme}
           size="small"
@@ -122,7 +133,13 @@ const AdminLoginPage = () => {
             color: 'text.secondary',
           }}
         >
-          {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+          {mode === 'dark' ? (
+            <DarkModeIcon fontSize="small" />
+          ) : mode === 'light' ? (
+            <LightModeIcon fontSize="small" />
+          ) : (
+            <ContrastIcon fontSize="small" />
+          )}
         </IconButton>
       </Tooltip>
 

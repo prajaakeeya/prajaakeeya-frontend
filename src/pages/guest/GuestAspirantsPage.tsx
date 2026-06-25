@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Avatar, CircularProgress, Stack, useTheme,
   TextField, Chip, Autocomplete, MenuItem,
@@ -22,8 +22,11 @@ import {
   type GPVillage,
 } from '../../services/electionService';
 import { fetchAspirantsByConstituency } from '../../services/aspirantService';
+import { useNavigate } from 'react-router-dom';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const filterSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
@@ -51,6 +54,9 @@ const GuestAspirantsPage = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const isKannada = (i18n.language || '').startsWith('kn');
+  const navigate = useNavigate();
+
+
 
   // ── Elections ────────────────────────────────────────────────
   const [elections, setElections] = useState<Election[]>([]);
@@ -261,15 +267,16 @@ const GuestAspirantsPage = () => {
   const filtersComplete = !!selectedElectionId && (hasGpSelection || hasConstituencySelection);
 
   return (
-    <Stack spacing={3} sx={{ fontFamily: FF }}>
+    <Stack spacing={3} sx={{ fontFamily: FF_BODY }}>
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: 'text.primary' }}>
+        <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: 'text.primary' }}>
           {t('userDashboard.actions.candidates', { defaultValue: 'View Aspirants' })}
         </Typography>
       </motion.div>
-
       {/* Row 1: Election + first-level constituency/municipality/GP state+district */}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap" useFlexGap>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} useFlexGap sx={{
+        flexWrap: "wrap"
+      }}>
         {/* Election type */}
         <TextField
           select
@@ -277,14 +284,18 @@ const GuestAspirantsPage = () => {
           value={selectedElectionId}
           onChange={(e) => setSelectedElectionId(e.target.value ? Number(e.target.value) : '')}
           sx={{ minWidth: { xs: '100%', sm: 240 }, ...filterSx(isDark) }}
-          SelectProps={{
-            MenuProps: {
-              PaperProps: {
-                sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
-                  '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+          slotProps={{
+            select: {
+              MenuProps: {
+                slotProps: {
+                  paper: {
+                    sx: {
+                      bgcolor: isDark ? '#1a1515' : '#ffffff',
+                      '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
+                      '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
+                      '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                    },
+                  },
                 },
               },
             },
@@ -305,8 +316,10 @@ const GuestAspirantsPage = () => {
               disabled={!selectedElectionId}
               loading={loadingGpStates}
               sx={{ minWidth: { xs: '100%', sm: 220 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
               renderInput={(params) => <TextField {...params} label="State" sx={filterSx(isDark)} />}
+              slotProps={{
+                listbox: { sx: listboxSx(isDark) }
+              }}
             />
             <Autocomplete
               options={gpDistricts}
@@ -315,8 +328,10 @@ const GuestAspirantsPage = () => {
               disabled={!selectedGpState}
               loading={loadingGpDistricts}
               sx={{ minWidth: { xs: '100%', sm: 220 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
               renderInput={(params) => <TextField {...params} label="District" sx={filterSx(isDark)} />}
+              slotProps={{
+                listbox: { sx: listboxSx(isDark) }
+              }}
             />
           </>
         )}
@@ -332,10 +347,12 @@ const GuestAspirantsPage = () => {
               disabled={!selectedElectionId}
               loading={loadingMunicipalities}
               sx={{ minWidth: { xs: '100%', sm: 280 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
               renderInput={(params) => (
                 <TextField {...params} label={t('forms.aspirant.municipality', { defaultValue: 'Corporation / Municipality' })} sx={filterSx(isDark)} />
               )}
+              slotProps={{
+                listbox: { sx: listboxSx(isDark) }
+              }}
             />
             <Autocomplete
               options={cityConstituencies}
@@ -345,10 +362,12 @@ const GuestAspirantsPage = () => {
               disabled={!selectedMunicipality}
               loading={loadingCityConstituencies}
               sx={{ minWidth: { xs: '100%', sm: 280 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
               renderInput={(params) => (
                 <TextField {...params} label={t('forms.aspirant.cityCorporationWard', { defaultValue: 'City Corporation Ward' })} sx={filterSx(isDark)} />
               )}
+              slotProps={{
+                listbox: { sx: listboxSx(isDark) }
+              }}
             />
           </>
         )}
@@ -363,17 +382,20 @@ const GuestAspirantsPage = () => {
             disabled={!selectedElectionId}
             loading={loadingConstituencies}
             sx={{ minWidth: { xs: '100%', sm: 280 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
             renderInput={(params) => (
               <TextField {...params} label={t('forms.aspirant.constituency', { defaultValue: 'Constituency' })} sx={filterSx(isDark)} />
             )}
+            slotProps={{
+              listbox: { sx: listboxSx(isDark) }
+            }}
           />
         )}
       </Stack>
-
       {/* Row 2: GP Taluk + Gram + Village */}
       {isGramPanchayat && selectedGpDistrict && (
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap" useFlexGap>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} useFlexGap sx={{
+          flexWrap: "wrap"
+        }}>
           <Autocomplete
             options={gpTaluks}
             value={selectedGpTaluk}
@@ -381,8 +403,10 @@ const GuestAspirantsPage = () => {
             disabled={!selectedGpDistrict}
             loading={loadingGpTaluks}
             sx={{ minWidth: { xs: '100%', sm: 220 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
             renderInput={(params) => <TextField {...params} label="Taluk" sx={filterSx(isDark)} />}
+            slotProps={{
+              listbox: { sx: listboxSx(isDark) }
+            }}
           />
           <Autocomplete
             options={gpGrams}
@@ -391,8 +415,10 @@ const GuestAspirantsPage = () => {
             disabled={!selectedGpTaluk}
             loading={loadingGpGrams}
             sx={{ minWidth: { xs: '100%', sm: 220 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
             renderInput={(params) => <TextField {...params} label="Gram Panchayat" sx={filterSx(isDark)} />}
+            slotProps={{
+              listbox: { sx: listboxSx(isDark) }
+            }}
           />
           <Autocomplete
             options={gpVillages}
@@ -403,16 +429,17 @@ const GuestAspirantsPage = () => {
             loading={loadingGpVillages}
             isOptionEqualToValue={(a, b) => a.id === b.id}
             sx={{ minWidth: { xs: '100%', sm: 280 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
             renderInput={(params) => <TextField {...params} label="Village" sx={filterSx(isDark)} />}
+            slotProps={{
+              listbox: { sx: listboxSx(isDark) }
+            }}
           />
         </Stack>
       )}
-
       {/* Results */}
       {!filtersComplete ? (
         <Box sx={{ textAlign: 'center', py: 8 }}>
-          <Typography sx={{ color: 'text.secondary', fontFamily: FF, fontWeight: 600 }}>
+          <Typography sx={{ color: 'text.secondary', fontFamily: FF_BODY, fontWeight: 600 }}>
             {isKannada ? 'ಆಕಾಂಕ್ಷಿಗಳನ್ನು ನೋಡಲು ಮೇಲಿನ ಫಿಲ್ಟರ್ ಆಯ್ಕೆ ಮಾಡಿ' : 'Select the filters above to view aspirants'}
           </Typography>
         </Box>
@@ -464,7 +491,7 @@ const GuestAspirantsPage = () => {
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ minWidth: 0, pr: 1 }}>
-                          <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', lineHeight: 1.25, color: textPrimary, fontFamily: FF }}>
+                          <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', lineHeight: 1.25, color: textPrimary, fontFamily: FF_HEADING }}>
                             {isKannada ? (asp.nameKn || asp.name || 'Aspirant') : (asp.nameEn || asp.name || 'Aspirant')}
                           </Typography>
                           <Box sx={{ mt: 0.25 }}>
@@ -478,7 +505,7 @@ const GuestAspirantsPage = () => {
                                 <Typography variant="body2" sx={{ fontSize: '0.72rem', color: isDark ? 'rgba(255,255,255,0.78)' : 'rgba(17,24,39,0.62)', fontWeight: 600 }}>
                                   Votes:
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 900, color: votesValueColor, fontFamily: FF }}>
+                                <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 900, color: votesValueColor, fontFamily: FF_HEADING }}>
                                   {asp.voteCount ?? 0}
                                 </Typography>
                               </Box>

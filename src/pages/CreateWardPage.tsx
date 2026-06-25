@@ -160,11 +160,12 @@ const CreateWardPage = () => {
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {t('adminDashboard.nav.createWard')}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" sx={{
+          color: "text.secondary"
+        }}>
           {t('forms.ward.description') || 'Create a new ward with its details'}
         </Typography>
       </Box>
-
       <Card>
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -186,7 +187,9 @@ const CreateWardPage = () => {
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('forms.ward.title') || 'Ward Information'}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{
+                color: "text.secondary"
+              }}>
                 {t('forms.ward.subtitle') || 'Enter the ward details below'}
               </Typography>
             </Box>
@@ -194,7 +197,11 @@ const CreateWardPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   fullWidth
                   label={t('forms.ward.number')}
@@ -204,7 +211,11 @@ const CreateWardPage = () => {
                   placeholder="e.g., 101"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   fullWidth
                   label={t('forms.ward.name')}
@@ -214,7 +225,11 @@ const CreateWardPage = () => {
                   placeholder="e.g., Central Ward"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   select
                   fullWidth
@@ -232,7 +247,11 @@ const CreateWardPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   select
                   fullWidth
@@ -247,7 +266,7 @@ const CreateWardPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField
                   select
                   fullWidth
@@ -263,7 +282,11 @@ const CreateWardPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   select
                   fullWidth
@@ -281,7 +304,11 @@ const CreateWardPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <TextField
                   select
                   fullWidth
@@ -299,12 +326,14 @@ const CreateWardPage = () => {
                 </TextField>
               </Grid>
               {submitError && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Alert severity="error" onClose={() => setSubmitError('')}>{submitError}</Alert>
                 </Grid>
               )}
-              <Grid item xs={12}>
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Grid size={12}>
+                <Stack direction="row" spacing={2} sx={{
+                  justifyContent: "flex-end"
+                }}>
                   <Button
                     variant="outlined"
                     onClick={() => reset()}
@@ -321,7 +350,6 @@ const CreateWardPage = () => {
           </form>
         </CardContent>
       </Card>
-
       <Snackbar
         open={successOpen}
         autoHideDuration={3000}

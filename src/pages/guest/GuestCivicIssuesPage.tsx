@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, CircularProgress, Stack, useTheme,
   TextField, Chip, Autocomplete, MenuItem,
@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { BRAND } from '../../theme';
 import { getIssuesByElectionAndConstituency } from '../../services/civicIssuesService';
+import { useNavigate } from 'react-router-dom';
 import {
   fetchElections,
   fetchConstituencies,
@@ -41,7 +42,8 @@ import garbageImg from '../../assets/images/garbage.webp';
 import streetLightImg from '../../assets/images/street-light.webp';
 import savePlanetImg from '../../assets/images/save-the-planet.webp';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
 
 interface IssueCategory {
   name: string;
@@ -75,6 +77,9 @@ const GuestCivicIssuesPage = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const isKannada = (i18n.language || '').startsWith('kn');
+  const navigate = useNavigate();
+
+
 
   const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
   const BG = theme.palette.background.paper;
@@ -318,7 +323,7 @@ const GuestCivicIssuesPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 1, sm: 0 } }}>
+    <Box sx={{ maxWidth: '100%', mx: 'auto', px: { xs: 1, sm: 0 } }}>
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38 }}>
         <Box sx={{
@@ -340,33 +345,41 @@ const GuestCivicIssuesPage = () => {
             }}>
               <ReportProblemIcon sx={{ color: GOLD, fontSize: 26 }} />
             </Box>
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
+            <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
               {t('civicIssues.title', { defaultValue: 'Public Issues' })}
             </Typography>
           </Box>
         </Box>
       </motion.div>
-
       {/* Row 1: Election + first-level filters */}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        useFlexGap
+        sx={{
+          flexWrap: "wrap",
+          mb: 2
+        }}>
         <TextField
           select
           label={t('forms.aspirant.electionType', { defaultValue: 'Election Type' })}
           value={selectedElectionId}
           onChange={(e) => setSelectedElectionId(e.target.value ? Number(e.target.value) : '')}
           sx={{ minWidth: { xs: '100%', sm: 240 }, ...filterSx(isDark) }}
-          SelectProps={{
+          slotProps={{ select: {
             MenuProps: {
-              PaperProps: {
-                sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
-                  '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+              slotProps: {
+                paper: {
+                  sx: {
+                    bgcolor: isDark ? '#1a1515' : '#ffffff',
+                    '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
+                    '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
+                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                  },
                 },
               },
             },
-          }}
+          } }}
         >
           {elections.map((el) => (
             <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
@@ -383,7 +396,7 @@ const GuestCivicIssuesPage = () => {
               disabled={!selectedElectionId}
               loading={loadingGpStates}
               sx={{ minWidth: { xs: '100%', sm: 220 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
+              slotProps={{ listbox: { sx: listboxSx(isDark) } }}
               renderInput={(params) => <TextField {...params} label="State" sx={filterSx(isDark)} />}
             />
             <Autocomplete
@@ -393,7 +406,7 @@ const GuestCivicIssuesPage = () => {
               disabled={!selectedGpState}
               loading={loadingGpDistricts}
               sx={{ minWidth: { xs: '100%', sm: 220 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
+              slotProps={{ listbox: { sx: listboxSx(isDark) } }}
               renderInput={(params) => <TextField {...params} label="District" sx={filterSx(isDark)} />}
             />
           </>
@@ -410,7 +423,7 @@ const GuestCivicIssuesPage = () => {
               disabled={!selectedElectionId}
               loading={loadingMunicipalities}
               sx={{ minWidth: { xs: '100%', sm: 280 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
+              slotProps={{ listbox: { sx: listboxSx(isDark) } }}
               renderInput={(params) => (
                 <TextField {...params} label={t('forms.aspirant.municipality', { defaultValue: 'Corporation / Municipality' })} sx={filterSx(isDark)} />
               )}
@@ -423,7 +436,7 @@ const GuestCivicIssuesPage = () => {
               disabled={!selectedMunicipality}
               loading={loadingCityConstituencies}
               sx={{ minWidth: { xs: '100%', sm: 280 } }}
-              ListboxProps={{ sx: listboxSx(isDark) }}
+              slotProps={{ listbox: { sx: listboxSx(isDark) } }}
               renderInput={(params) => (
                 <TextField {...params} label={t('forms.aspirant.cityCorporationWard', { defaultValue: 'City Corporation Ward' })} sx={filterSx(isDark)} />
               )}
@@ -441,17 +454,23 @@ const GuestCivicIssuesPage = () => {
             disabled={!selectedElectionId}
             loading={loadingConstituencies}
             sx={{ minWidth: { xs: '100%', sm: 280 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
+            slotProps={{ listbox: { sx: listboxSx(isDark) } }}
             renderInput={(params) => (
               <TextField {...params} label={t('forms.aspirant.constituency', { defaultValue: 'Constituency' })} sx={filterSx(isDark)} />
             )}
           />
         )}
       </Stack>
-
       {/* Row 2: GP Taluk + Gram + Village */}
       {isGramPanchayat && selectedGpDistrict && (
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          useFlexGap
+          sx={{
+            flexWrap: "wrap",
+            mb: 2
+          }}>
           <Autocomplete
             options={gpTaluks}
             value={selectedGpTaluk}
@@ -459,7 +478,7 @@ const GuestCivicIssuesPage = () => {
             disabled={!selectedGpDistrict}
             loading={loadingGpTaluks}
             sx={{ minWidth: { xs: '100%', sm: 220 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
+            slotProps={{ listbox: { sx: listboxSx(isDark) } }}
             renderInput={(params) => <TextField {...params} label="Taluk" sx={filterSx(isDark)} />}
           />
           <Autocomplete
@@ -469,7 +488,7 @@ const GuestCivicIssuesPage = () => {
             disabled={!selectedGpTaluk}
             loading={loadingGpGrams}
             sx={{ minWidth: { xs: '100%', sm: 220 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
+            slotProps={{ listbox: { sx: listboxSx(isDark) } }}
             renderInput={(params) => <TextField {...params} label="Gram Panchayat" sx={filterSx(isDark)} />}
           />
           <Autocomplete
@@ -481,16 +500,15 @@ const GuestCivicIssuesPage = () => {
             loading={loadingGpVillages}
             isOptionEqualToValue={(a, b) => a.id === b.id}
             sx={{ minWidth: { xs: '100%', sm: 280 } }}
-            ListboxProps={{ sx: listboxSx(isDark) }}
+            slotProps={{ listbox: { sx: listboxSx(isDark) } }}
             renderInput={(params) => <TextField {...params} label="Village" sx={filterSx(isDark)} />}
           />
         </Stack>
       )}
-
       {/* Results */}
       {!filtersComplete ? (
         <Box>
-          <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.9rem', color: textDim, mb: 2, textAlign: 'center' }}>
+          <Typography sx={{ fontFamily: FF_BODY, fontWeight: 700, fontSize: '0.9rem', color: textDim, mb: 2, textAlign: 'center' }}>
             {isKannada ? 'ಫಿಲ್ಟರ್ ಆಯ್ಕೆ ಮಾಡಿ ನಿಮ್ಮ ಪ್ರದೇಶದ ಸಮಸ್ಯೆಗಳನ್ನು ನೋಡಿ' : 'Select a constituency above to view issue counts in your area'}
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' }, gap: 1.5 }}>
@@ -526,7 +544,7 @@ const GuestCivicIssuesPage = () => {
                         <IssueIcon sx={{ color: issueColor, fontSize: 22, opacity: 0.8 }} />
                       )}
                     </Box>
-                    <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.82rem', color: textPrimary, lineHeight: 1.3 }}>
+                    <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.82rem', color: textPrimary, lineHeight: 1.3 }}>
                       {displayName}
                     </Typography>
                   </Box>
@@ -540,7 +558,7 @@ const GuestCivicIssuesPage = () => {
           <CircularProgress sx={{ color: GOLD }} />
         </Box>
       ) : categories.length === 0 ? (
-        <Typography sx={{ textAlign: 'center', py: 6, color: 'text.secondary', fontFamily: FF }}>
+        <Typography sx={{ textAlign: 'center', py: 6, color: 'text.secondary', fontFamily: FF_BODY }}>
           {isKannada ? 'ನಾಗರಿಕ ಸಮಸ್ಯೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ' : 'No civic issues found'}
         </Typography>
       ) : (
@@ -578,14 +596,14 @@ const GuestCivicIssuesPage = () => {
                           </Box>
                           <Box sx={{ minWidth: 0 }}>
                             <Typography sx={{
-                              fontFamily: FF, fontWeight: 800,
+                              fontFamily: FF_HEADING, fontWeight: 800,
                               fontSize: { xs: '0.98rem', sm: '1.06rem' },
                               color: textPrimary, mb: 0.3,
                               whiteSpace: 'normal', overflowWrap: 'anywhere', wordBreak: 'break-word', display: 'block',
                             }}>
                               {displayName}
                             </Typography>
-                            <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: textDim }}>
+                            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: textDim }}>
                               {t('civicIssues.handRaise', { count: cat.count, defaultValue: `${cat.count} hand raises` })}
                             </Typography>
                           </Box>
@@ -595,7 +613,7 @@ const GuestCivicIssuesPage = () => {
                           size="small"
                           label={cat.count}
                           sx={{
-                            fontFamily: FF, fontWeight: 800, fontSize: '0.85rem',
+                            fontFamily: FF_HEADING, fontWeight: 800, fontSize: '0.85rem',
                             bgcolor: cat.count > 0 ? 'rgba(245,168,0,0.12)' : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.06)'),
                             color: cat.count > 0 ? GOLD : textDim,
                             border: `1px solid ${cat.count > 0 ? 'rgba(245,168,0,0.3)' : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)')}`,

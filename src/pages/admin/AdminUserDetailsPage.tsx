@@ -45,8 +45,10 @@ const AdminUserDetailsPage: React.FC = () => {
             <Card sx={{ overflow: 'visible', borderRadius: 3, boxShadow: 3 }}>
                 <CardContent>
                     {/* Header */}
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item>
+                    <Grid container spacing={2} sx={{
+                        alignItems: "center"
+                    }}>
+                        <Grid>
                             <Avatar
                                 src={aspirant.selfieUrl || undefined}
                                 alt={aspirant.name}
@@ -55,7 +57,7 @@ const AdminUserDetailsPage: React.FC = () => {
                                 {String(aspirant.name || 'A').trim().charAt(0).toUpperCase()}
                             </Avatar>
                         </Grid>
-                        <Grid item xs>
+                        <Grid size="grow">
                             <Typography variant="h5" sx={{ fontWeight: 800 }}>{aspirant.name}</Typography>
                             <Box sx={{ display: 'flex', gap: 1, mt: 0.5, flexWrap: 'wrap' }}>
                                 <Chip label={aspirant.party || 'Independent'} color="primary" size="small" sx={{ fontWeight: 700 }} />
@@ -69,14 +71,20 @@ const AdminUserDetailsPage: React.FC = () => {
 
                     {/* Contact & Info */}
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 6
+                            }}>
                             <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
                                 <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Contact Information</Typography>
                                 <Stack spacing={1}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                         <PhoneAndroidIcon color="action" />
                                         <Box>
-                                            <Typography variant="caption" color="text.secondary">Phone Number</Typography>
+                                            <Typography variant="caption" sx={{
+                                                color: "text.secondary"
+                                            }}>Phone Number</Typography>
                                             <Typography><strong>{aspirant.phone ?? '—'}</strong></Typography>
                                         </Box>
                                     </Box>
@@ -84,7 +92,11 @@ const AdminUserDetailsPage: React.FC = () => {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 6
+                            }}>
                             <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
                                 <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>Profile Details</Typography>
                                 <Stack spacing={0.5}>
@@ -126,7 +138,6 @@ const AdminUserDetailsPage: React.FC = () => {
                     <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>Back</Button>
                 </CardActions>
             </Card>
-
         </Box>
     );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
@@ -19,6 +19,7 @@ import {
   Logout as LogoutIcon,
   DarkMode as DarkModeIcon,
   LightMode as LightModeIcon,
+  Contrast as ContrastIcon,
   ArrowBack as ArrowBackIcon,
   HomeRounded as HomeRoundedIcon,
   ReportProblemRounded as ReportProblemRoundedIcon,
@@ -26,6 +27,7 @@ import {
   DescriptionRounded as DescriptionRoundedIcon,
   PersonAddAlt1Rounded as PersonAddAlt1RoundedIcon,
   PersonRounded as PersonRoundedIcon,
+  ForumRounded as ForumIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
@@ -35,13 +37,18 @@ import { BRAND } from '../theme';
 import LanguageSelector from '../components/LanguageSelector';
 import NotificationBell from '../components/NotificationBell';
 import { fetchAspirant } from '../services/aspirantService';
+import AppFooter from '../components/AppFooter';
 
-const FF = "'Baloo 2', sans-serif";
+import RainEffect from '../components/RainEffect';
+
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
 
 const UserLayout = () => {
   const { t } = useTranslation();
   const { logout, user } = useAuthStore();
-  const { mode, toggleTheme } = useThemeStore();
+  const { mode, toggleTheme, rainEnabled, toggleRain } = useThemeStore();
+  const showHeader = user?.role === 'voter';
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -86,9 +93,8 @@ const UserLayout = () => {
   const isAspirant = user?.role === 'aspirant' && (user as any)?.documentStatus === 'completed';
   const bottomNavItems = [
     { label: t('common.home', { defaultValue: 'Home' }), icon: <HomeRoundedIcon />, path: '/user/dashboard' },
-    { label: t('userDashboard.actions.civicIssues', { defaultValue: 'Civic Issues' }), icon: <ReportProblemRoundedIcon />, path: '/user/civic-issues' },
-    { label: t('userDashboard.actions.registeredAspirants', { defaultValue: 'Aspirants' }), icon: <GroupsRoundedIcon />, path: '/user/registered-aspirants' },
-    { label: t('userDashboard.actions.howUPPWorks', { defaultValue: 'SOP' }), icon: <DescriptionRoundedIcon />, path: '/user/sop' },
+    { label: 'Katte', icon: <ForumIcon />, path: '/user/discussions' },
+    { label: 'Karyakartas', icon: <GroupsRoundedIcon />, path: '/user/karyakartas' },
     isAspirant
       ? { label: t('userDashboard.actions.myProfile', { defaultValue: 'My Profile' }), icon: <PersonRoundedIcon />, path: '/user/dashboard/profile' }
       : { label: t('userDashboard.actions.registerAspirant', { defaultValue: 'Register Aspirant' }), icon: <PersonAddAlt1RoundedIcon />, path: '/user/aspirants/declaration' },
@@ -101,14 +107,16 @@ const UserLayout = () => {
 
   // Theme-aware colour helpers
   const navBg = isDark
-    ? 'radial-gradient(130% 140% at 0% 0%, rgba(200,24,10,0.2) 0%, rgba(10,8,8,1) 55%), radial-gradient(120% 130% at 100% 0%, rgba(37,58,154,0.16) 0%, rgba(10,8,8,1) 55%)'
+    ? 'radial-gradient(130% 140% at 0% 0%, rgba(200,24,10,0.2) 0%, rgba(13,15,18,1) 55%), radial-gradient(120% 130% at 100% 0%, rgba(37,58,154,0.16) 0%, rgba(13,15,18,1) 55%)'
     : `linear-gradient(135deg, #fff 0%, #FFF8F0 100%)`;
 
   const subtleText = isDark ? 'rgba(255,255,255,0.52)' : 'rgba(17,24,39,0.45)';
 
   return (
-    <Box sx={{ minHeight: '100dvh', bgcolor: 'background.default' }}>
-      <AppBar position="sticky" elevation={0} sx={{
+    <Box sx={{ minHeight: '100dvh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+      {mode === 'grey' && rainEnabled && <RainEffect />}
+      {showHeader && (
+        <AppBar position="sticky" elevation={0} sx={{
         background: navBg,
         color: isDark ? 'white' : 'text.primary',
         borderBottom: `1px solid ${theme.palette.divider}`,
@@ -162,10 +170,10 @@ const UserLayout = () => {
                   <Box component="img" src={prajakeeyaLogo} alt={t('userDashboard.title')} sx={{ height: { xs: 28, sm: 34 } }} />
                 </Box>
                 <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                  <Typography sx={{ fontFamily: FF, fontWeight: 800, lineHeight: 1.05, color: isDark ? '#fff' : 'text.primary', fontSize: { sm: '1rem', md: '1.08rem' } }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, lineHeight: 1.05, color: isDark ? '#fff' : 'text.primary', fontSize: { sm: '1rem', md: '1.08rem' } }}>
                     {t('pages.landing.kicker')}
                   </Typography>
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.73rem', letterSpacing: '.06em', textTransform: 'uppercase', color: subtleText }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.73rem', letterSpacing: '.06em', textTransform: 'uppercase', color: subtleText }}>
                     {t('menu.dashboard') || 'Dashboard'}
                   </Typography>
                 </Box>
@@ -174,24 +182,70 @@ const UserLayout = () => {
 
             {/* Right: theme toggle + lang switch + avatar + logout(desktop) */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.8, sm: 1.5 } }}>
-              {/* Dark / Light mode toggle */}
+              {mode === 'grey' && (
+                <IconButton
+                  onClick={toggleRain}
+                  size="small"
+                  title="Toggle Rain Effect"
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    color: rainEnabled ? '#AECAE8' : '#9CA3AF',
+                    border: `1.5px solid ${rainEnabled ? 'rgba(255, 255, 255, 0.15)' : 'transparent'}`,
+                    bgcolor: rainEnabled ? 'rgba(255,255,255,0.06)' : 'transparent',
+                    '&:hover': {
+                      bgcolor: 'rgba(255,255,255,0.1)',
+                    }
+                  }}
+                >
+                  <span style={{ fontSize: '18px' }}>🌧️</span>
+                </IconButton>
+              )}
+              {/* Theme toggle */}
               <IconButton
                 onClick={toggleTheme}
                 size="small"
-                aria-label="toggle theme"
+                aria-label={
+                  mode === 'dark'
+                    ? 'Switch to light theme'
+                    : mode === 'light'
+                    ? 'Switch to grey theme'
+                    : 'Switch to dark theme'
+                }
                 sx={{
                   width: 36, height: 36,
-                  color: isDark ? BRAND.yellow : BRAND.saffron,
+                  color: mode === 'light' ? BRAND.saffron : mode === 'grey' ? '#9CA3AF' : BRAND.yellow,
                 }}>
-                {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+                {mode === 'dark' ? (
+                  <DarkModeIcon />
+                ) : mode === 'light' ? (
+                  <LightModeIcon />
+                ) : (
+                  <ContrastIcon />
+                )}
               </IconButton>
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => navigate('/user/about')}
+                sx={{
+                  fontFamily: FF_HEADING,
+                  fontWeight: 800,
+                  fontSize: '0.9rem',
+                  color: isDark ? BRAND.yellow : BRAND.saffron,
+                  textTransform: 'none',
+                  mr: { xs: 0.5, sm: 1 },
+                }}
+              >
+                About Us
+              </Button>
 
               {/* Lang selector */}
               <LanguageSelector
                 sx={{
                   minWidth: 64,
                   px: 1,
-                  fontFamily: FF,
+                  fontFamily: FF_HEADING,
                   fontWeight: 800,
                   fontSize: '0.9rem',
                   color: isDark ? BRAND.yellow : BRAND.saffron,
@@ -223,7 +277,7 @@ const UserLayout = () => {
                   {!displayUser.profilePicture && (displayName?.charAt(0).toUpperCase() || 'U')}
                 </Avatar>
                 <Box>
-                  <Typography variant="body2" sx={{ fontFamily: FF, fontWeight: 700, lineHeight: 1.2, color: isDark ? '#fff' : 'text.primary' }}>
+                  <Typography variant="body2" sx={{ fontFamily: FF_HEADING, fontWeight: 700, lineHeight: 1.2, color: isDark ? '#fff' : 'text.primary' }}>
                     {displayName}
                   </Typography>
                   {(wardNumber || displayUser.wardId) && (
@@ -231,7 +285,7 @@ const UserLayout = () => {
                       label={`Ward ${wardNumber ?? displayUser.wardId}`}
                       size="small"
                       sx={{
-                        height: 18, fontSize: '0.64rem', fontWeight: 700, fontFamily: FF,
+                        height: 18, fontSize: '0.64rem', fontWeight: 700, fontFamily: FF_HEADING,
                         bgcolor: isDark ? 'rgba(245,168,0,0.16)' : 'rgba(245,168,0,0.15)',
                         color: isDark ? '#ffe4aa' : BRAND.brown,
                         border: `1px solid rgba(245,168,0,0.36)`,
@@ -266,7 +320,7 @@ const UserLayout = () => {
               {/* Logout (desktop) */}
               <Button size="small" startIcon={<LogoutIcon />} onClick={handleLogout}
                 sx={{
-                  fontFamily: FF, borderRadius: 50,
+                  fontFamily: FF_HEADING, borderRadius: 50,
                   display: { xs: 'none', sm: 'inline-flex' },
                   border: `1px solid ${isDark ? 'rgba(255,255,255,0.2)' : theme.palette.divider}`,
                   color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary',
@@ -296,7 +350,7 @@ const UserLayout = () => {
                     onClick={() => navigate(item.path)}
                     startIcon={item.icon}
                     sx={{
-                      fontFamily: FF,
+                      fontFamily: FF_HEADING,
                       fontWeight: 700,
                       textTransform: 'none',
                       borderRadius: 2,
@@ -322,65 +376,70 @@ const UserLayout = () => {
           </Container>
         </Box>
       </AppBar>
+      )}
 
-      <Container maxWidth="lg" sx={{ pt: { xs: 3, sm: 4, md: 5 }, pb: { xs: 'calc(90px + env(safe-area-inset-bottom))', sm: 4, md: 5 } }}>
+      <Container maxWidth="xl" sx={{ pt: { xs: 3, sm: 4, md: 5 }, pb: { xs: showHeader ? 'calc(90px + env(safe-area-inset-bottom))' : 4, sm: 4, md: 5 }, flex: 1 }}>
         <Outlet />
       </Container>
 
+      <AppFooter />
+
       {/* Mobile bottom navigation — fixed, xs only */}
-      <Paper
-        elevation={0}
-        sx={{
-          display: { xs: 'block', sm: 'none' },
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: (theme) => theme.zIndex.appBar,
-          // Solid opaque base so page content scrolling underneath never shows
-          // through; the gradient sits on top via backgroundImage.
-          backgroundColor: isDark ? '#0a0808' : '#ffffff',
-          backgroundImage: navBg,
-          borderTop: `1px solid ${theme.palette.divider}`,
-          pb: 'calc(8px + env(safe-area-inset-bottom))',
-        }}
-      >
-        <BottomNavigation
-          showLabels
-          value={currentNavIndex === -1 ? false : currentNavIndex}
-          onChange={(_, newValue) => navigate(bottomNavItems[newValue].path)}
+      {showHeader && (
+        <Paper
+          elevation={0}
           sx={{
-            bgcolor: 'transparent',
-            height: 62,
-            alignItems: 'flex-start',
-            pt: 1,
-            '& .MuiBottomNavigationAction-root': {
-              minWidth: 0,
-              px: 0.5,
-              // Anchor icon + label to the top so every icon lines up on the
-              // same row regardless of how many lines its label wraps to.
-              justifyContent: 'flex-start',
-              gap: 0.5,
-              color: isDark ? '#fff' : 'rgba(17,24,39,0.5)',
-            },
-            '& .MuiBottomNavigationAction-root.Mui-selected': {
-              color: isDark ? BRAND.yellow : BRAND.saffron,
-            },
-            '& .MuiBottomNavigationAction-label': {
-              mt: 0,
-              lineHeight: 1.2,
-              fontFamily: FF,
-              fontWeight: 700,
-              fontSize: '0.62rem',
-              '&.Mui-selected': { fontSize: '0.64rem' },
-            },
+            display: { xs: 'block', sm: 'none' },
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: (theme) => theme.zIndex.appBar,
+            // Solid opaque base so page content scrolling underneath never shows
+            // through; the gradient sits on top via backgroundImage.
+            backgroundColor: isDark ? '#0d0f12' : '#ffffff',
+            backgroundImage: navBg,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            pb: 'calc(8px + env(safe-area-inset-bottom))',
           }}
         >
-          {bottomNavItems.map((item) => (
-            <BottomNavigationAction key={item.path} label={item.label} icon={item.icon} />
-          ))}
-        </BottomNavigation>
-      </Paper>
+          <BottomNavigation
+            showLabels
+            value={currentNavIndex === -1 ? false : currentNavIndex}
+            onChange={(_, newValue) => navigate(bottomNavItems[newValue].path)}
+            sx={{
+              bgcolor: 'transparent',
+              height: 62,
+              alignItems: 'flex-start',
+              pt: 1,
+              '& .MuiBottomNavigationAction-root': {
+                minWidth: 0,
+                px: 0.5,
+                // Anchor icon + label to the top so every icon lines up on the
+                // same row regardless of how many lines its label wraps to.
+                justifyContent: 'flex-start',
+                gap: 0.5,
+                color: isDark ? '#fff' : 'rgba(17,24,39,0.5)',
+              },
+              '& .MuiBottomNavigationAction-root.Mui-selected': {
+                color: isDark ? BRAND.yellow : BRAND.saffron,
+              },
+              '& .MuiBottomNavigationAction-label': {
+                mt: 0,
+                lineHeight: 1.2,
+                fontFamily: FF_HEADING,
+                fontWeight: 700,
+                fontSize: '0.62rem',
+                '&.Mui-selected': { fontSize: '0.64rem' },
+              },
+            }}
+          >
+            {bottomNavItems.map((item) => (
+              <BottomNavigationAction key={item.path} label={item.label} icon={item.icon} />
+            ))}
+          </BottomNavigation>
+        </Paper>
+      )}
     </Box>
   );
 };

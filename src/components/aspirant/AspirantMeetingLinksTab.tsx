@@ -27,6 +27,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import apiClient from '../../services/apiClient';
 import { deleteAspirantsMeeting } from '../../services/aspirantService';
 import { useTranslation } from 'react-i18next';
+import { safeUrl } from '../../utils/safeUrl';
 import googleMeetImg from '../../assets/images/googl-meet.webp';
 import zoomImg from '../../assets/images/zoom.webp';
 
@@ -203,8 +204,14 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
     }, []);
 
     return (
-        <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }} alignItems="stretch">
-            <Grid item xs={12} md={4}>
+        <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }} sx={{
+            alignItems: "stretch"
+        }}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 4
+                }}>
                 <Card sx={{
                     borderRadius: 4,
                     boxShadow: isDark ? '0 14px 34px rgba(0,0,0,0.55)' : '0 4px 20px rgba(0,0,0,0.08)',
@@ -217,7 +224,12 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: isDark ? theme.palette.text.primary : 'primary.main' }}>
                             {t('userDashboard.aspirant.publicInteractionTitle') || 'Video Chat Link'}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                mb: 3
+                            }}>
                             {t('userDashboard.aspirant.publicInteractionDesc') || 'This link will be visible to voters for public interaction and interviews.'}
                         </Typography>
 
@@ -314,7 +326,7 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                         </FormControl>
 
                         <Grid container spacing={2} sx={{ mb: 2 }}>
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <TextField
                                     fullWidth
                                     label={t('userDashboard.aspirant.meetDateLabel') || 'Meeting Date'}
@@ -325,9 +337,12 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                         if (val && val < todayStr) return;
                                         setAspirantProfile((p: any) => ({ ...p, meetDate: val }));
                                     }}
-                                    inputProps={{ min: todayStr }}
-                                    InputLabelProps={{
-                                        shrink: true,
+                                    slotProps={{
+                                        inputLabel: {
+                                            shrink: true,
+                                        },
+
+                                        htmlInput: { min: todayStr }
                                     }}
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
@@ -346,19 +361,22 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                             WebkitAppearance: 'auto',
                                         },
                                         '& input': { color: theme.palette.text.primary }
-                                    }}
-                                />
+                                    }} />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    sm: 6
+                                }}>
                                 <TextField
                                     fullWidth
                                     label={t('userDashboard.aspirant.meetStartTimeLabel') || 'Start Time'}
                                     type="time"
                                     value={aspirantProfile?.meetTime ?? ''}
                                     onChange={(e) => setAspirantProfile((p: any) => ({ ...p, meetTime: e.target.value }))}
-                                    InputLabelProps={{
+                                    slotProps={{ inputLabel: {
                                         shrink: true,
-                                    }}
+                                    } }}
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
                                             borderRadius: 1,
@@ -379,16 +397,20 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    sm: 6
+                                }}>
                                 <TextField
                                     fullWidth
                                     label={t('userDashboard.aspirant.meetEndTimeLabel') || 'End Time'}
                                     type="time"
                                     value={aspirantProfile?.meetEndTime ?? ''}
                                     onChange={(e) => setAspirantProfile((p: any) => ({ ...p, meetEndTime: e.target.value }))}
-                                    InputLabelProps={{
+                                    slotProps={{ inputLabel: {
                                         shrink: true,
-                                    }}
+                                    } }}
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
                                             borderRadius: 1,
@@ -436,15 +458,25 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                             Save
                         </Button>
                         {aspirantProfile.meetLastUpdated && (
-                            <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block', textAlign: 'center' }}>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: "text.secondary",
+                                    mt: 2,
+                                    display: 'block',
+                                    textAlign: 'center'
+                                }}>
                                 Last updated: {new Date(aspirantProfile.meetLastUpdated).toLocaleString()}
                             </Typography>
                         )}
                     </CardContent>
                 </Card>
             </Grid>
-
-            <Grid item xs={12} md={8}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 8
+                }}>
                 <Card sx={{
                     borderRadius: 1,
                     boxShadow: isDark ? '0 16px 38px rgba(0,0,0,0.35)' : '0 4px 20px rgba(0,0,0,0.08)',
@@ -463,7 +495,9 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                             </IconButton>
                         </Box>
                         {(!Array.isArray(aspirantProfile.meetings) || aspirantProfile.meetings.length === 0) ? (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                            }}>
                                 {t('userDashboard.aspirant.noMeetings') || 'No meetings scheduled yet.'}
                             </Typography>
                         ) : (
@@ -527,7 +561,9 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                                 })}
                                                 onClick={() => {
                                                     if (!meeting.meetingLink) return;
-                                                    const link = normalizeMeetingUrl(meeting.meetingLink);
+                                                    // C-SEC-4: sanitize aspirant-supplied meeting link before navigating.
+                                                    const link = safeUrl(normalizeMeetingUrl(meeting.meetingLink));
+                                                    if (!link) return;
                                                     // See note in WardCandidateListPage — iOS WebView / standalone
                                                     // PWA silently no-ops window.open('_blank'), causing blank
                                                     // Instagram links. Use same-window nav so iOS routes the
@@ -567,19 +603,28 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                                             }}
                                                         />
                                                     </Box>
-                                                    <Typography variant="caption" color="text.secondary">
+                                                    <Typography variant="caption" sx={{
+                                                        color: "text.secondary"
+                                                    }}>
                                                         {formattedDate} • {formattedTime}{formattedEndTime ? ` - ${formattedEndTime}` : ''}
                                                     </Typography>
                                                     {meeting.platform && (
                                                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
                                                             {getPlatformIcon(meeting.platform)}
-                                                            <Typography variant="caption" color="text.secondary">
+                                                            <Typography variant="caption" sx={{
+                                                                color: "text.secondary"
+                                                            }}>
                                                                 {getPlatformDisplayName(meeting.platform)}
                                                             </Typography>
                                                         </Box>
                                                     )}
                                                     {meeting.createdBy?.name && (
-                                                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                color: "text.secondary",
+                                                                display: 'block'
+                                                            }}>
                                                             {`Created by: ${meeting.createdBy.name}`}
                                                         </Typography>
                                                     )}
@@ -590,7 +635,13 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                                         </Typography>
                                                     )}
                                                     {meeting.notes && (
-                                                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                color: "text.secondary",
+                                                                display: 'block',
+                                                                mt: 0.5
+                                                            }}>
                                                             Note: {meeting.notes}
                                                         </Typography>
                                                     )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import {
     Box, Typography, CircularProgress, Table, TableHead, TableBody, TableRow, TableCell,
     TextField, Avatar, Card, CardContent, Stack, useTheme, useMediaQuery, Chip, Pagination
@@ -12,7 +12,9 @@ const PAGE_SIZE = 50;
 
 const RegisteredAspirantsPage: React.FC = () => {
     const { i18n } = useTranslation();
-    const FF = "'Baloo 2', sans-serif";
+    const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+    const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+    const FF = FF_BODY;
     const isKannada = (i18n.language || '').startsWith('kn');
 
     const [aspirants, setAspirants] = useState<any[]>([]);
@@ -72,7 +74,7 @@ const RegisteredAspirantsPage: React.FC = () => {
                             <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: '1.6rem', sm: '2rem' }, color: textPrimary }}>
                                 {isKannada ? 'ನೋಂದಾಯಿತ ಆಕಾಂಕ್ಷಿಗಳು' : 'Registered Aspirants'}
                             </Typography>
-                            <Typography variant="body2" sx={{ mt: 0.4, color: textSecondary, fontFamily: FF }}>
+                            <Typography variant="body2" sx={{ mt: 0.4, color: textSecondary, fontFamily: FF_BODY }}>
                                 {isKannada ? 'ಒಟ್ಟು ಆಕಾಂಕ್ಷಿಗಳು' : 'Total Aspirants'} — {total || aspirants.length}
                             </Typography>
                         </Box>
@@ -87,7 +89,6 @@ const RegisteredAspirantsPage: React.FC = () => {
                     </Stack>
                 </CardContent>
             </Card>
-
             {loading ? (
                 <Box sx={{ textAlign: 'center', py: 3 }}>
                     <CircularProgress />
@@ -95,7 +96,7 @@ const RegisteredAspirantsPage: React.FC = () => {
             ) : error ? (
                 <Typography color="error">{error}</Typography>
             ) : aspirants.length === 0 ? (
-                <Typography sx={{ textAlign: 'center', py: 6, color: textSecondary, fontFamily: FF }}>
+                <Typography sx={{ textAlign: 'center', py: 6, color: textSecondary, fontFamily: FF_BODY }}>
                     {isKannada ? 'ಆಕಾಂಕ್ಷಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ' : 'No aspirants found'}
                 </Typography>
             ) : (
@@ -117,7 +118,9 @@ const RegisteredAspirantsPage: React.FC = () => {
                                     }}
                                 >
                                     <CardContent sx={{ p: 1.25 }}>
-                                        <Stack direction="row" spacing={1.5} alignItems="center">
+                                        <Stack direction="row" spacing={1.5} sx={{
+                                            alignItems: "center"
+                                        }}>
                                             <Avatar
                                                 src={a.selfieUrl || undefined}
                                                 alt={a.name || ''}
@@ -126,13 +129,26 @@ const RegisteredAspirantsPage: React.FC = () => {
                                                 {!a.selfieUrl && (a.name ? a.name.charAt(0).toUpperCase() : <PersonIcon />)}
                                             </Avatar>
                                             <Box sx={{ flex: 1, minWidth: 0 }}>
-                                                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: FF, fontSize: '0.95rem' }}>
+                                                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: FF_HEADING, fontSize: '0.95rem' }}>
                                                     {a.name || ''}
                                                 </Typography>
-                                                <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mt: 0.4 }}>
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={0.5}
+                                                    sx={{
+                                                        flexWrap: "wrap",
+                                                        mt: 0.4
+                                                    }}>
                                                     <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.7rem', height: 20 }} />
                                                 </Stack>
-                                                <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF, display: 'block', mt: 0.3 }}>
+                                                <Typography
+                                                    variant="caption"
+                                                    sx={{
+                                                        color: "text.secondary",
+                                                        fontFamily: FF_BODY,
+                                                        display: 'block',
+                                                        mt: 0.3
+                                                    }}>
                                                     {a.electionName || ''}{a.constituencyName ? ` · ${a.constituencyName}` : ''}
                                                 </Typography>
                                             </Box>
@@ -147,11 +163,11 @@ const RegisteredAspirantsPage: React.FC = () => {
                             <Table>
                                 <TableHead>
                                     <TableRow sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.03)' }}>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem' }}>#</TableCell>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem' }}>{isKannada ? 'ಹೆಸರು' : 'Name'}</TableCell>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem' }}>{isKannada ? 'ಪಕ್ಷ' : 'Party'}</TableCell>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem' }}>{isKannada ? 'ಚುನಾವಣೆ' : 'Election'}</TableCell>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem' }}>{isKannada ? 'ಕ್ಷೇತ್ರ' : 'Constituency'}</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem' }}>#</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem' }}>{isKannada ? 'ಹೆಸರು' : 'Name'}</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem' }}>{isKannada ? 'ಪಕ್ಷ' : 'Party'}</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem' }}>{isKannada ? 'ಚುನಾವಣೆ' : 'Election'}</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem' }}>{isKannada ? 'ಕ್ಷೇತ್ರ' : 'Constituency'}</TableCell>
                                         <TableCell />
                                     </TableRow>
                                 </TableHead>
@@ -162,11 +178,13 @@ const RegisteredAspirantsPage: React.FC = () => {
                                             onClick={() => a.id && navigate(`/user/aspirants/${a.id}/view`)}
                                             sx={{ cursor: 'pointer', '&:hover': { bgcolor: theme.palette.mode === 'dark' ? 'rgba(37,58,154,0.12)' : 'rgba(37,58,154,0.04)' } }}
                                         >
-                                            <TableCell sx={{ color: textSecondary, fontFamily: FF, fontSize: '0.82rem' }}>
+                                            <TableCell sx={{ color: textSecondary, fontFamily: FF_HEADING, fontSize: '0.82rem' }}>
                                                 {(page - 1) * PAGE_SIZE + idx + 1}
                                             </TableCell>
                                             <TableCell>
-                                                <Stack direction="row" alignItems="center" spacing={1.5}>
+                                                <Stack direction="row" spacing={1.5} sx={{
+                                                    alignItems: "center"
+                                                }}>
                                                     <Avatar
                                                         src={a.selfieUrl || undefined}
                                                         alt={a.name || ''}
@@ -174,12 +192,12 @@ const RegisteredAspirantsPage: React.FC = () => {
                                                     >
                                                         {!a.selfieUrl && (a.name ? a.name.charAt(0).toUpperCase() : <PersonIcon fontSize="small" />)}
                                                     </Avatar>
-                                                    <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.9rem' }}>{a.name || ''}</Typography>
+                                                    <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.9rem' }}>{a.name || ''}</Typography>
                                                 </Stack>
                                             </TableCell>
-                                            <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem' }}>{a.party || 'Independent'}</TableCell>
-                                            <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem' }}>{a.electionName || ''}</TableCell>
-                                            <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem' }}>{a.constituencyName || ''}</TableCell>
+                                            <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem' }}>{a.party || 'Independent'}</TableCell>
+                                            <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem' }}>{a.electionName || ''}</TableCell>
+                                            <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem' }}>{a.constituencyName || ''}</TableCell>
                                             <TableCell sx={{ width: 32, p: 0.5 }}><ChevronRightIcon sx={{ color: 'text.disabled', fontSize: '1.1rem' }} /></TableCell>
                                         </TableRow>
                                     ))}

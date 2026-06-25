@@ -30,6 +30,7 @@ import {
 } from '../services/electionService';
 import { updateUserConstituencies } from '../services/authService';
 import useAuthStore from '../store/useAuthStore';
+import { COOKIE_AUTH } from '../config/authMode';
 import { BRAND } from '../theme';
 
 type Municipality = { id: number; name: string; state: string };
@@ -282,7 +283,11 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
 
   // ── Save ──────────────────────────────────────────────────────────────
   const handleSave = async () => {
-    if (!token) return;
+    // Cookie mode has no client-side token (the httpOnly cookie authenticates),
+    // so gate on authentication, not `token` — otherwise the save silently
+    // returns and the user's constituency change is never persisted.
+    const isAuthed = COOKIE_AUTH ? useAuthStore.getState().isAuthenticated : Boolean(token);
+    if (!isAuthed) return;
     setError(null);
     setSubmitting(true);
     try {
@@ -297,7 +302,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
             : null,
       };
       const { data } = await updateUserConstituencies(payload);
-      setAuth(token, data);
+      setAuth(COOKIE_AUTH ? '' : (token ?? ''), data);
       // Belt-and-suspenders: re-pull /auth/me so nested objects reflect
       // exactly what the backend returns on next reads.
       fetchProfile?.().catch(() => {});
@@ -320,13 +325,13 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
       onClose={submitting ? undefined : onClose}
       fullWidth
       maxWidth="sm"
-      PaperProps={{
+      slotProps={{ paper: {
         sx: {
           bgcolor: isDark ? '#0d0b0b' : '#fffdfa',
           border: `1px solid ${isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)'}`,
           borderRadius: 3,
         },
-      }}
+      } }}
     >
       <DialogTitle sx={{
         display: 'flex',
@@ -383,7 +388,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
             <TextField
               select
               fullWidth
-              SelectProps={{ native: true }}
+              slotProps={{ select: { native: true } }}
               value={localBody ?? ''}
               onChange={(e) => {
                 const v = e.target.value as LocalBody | '';

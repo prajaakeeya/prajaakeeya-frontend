@@ -4,25 +4,7 @@ import { motion, useAnimation } from "framer-motion";
 import { Link } from "react-router-dom";
 import { BRAND } from "../theme";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";
-
-/* ── CSS keyframes injected via <style> in the DOM on every mount ── */
-const KEYFRAMES = `
-@keyframes logoSpinZoom {
-  0%   { transform: scale(0.02) rotate(-2160deg); opacity: 0; }
-  5%   { opacity: 1; }
-  60%  { transform: scale(2) rotate(15deg); opacity: 1; }
-  80%  { transform: scale(0.9) rotate(-5deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-@keyframes fadeSlideUp {
-  0%   { transform: translateY(40px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-@keyframes expandDivider {
-  0%   { width: 0; opacity: 0; }
-  100% { width: 200px; opacity: 1; }
-}
-`;
+import "./ComingSoonPage.css"; // M-SEC-4: keyframes now live in a real stylesheet
 
 /* ── Floating text particle (Kannada / English word) ─────────────── */
 const WORDS = ["ಪ್ರಜಾಕೀಯ", "Prajaakeeya"];
@@ -170,9 +152,6 @@ const ComingSoonPage = () => {
         background: `radial-gradient(ellipse at 50% 20%, #1a0a08 0%, ${BRAND.black} 70%)`,
       }}
     >
-      {/* Inject keyframes fresh on every mount */}
-      <style dangerouslySetInnerHTML={{ __html: KEYFRAMES }} />
-
       {/* ── Ambient gradient blobs ─────────────────────────────────── */}
       <motion.div
         style={{

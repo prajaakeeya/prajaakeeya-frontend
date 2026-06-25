@@ -1,18 +1,22 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import { AccountTree as AccountTreeIcon } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SopFlowChart from '../../components/aspirant/SopFlowChart';
 import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const GuestSopPage = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [sopAgreed, setSopAgreed] = useState(false);
 
   const textPrimary = theme.palette.text.primary;
@@ -59,11 +63,11 @@ const GuestSopPage = () => {
             <Box>
               <Typography
                 variant="h4"
-                sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
+                sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
               >
                 {t('pages.landing.sopOverline') || 'How Prajakeeya Works'}
               </Typography>
-              <Typography variant="body2" sx={{ fontFamily: FF, color: textSecondary, mt: 0.3 }}>
+              <Typography variant="body2" sx={{ fontFamily: FF_BODY, color: textSecondary, mt: 0.3 }}>
                 {t('pages.landing.sopFlow.coreRule') ||
                   'Understand the governance process and how citizens can raise and track civic issues.'}
               </Typography>

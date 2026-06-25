@@ -6,12 +6,42 @@ import * as Sentry from '@sentry/react';
 import App from './App';
 import { getTheme } from './theme';
 import useThemeStore from './store/useThemeStore';
+import useAuthStore from './store/useAuthStore';
 import { initSentry } from './config/sentry';
 import './i18n';
 import './index.css';
 
 // Start error tracking as early as possible so init-time errors are captured.
 initSentry();
+
+// The `storage` event fires in OTHER tabs/windows of the same origin whenever
+// localStorage changes. When the persisted auth session ('auth-storage') is
+// cleared or rewritten to a token-less value in one tab (logout / session
+// clear), drop this tab's in-memory session too and send it home — otherwise
+// a background tab keeps the old token live in Zustand and would continue
+// making authenticated requests (a real risk on shared devices).
+window.addEventListener('storage', (e) => {
+  // `key === null` => localStorage.clear() was called (our logout does this).
+  // Otherwise only react to changes of the auth-storage key.
+  if (e.key !== null && e.key !== 'auth-storage') return;
+
+  // If the value is gone, or present but no longer holds a token, the other
+  // tab has logged out. Bail if we're already logged out to avoid a loop.
+  let stillAuthed = false;
+  if (e.key === 'auth-storage' && e.newValue) {
+    try {
+      stillAuthed = Boolean(JSON.parse(e.newValue)?.state?.token);
+    } catch {
+      stillAuthed = false;
+    }
+  }
+  if (stillAuthed) return;
+
+  if (useAuthStore.getState().isAuthenticated) {
+    useAuthStore.getState().clearSession();
+    window.location.href = '/';
+  }
+});
 
 // Shown if a render error escapes all the way up. Kept deliberately simple and
 // MUI-light so it can render even if part of the tree is broken.
@@ -29,7 +59,9 @@ const ErrorFallback = () => (
     }}
   >
     <Typography variant="h5">Something went wrong</Typography>
-    <Typography color="text.secondary">
+    <Typography sx={{
+      color: "text.secondary"
+    }}>
       The error has been reported to our team. Please try reloading the page.
     </Typography>
     <Button variant="contained" onClick={() => window.location.reload()}>
@@ -77,7 +109,9 @@ const ThemedApp = () => {
       <CssBaseline />
       <Sentry.ErrorBoundary fallback={<ErrorFallback />}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <App />
+          <React.Suspense fallback={null}>
+            <App />
+          </React.Suspense>
         </BrowserRouter>
       </Sentry.ErrorBoundary>
     </ThemeProvider>

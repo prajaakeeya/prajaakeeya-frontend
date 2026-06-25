@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { IconButton, Badge, SxProps, Theme } from '@mui/material';
 import {
   NotificationsNone as BellIcon,
@@ -11,7 +11,8 @@ import useAuthStore from '../store/useAuthStore';
 import { BRAND } from '../theme';
 import { getUnreadCount, NOTIFICATIONS_CHANGED_EVENT } from '../services/notificationService';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
 
 interface NotificationBellProps {
   /** When provided, overrides the live fetched unread count. */
@@ -88,7 +89,7 @@ export default function NotificationBell({
         invisible={!hasUnread}
         sx={{
           '& .MuiBadge-badge': {
-            fontFamily: FF,
+            fontFamily: FF_HEADING,
             fontWeight: 800,
             fontSize: '0.62rem',
             minWidth: 16,

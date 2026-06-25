@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import {
   Box, Typography, CircularProgress, Stack, useTheme, Avatar, Card,
   Pagination,
@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { BRAND } from '../../theme';
 import apiClient from '../../services/apiClient';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 const LIMIT = 50;
 
 interface Voter {
@@ -69,14 +71,14 @@ const GuestVotersPage = () => {
   const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
 
   return (
-    <Stack spacing={3} sx={{ fontFamily: FF }}>
+    <Stack spacing={3} sx={{ fontFamily: FF_BODY }}>
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, flexWrap: 'wrap' }}>
-          <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: 'text.primary' }}>
+          <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: 'text.primary' }}>
             {t('userDashboard.actions.voters', { defaultValue: 'Registered Voters' })}
           </Typography>
           {!loading && total > 0 && (
-            <Typography sx={{ fontFamily: FF, fontWeight: 600, fontSize: '0.95rem', color: 'text.secondary' }}>
+            <Typography sx={{ fontFamily: FF_BODY, fontWeight: 600, fontSize: '0.95rem', color: 'text.secondary' }}>
               ({total})
             </Typography>
           )}
@@ -127,13 +129,13 @@ const GuestVotersPage = () => {
                       </Box>
 
                       <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.25, color: textPrimary }}>
+                        <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.25, color: textPrimary }}>
                           {isKannada ? (voter.nameKn || voter.name) : (voter.nameEn || voter.name)}
                         </Typography>
                         {(voter.psName || voter.psNameL1) && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.3 }}>
                             <ApartmentIcon sx={{ fontSize: 14, color: textDim }} />
-                            <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: textDim, fontWeight: 600 }}>
+                            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: textDim, fontWeight: 600 }}>
                               {isKannada ? (voter.psNameL1 || voter.psName) : voter.psName}
                             </Typography>
                           </Box>
@@ -141,7 +143,7 @@ const GuestVotersPage = () => {
                       </Box>
 
                       {/* Serial number */}
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: textDim, fontWeight: 600, flexShrink: 0 }}>
+                      <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: textDim, fontWeight: 600, flexShrink: 0 }}>
                         #{(page - 1) * LIMIT + idx + 1}
                       </Typography>
                     </Box>

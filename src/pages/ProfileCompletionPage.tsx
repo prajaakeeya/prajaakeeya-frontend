@@ -745,14 +745,12 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     {t('profile.subtitle') || 'View and update your profile information'}
                 </Typography>
             </Box>
-
             {/* Error Alert */}
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
                     {error}
                 </Alert>
             )}
-
             <Card sx={{
                 borderRadius: 3,
                 overflow: 'hidden',
@@ -816,7 +814,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         '& .MuiMenu-paper': { minWidth: 140 },
                                         '& .MuiMenuItem-root': { py: 0.5, px: 1, fontSize: '0.8rem', minHeight: 'auto' }
                                     }}
-                                    MenuListProps={{ sx: { py: 0.25 } }}
+                                    slotProps={{ list: { sx: { py: 0.25 } } }}
                                 >
                                     <MenuItem sx={{ py: 0.5, px: 1, fontSize: '0.8rem' }} onClick={() => { setLivenessOpen(true); setPhotoMenuAnchor(null); }}>
                                         {t('profile.takePhoto') || 'Take Photo'}
@@ -837,7 +835,14 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                 </Typography>
 
                                 {photoFile && (
-                                    <Typography variant="caption" color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "success.main",
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 0.5
+                                        }}>
                                         <CheckCircleIcon sx={{ fontSize: 14 }} /> {photoFile.name}
                                     </Typography>
                                 )}
@@ -856,7 +861,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                 '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? '#F5A800' : '#c88200' },
                                 '& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? 'rgba(245,168,0,0.2)' : 'rgba(200,130,0,0.2)' },
                             }}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <TextField
                                         fullWidth
                                         size="small"
@@ -864,23 +873,27 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         {...register('name')}
                                         error={!!errors.name}
                                         helperText={isAspirant ? (t('profile.nameReadOnly') || 'Name cannot be changed for aspirants') : errors.name?.message}
-                                        InputProps={{ readOnly: isAspirant }}
+                                        slotProps={{ input: { readOnly: isAspirant } }}
                                         disabled={isAspirant}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <TextField
                                         fullWidth
                                         size="small"
                                         label={t('profile.email') || 'Email'}
                                         value={user?.email || '-'}
-                                        InputProps={{ readOnly: true }}
+                                        slotProps={{ input: { readOnly: true } }}
                                         disabled
                                     />
                                 </Grid>
                                 {/* Aspirant-only fields */}
                                 {isAspirant && (<>
-                                    <Grid item xs={6}>
+                                    <Grid size={6}>
                                         <TextField
                                             fullWidth size="small"
                                             label={t('profile.age')}
@@ -888,10 +901,12 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                             {...register('age')}
                                             error={!!errors.age}
                                             helperText={errors.age?.message}
-                                            inputProps={{ min: 18, max: 120 }}
+                                            slotProps={{
+                                                htmlInput: { min: 18, max: 120 }
+                                            }}
                                         />
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid size={6}>
                                         <TextField
                                             fullWidth size="small" select
                                             label={t('profile.gender')}
@@ -905,13 +920,17 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                             <MenuItem value="Other">{t('profile.other')}</MenuItem>
                                         </TextField>
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid size={6}>
                                         <TextField fullWidth size="small" label={t('pages.candidateDetails.labels.education')} {...register('education')} />
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid size={6}>
                                         <TextField fullWidth size="small" label={t('pages.candidateDetails.labels.occupation')} {...register('occupation')} />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
                                         <TextField
                                             fullWidth size="small" label={t('profile.mobileNumber')}
                                             placeholder={t('profile.mobileNumberPlaceholder')}
@@ -919,77 +938,105 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                             inputRef={phoneInputRef}
                                             error={!!errors.phone}
                                             helperText={errors.phone ? t(errors.phone.message || 'validation.phone') : undefined}
-                                            InputProps={{
+                                            slotProps={{ input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start" sx={{ mr: 0.5 }}>
                                                         <PhoneIcon fontSize="small" sx={{ color: 'text.secondary' }} />
                                                     </InputAdornment>
                                                 )
-                                            }}
+                                            } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField fullWidth size="small" label={t('forms.aspirant.whatsappNumber')} {...register('whatsappNumber')} inputProps={{ maxLength: 10, inputMode: 'tel' as const }} placeholder={t('profile.whatsappPlaceholder')}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                                                        <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
-                                                    </InputAdornment>
-                                                )
-                                            }}
-                                        />
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            label={t('forms.aspirant.whatsappNumber')}
+                                            {...register('whatsappNumber')}
+                                            placeholder={t('profile.whatsappPlaceholder')}
+                                            slotProps={{
+                                                input: {
+                                                    startAdornment: (
+                                                        <InputAdornment position="start" sx={{ mr: 0.5 }}>
+                                                            <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
+                                                        </InputAdornment>
+                                                    )
+                                                },
+
+                                                htmlInput: { maxLength: 10, inputMode: 'tel' as const }
+                                            }} />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
                                         <TextField fullWidth size="small" label={t('forms.aspirant.instagramLink')} {...register('instagramLink')} placeholder="https://instagram.com/yourprofile"
-                                            InputProps={{
+                                            slotProps={{ input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start" sx={{ mr: 0.5 }}>
                                                         <InstagramIcon fontSize="small" sx={{ color: '#E1306C' }} />
                                                     </InputAdornment>
                                                 )
-                                            }}
+                                            } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
                                         <TextField fullWidth size="small" label={t('forms.aspirant.facebookLink')} {...register('facebookLink')} placeholder="https://facebook.com/yourprofile"
-                                            InputProps={{
+                                            slotProps={{ input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start" sx={{ mr: 0.5 }}>
                                                         <FacebookIcon fontSize="small" sx={{ color: '#1877F2' }} />
                                                     </InputAdornment>
                                                 )
-                                            }}
+                                            } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
                                         <TextField fullWidth size="small" label={t('forms.aspirant.linkedinLink')} {...register('linkedinLink')} placeholder="https://linkedin.com/in/yourprofile"
-                                            InputProps={{
+                                            slotProps={{ input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start" sx={{ mr: 0.5 }}>
                                                         <LinkedInIcon fontSize="small" sx={{ color: '#0A66C2' }} />
                                                     </InputAdornment>
                                                 )
-                                            }}
+                                            } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid
+                                        size={{
+                                            xs: 12,
+                                            sm: 6
+                                        }}>
                                         <TextField fullWidth size="small" label={t('forms.aspirant.twitterLink')} {...register('twitterLink')} placeholder="https://twitter.com/yourprofile"
-                                            InputProps={{
+                                            slotProps={{ input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start" sx={{ mr: 0.5 }}>
                                                         <XIcon fontSize="small" sx={{ color: isDark ? '#fff' : '#000' }} />
                                                     </InputAdornment>
                                                 )
-                                            }}
+                                            } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={12}>
                                         <TextField fullWidth size="small" label={t('pages.candidateDetails.labels.address')} {...register('address')} multiline rows={2} />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={12}>
                                         <TextField fullWidth size="small" label={t('pages.candidateDetails.labels.about')} {...register('manifesto')} multiline rows={3} />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={12}>
                                         <Box sx={{ border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.18)'}`, borderRadius: 2, overflow: 'hidden' }}>
                                             <Box sx={{ px: 2, py: 1, bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)' }}>
                                                 <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.6, color: 'text.secondary' }}>
@@ -1110,9 +1157,9 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         fullWidth
                                         label={t('userRegister.epicId') || 'VOTER ID'}
                                         value={user?.epicId || user?.voterEpic || '-'}
-                                        InputProps={{
+                                        slotProps={{ input: {
                                             readOnly: true
-                                        }}
+                                        } }}
                                         disabled
                                     />
                                 </Grid> */}
@@ -1122,9 +1169,9 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         fullWidth
                                         label={t('userDashboard.details.corporation') || 'Corporation'}
                                         value={`Bangalore - ${(user as any)?.corporationName ?? '-'}`}
-                                        InputProps={{
+                                        slotProps={{ input: {
                                             readOnly: true
-                                        }}
+                                        } }}
                                         disabled
                                     />
                                 </Grid> */}
@@ -1134,15 +1181,15 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         fullWidth
                                         label={t('userDashboard.details.booth') || 'Booth Name'}
                                         value={(user as any)?.psName || '-'}
-                                        InputProps={{
+                                        slotProps={{ input: {
                                             readOnly: true
-                                        }}
+                                        } }}
                                         disabled
                                     />
                                 </Grid> */}
 
                                 {/* Constituencies section */}
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography
                                         sx={{
                                             mt: 1,
@@ -1156,7 +1203,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         {t('profile.myConstituencies') || 'My Constituencies'}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1176,7 +1227,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1200,7 +1255,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                     a Municipality (urban) OR a Gram Panchayat
                                     (rural), so only one of the two cascades is
                                     shown at a time. */}
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography
                                         sx={{
                                             mt: 0.5,
@@ -1249,7 +1304,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
 
                                 {/* Municipal Corporation cascade: Municipality → Ward */}
                                 {localBody === 'municipality' && (<>
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography
                                         sx={{
                                             mt: 0.5,
@@ -1279,7 +1334,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1300,7 +1359,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1325,7 +1388,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
 
                                 {/* Gram Panchayat cascade: State → District → Taluk → GP → Village */}
                                 {localBody === 'gram_panchayat' && (<>
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography
                                         sx={{
                                             mt: 0.5,
@@ -1355,7 +1418,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1377,7 +1444,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1399,7 +1470,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1420,7 +1495,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1440,7 +1519,11 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        sm: 6
+                                    }}>
                                     <Autocomplete
                                         fullWidth
                                         size="small"
@@ -1464,7 +1547,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
 
                             {/* Submit Button (placed in Grid so widths align with inputs) */}
                             <Grid container>
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Box sx={{ mt: 1 }}>
                                         <Button
                                             type="submit"
@@ -1484,7 +1567,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     </form>
                 </CardContent>
             </Card>
-
             {/* Add Photo Frame */}
             {/* <Button
                 variant="outlined"
@@ -1503,7 +1585,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
             >
                 {t('userDashboard.framePrompt.title', { defaultValue: 'Add Frame' })}
             </Button> */}
-
             {/* Mobile-only Logout button below card */}
             <Box sx={{ display: hideLogout ? 'none' : { xs: 'flex', sm: 'none' }, justifyContent: 'center', mt: 1 }}>
                 <Button
@@ -1524,7 +1605,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     {t('common.logout') || 'Logout'}
                 </Button>
             </Box>
-
             {/* Delete Account button */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 4 }}>
                 <Button
@@ -1546,7 +1626,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     {t('common.deleteMyAccount') || 'Delete My Account'}
                 </Button>
             </Box>
-
             {/* Support contact line — hidden when embedded in the aspirant
                 "My Profile" view (hideLogout); that view renders it at the very
                 bottom, after its own logout button, instead. */}
@@ -1564,14 +1643,13 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     </Typography>
                 </Box>
             )}
-
             {/* Delete Account Confirmation Dialog */}
             <Dialog
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
                 maxWidth="xs"
                 fullWidth
-                PaperProps={{ sx: { borderRadius: 3 } }}
+                slotProps={{ paper: { sx: { borderRadius: 3 } } }}
             >
                 <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
                     <WarningIcon color="error" />
@@ -1635,7 +1713,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     )}
                 </DialogActions>
             </Dialog>
-
             {/* Liveness Camera Modal */}
             {livenessOpen && (
                 <Box
@@ -1671,7 +1748,6 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     </Box>
                 </Box>
             )}
-
             {/* Success/Error Snackbar */}
             <Snackbar
                 open={open}

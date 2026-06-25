@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import SelfieLivenessCapture from '../SelfieLivenessCapture';
 import { useTranslation } from 'react-i18next';
@@ -21,16 +21,18 @@ import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
 const GOLD = '#F5A800';
 const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
+const DARK = '#0D0F12';
 const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 interface Props {
   cameraActive: boolean;
   capturedPhoto: string | null;
   loading: boolean;
-  videoRef: React.RefObject<HTMLVideoElement>;
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   stopCamera: () => void;
   capturePhoto: () => void;
   retakePhoto: () => void;
@@ -238,7 +240,6 @@ const LivePhotoCaptureStep = ({
       <Box sx={{ display: 'flex', height: '5px' }}>
         {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.42 }}>
         <Box sx={{
           px: { xs: 2.5, sm: 4 },
@@ -263,32 +264,35 @@ const LivePhotoCaptureStep = ({
           </Box>
           <Box>
             <Typography sx={{
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontWeight: 800,
               fontSize: { xs: '1.08rem', sm: '1.32rem' },
               color: textPrimary,
             }}>
               {t('forms.aspirant.livePhoto.title')}
             </Typography>
-            <Typography sx={{ fontFamily: FF, fontSize: '0.84rem', color: textSecondary }}>
+            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.84rem', color: textSecondary }}>
               {t('forms.aspirant.livePhoto.subtitle')}
             </Typography>
           </Box>
         </Box>
       </motion.div>
-
       <Box sx={{ px: { xs: 2, sm: 4 }, py: 2.8 }}>
         <Box sx={{ maxWidth: 600, mx: 'auto' }}>
-          <Stack spacing={3} alignItems="center">
+          <Stack spacing={3} sx={{
+            alignItems: "center"
+          }}>
             {!cameraActive && !capturedPhoto && !showLiveness && uploadStatus !== 'success' && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-                <Stack spacing={2.2} alignItems="center">
+                <Stack spacing={2.2} sx={{
+                  alignItems: "center"
+                }}>
                   <CameraAltIcon sx={{ fontSize: 80, color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.5)' }} />
-                  <Typography sx={{ fontFamily: FF, color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)', textAlign: 'center' }}>
+                  <Typography sx={{ fontFamily: FF_BODY, color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)', textAlign: 'center' }}>
                     {t('forms.aspirant.livePhoto.description')}
                   </Typography>
                   <Alert severity="info" sx={{ width: '100%', bgcolor: isDark ? 'rgba(50,95,180,0.15)' : 'rgba(50,95,180,0.12)', color: isDark ? '#dfe9ff' : '#163b7a' }}>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.82rem', fontWeight: 600, mb: 0.4 }}>
+                    <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.82rem', fontWeight: 600, mb: 0.4 }}>
                       {t('forms.aspirant.livePhoto.instructions')}
                     </Typography>
                   </Alert>
@@ -301,7 +305,7 @@ const LivePhotoCaptureStep = ({
                       onClick={() => { if (onSelfieCaptured) { setShowLiveness(true); } else { startCamera?.(); } }}
                       sx={{
                         py: 1.35,
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         fontWeight: 700,
                         background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
                         color: '#fff',
@@ -323,7 +327,7 @@ const LivePhotoCaptureStep = ({
                     onClick={() => fileInputRef.current?.click()}
                     sx={{
                       py: 1.35,
-                      fontFamily: FF,
+                      fontFamily: FF_BODY,
                       fontWeight: 700,
                       color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                       borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.2)',
@@ -338,7 +342,9 @@ const LivePhotoCaptureStep = ({
 
             {showLiveness && !capturedPhoto && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} style={{ width: '100%' }}>
-                <Stack spacing={2} alignItems="center">
+                <Stack spacing={2} sx={{
+                  alignItems: "center"
+                }}>
                   <SelfieLivenessCapture
                     onCaptured={(file) => {
                       // Mark as triggered so the useEffect won't double-upload
@@ -358,7 +364,7 @@ const LivePhotoCaptureStep = ({
                       width: 260,
                       py: '11px',
                       borderRadius: '28px',
-                      fontFamily: FF,
+                      fontFamily: FF_BODY,
                       fontWeight: 700,
                       fontSize: 14,
                       letterSpacing: '0.3px',
@@ -425,8 +431,10 @@ const LivePhotoCaptureStep = ({
 
             {cameraActive && !capturedPhoto && !showLiveness && (
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
-                <Stack spacing={1.2} alignItems="center">
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.82rem', color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.7)' }}>
+                <Stack spacing={1.2} sx={{
+                  alignItems: "center"
+                }}>
+                  <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.82rem', color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.7)' }}>
                     {t('forms.aspirant.livePhoto.alignFace')}
                   </Typography>
                   <Stack direction="row" spacing={1.4}>
@@ -437,7 +445,7 @@ const LivePhotoCaptureStep = ({
                       onClick={switchCamera}
                       title={facingMode === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
                       sx={{
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         minWidth: 'auto',
                         px: 1.2,
                         color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)',
@@ -453,7 +461,7 @@ const LivePhotoCaptureStep = ({
                       startIcon={<CameraAltIcon />}
                       onClick={capturePhoto}
                       sx={{
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         fontWeight: 700,
                         background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
                         color: '#fff',
@@ -469,7 +477,9 @@ const LivePhotoCaptureStep = ({
 
             {uploadStatus === 'success' && !capturedPhoto && (
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <Stack spacing={1.6} alignItems="center">
+                <Stack spacing={1.6} sx={{
+                  alignItems: "center"
+                }}>
                   <Box sx={{
                     width: 200, height: 200, borderRadius: '50%',
                     overflow: 'hidden',
@@ -487,9 +497,11 @@ const LivePhotoCaptureStep = ({
                       <CheckCircleIcon sx={{ fontSize: 80, color: '#4caf50' }} />
                     )}
                   </Box>
-                  <Stack direction="row" spacing={0.8} alignItems="center">
+                  <Stack direction="row" spacing={0.8} sx={{
+                    alignItems: "center"
+                  }}>
                     <CheckCircleIcon sx={{ color: '#4caf50', fontSize: 18 }} />
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: '#4caf50', fontWeight: 700 }}>
+                    <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem', color: '#4caf50', fontWeight: 700 }}>
                       {t('common.uploaded') || 'Uploaded!'}
                     </Typography>
                   </Stack>
@@ -503,7 +515,7 @@ const LivePhotoCaptureStep = ({
                       if (onSelfieCaptured && clearPhoto) { clearPhoto(); setShowLiveness(true); } else { retakePhoto?.(); }
                     }}
                     sx={{
-                      fontFamily: FF, fontWeight: 700,
+                      fontFamily: FF_HEADING, fontWeight: 700,
                       color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                       borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
                       '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -517,7 +529,9 @@ const LivePhotoCaptureStep = ({
 
             {capturedPhoto && (
               <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-                <Stack spacing={1.6} alignItems="center">
+                <Stack spacing={1.6} sx={{
+                  alignItems: "center"
+                }}>
                   <Box
                     sx={{
                       width: '100%',
@@ -534,28 +548,34 @@ const LivePhotoCaptureStep = ({
                       style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                     />
                   </Box>
-                  <Stack spacing={1} alignItems="center">
+                  <Stack spacing={1} sx={{
+                    alignItems: "center"
+                  }}>
                     {/* Error message shown above the button */}
                     {uploadStatus === 'error' && (
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: '#ef5350', textAlign: 'center' }}>
+                      <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: '#ef5350', textAlign: 'center' }}>
                         {uploadErrorKey ? t(uploadErrorKey, { defaultValue: uploadErrorKey }) : t('forms.aspirant.messages.profilePictureUploadFailed', { defaultValue: 'Upload failed.' })}
                       </Typography>
                     )}
 
                     {/* Upload status indicators */}
                     {uploadStatus === 'uploading' && (
-                      <Stack direction="row" spacing={0.8} alignItems="center">
+                      <Stack direction="row" spacing={0.8} sx={{
+                        alignItems: "center"
+                      }}>
                         <CircularProgress size={16} sx={{ color: GOLD }} />
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.82rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(15,23,42,0.7)' }}>
+                        <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.82rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(15,23,42,0.7)' }}>
                           {t('common.uploading') || 'Uploading…'}
                         </Typography>
                       </Stack>
                     )}
 
                     {uploadStatus === 'success' && (
-                      <Stack direction="row" spacing={0.8} alignItems="center">
+                      <Stack direction="row" spacing={0.8} sx={{
+                        alignItems: "center"
+                      }}>
                         <CheckCircleIcon sx={{ color: '#4caf50', fontSize: 18 }} />
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.82rem', color: '#4caf50', fontWeight: 700 }}>
+                        <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.82rem', color: '#4caf50', fontWeight: 700 }}>
                           {t('common.uploaded') || 'Uploaded!'}
                         </Typography>
                       </Stack>
@@ -572,7 +592,7 @@ const LivePhotoCaptureStep = ({
                           whiteSpace: 'nowrap',
                           minWidth: 'auto',
                           px: 1.5,
-                          fontFamily: FF,
+                          fontFamily: FF_BODY,
                           color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                           borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
                           '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -590,7 +610,7 @@ const LivePhotoCaptureStep = ({
                           whiteSpace: 'nowrap',
                           minWidth: 'auto',
                           px: 1.5,
-                          fontFamily: FF,
+                          fontFamily: FF_BODY,
                           color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                           borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
                           '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -615,7 +635,6 @@ const LivePhotoCaptureStep = ({
           </Stack>
         </Box>
       </Box>
-
       {/* <Box sx={{
         px: { xs: 2, sm: 4 },
         py: 2.4,
@@ -627,7 +646,7 @@ const LivePhotoCaptureStep = ({
           startIcon={<ArrowBackIcon />}
           onClick={onBack}
           sx={{
-            fontFamily: FF,
+            fontFamily: FF_BODY,
             fontWeight: 700,
             color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
             borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',

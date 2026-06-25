@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import type { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue, UseFormTrigger, UseFormSetError, UseFormClearErrors } from 'react-hook-form';
@@ -54,7 +54,9 @@ const GOLDD = 'rgba(245,168,0,0.45)';
 const DARK = BRAND.black;                     // '#0A0808'
 const DARK2 = 'rgba(255,255,255,0.03)';
 const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 // ── Framer-motion variants ─────────────────────────────────────────────────
 const containerVariants = {
@@ -150,17 +152,17 @@ const getAutofillOverride = (isDark: boolean) => ({
 const getFieldSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
     background: isDark ? DARK2 : 'rgba(255,255,255,0.88)',
-    fontFamily: FF,
+    fontFamily: FF_BODY,
     '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
     '&:hover fieldset': { borderColor: GOLDD },
     '&.Mui-focused fieldset': { borderColor: GOLD, borderWidth: '1.5px' },
-    '& input': { color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontFamily: FF, WebkitTextFillColor: isDark ? '#fff' : 'rgba(15,23,42,0.92)' },
-    '& textarea': { color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontFamily: FF },
+    '& input': { color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontFamily: FF_BODY, WebkitTextFillColor: isDark ? '#fff' : 'rgba(15,23,42,0.92)' },
+    '& textarea': { color: isDark ? '#fff' : 'rgba(15,23,42,0.92)', fontFamily: FF_BODY },
   },
-  '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF },
+  '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF_BODY },
   '& .MuiInputLabel-root.Mui-focused': { color: GOLD },
-  '& .MuiFormHelperText-root': { color: 'rgba(255,80,80,0.85)', fontFamily: FF, fontSize: '0.72rem' },
-  '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)', fontFamily: FF },
+  '& .MuiFormHelperText-root': { color: 'rgba(255,80,80,0.85)', fontFamily: FF_BODY, fontSize: '0.72rem' },
+  '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)', fontFamily: FF_BODY },
   '& .MuiSvgIcon-root': { color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(15,23,42,0.55)' },
   ...getAutofillOverride(isDark),
 });
@@ -168,11 +170,11 @@ const getFieldSx = (isDark: boolean) => ({
 const getDisabledFieldSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
     background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)',
-    fontFamily: FF,
+    fontFamily: FF_BODY,
     '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.16)' },
-    '& input': { color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.75)', fontFamily: FF, WebkitTextFillColor: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.75)' },
+    '& input': { color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.75)', fontFamily: FF_BODY, WebkitTextFillColor: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(15,23,42,0.75)' },
   },
-  '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.62)', fontFamily: FF },
+  '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.62)', fontFamily: FF_BODY },
   '& .MuiInputLabel-root.Mui-disabled': { color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.62)' },
 });
 
@@ -628,9 +630,10 @@ const CandidateInformationStep = ({
           helperText={errors.name && t(errors.name.message || 'validation.required')}
           placeholder={t('forms.aspirant.name')}
           disabled={loading}
-          InputLabelProps={{ shrink: true, sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF } }}
-          inputProps={{ style: { fontFamily: FF }, autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-        />
+          slotProps={{
+            inputLabel: { shrink: true, sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF_BODY } },
+            htmlInput: { style: { fontFamily: FF_BODY }, autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }} />
       ),
     },
     {
@@ -643,12 +646,14 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.phone}
           helperText={errors.phone && t((errors.phone as any).message || 'validation.phone')}
-          inputProps={{ maxLength: 10, inputMode: 'tel' as const, pattern: '[6-9][0-9]{9}', autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
           onChange={e => {
             e.target.value = e.target.value.replace(/[^0-9]/g, '');
             phoneOnChange(e);
           }}
           sx={darkFieldSx}
+          slotProps={{
+            htmlInput: { maxLength: 10, inputMode: 'tel' as const, pattern: '[6-9][0-9]{9}', autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
         />
       ),
     },
@@ -663,19 +668,21 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.whatsappNumber}
           helperText={errors.whatsappNumber && t((errors.whatsappNumber as any).message || 'validation.whatsappNumber')}
-          inputProps={{ maxLength: 10, inputMode: 'tel' as const, pattern: '[6-9][0-9]{9}', autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          InputProps={{
-            startAdornment: (
-              <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="12" fill="#25D366" />
-                  <path d="M16.6 14.2c-.3-.15-1.7-.85-2-.95-.3-.1-.5-.15-.7.15-.2.3-.75.95-.9 1.15-.15.2-.35.2-.65.05-.3-.15-1.25-.45-2.4-1.45-.9-.8-1.5-1.75-1.65-2.05-.15-.3 0-.45.15-.6.1-.1.25-.3.35-.45.1-.15.15-.25.2-.4.05-.15.05-.3-.05-.45-.1-.15-.7-1.7-.95-2.3-.25-.6-.5-.5-.7-.5h-.6c-.2 0-.5.05-.75.35-.25.3-1 1-1 2.4s1 2.8 1.15 3c.15.2 2 3.05 4.85 4.3.7.3 1.2.45 1.65.6.7.2 1.3.2 1.8.1.55-.1 1.7-.7 1.95-1.35.25-.65.25-1.2.15-1.35-.1-.15-.3-.2-.6-.35z" fill="white" />
-                </svg>
-              </Box>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#25D366" />
+                    <path d="M16.6 14.2c-.3-.15-1.7-.85-2-.95-.3-.1-.5-.15-.7.15-.2.3-.75.95-.9 1.15-.15.2-.35.2-.65.05-.3-.15-1.25-.45-2.4-1.45-.9-.8-1.5-1.75-1.65-2.05-.15-.3 0-.45.15-.6.1-.1.25-.3.35-.45.1-.15.15-.25.2-.4.05-.15.05-.3-.05-.45-.1-.15-.7-1.7-.95-2.3-.25-.6-.5-.5-.7-.5h-.6c-.2 0-.5.05-.75.35-.25.3-1 1-1 2.4s1 2.8 1.15 3c.15.2 2 3.05 4.85 4.3.7.3 1.2.45 1.65.6.7.2 1.3.2 1.8.1.55-.1 1.7-.7 1.95-1.35.25-.65.25-1.2.15-1.35-.1-.15-.3-.2-.6-.35z" fill="white" />
+                  </svg>
+                </Box>
+              ),
+            },
+
+            htmlInput: { maxLength: 10, inputMode: 'tel' as const, pattern: '[6-9][0-9]{9}', autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
           }}
-          sx={darkFieldSx}
-        />
+          sx={darkFieldSx} />
       ),
     },
     {
@@ -689,20 +696,22 @@ const CandidateInformationStep = ({
           disabled={loading}
           sx={{
             ...darkFieldSx,
-            '& .MuiSelect-select': { color: watchedGender ? (isDark ? '#fff' : 'rgba(15,23,42,0.9)') : (isDark ? 'rgba(255,255,255,0.35)' : 'rgba(15,23,42,0.5)'), fontFamily: FF },
+            '& .MuiSelect-select': { color: watchedGender ? (isDark ? '#fff' : 'rgba(15,23,42,0.9)') : (isDark ? 'rgba(255,255,255,0.35)' : 'rgba(15,23,42,0.5)'), fontFamily: FF_BODY },
           }}
-          SelectProps={{
+          slotProps={{ select: {
             MenuProps: {
-              PaperProps: {
-                sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
-                  '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)', fontFamily: FF },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: GOLD },
+              slotProps: {
+                paper: {
+                  sx: {
+                    bgcolor: isDark ? '#1a1515' : '#ffffff',
+                    '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)', fontFamily: FF_BODY },
+                    '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
+                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: GOLD },
+                  },
                 },
               },
             },
-          }}
+          } }}
         >
           <MenuItem value="Male">{t('profile.male')}</MenuItem>
           <MenuItem value="Female">{t('profile.female')}</MenuItem>
@@ -719,10 +728,11 @@ const CandidateInformationStep = ({
           {...register('address')}
           defaultValue=""
           disabled={loading}
-          InputLabelProps={{ sx: { color: 'rgba(255,255,255,0.45)', fontFamily: FF }, shrink: undefined }}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          sx={darkFieldSx}
-        />
+          slotProps={{
+            inputLabel: { sx: { color: 'rgba(255,255,255,0.45)', fontFamily: FF_BODY }, shrink: undefined },
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
+          sx={darkFieldSx} />
       ),
     },
     {
@@ -734,7 +744,7 @@ const CandidateInformationStep = ({
           value={t('forms.aspirant.defaults.party')}
           placeholder={t('forms.aspirant.party')}
           disabled
-          InputLabelProps={{ shrink: true, sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF } }}
+          slotProps={{ inputLabel: { shrink: true, sx: { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)', fontFamily: FF_BODY } } }}
           sx={disabledFieldSx}
         />
       ),
@@ -760,9 +770,11 @@ const CandidateInformationStep = ({
             }
             return t(msg);
           })()}
-          inputProps={{ min: currentMinAge, max: 150, step: 1, inputMode: 'numeric' as const, autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
           onKeyDown={e => { if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault(); }}
           sx={darkFieldSx}
+          slotProps={{
+            htmlInput: { min: currentMinAge, max: 150, step: 1, inputMode: 'numeric' as const, autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
         />
       ),
     },
@@ -775,8 +787,10 @@ const CandidateInformationStep = ({
           {...register('education')}
           defaultValue=""
           disabled={loading}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
           sx={darkFieldSx}
+          slotProps={{
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
         />
       ),
     },
@@ -789,8 +803,10 @@ const CandidateInformationStep = ({
           {...register('occupation')}
           defaultValue=""
           disabled={loading}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
           sx={darkFieldSx}
+          slotProps={{
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
         />
       ),
     },
@@ -828,7 +844,7 @@ const CandidateInformationStep = ({
         return (
           <Stack spacing={1.75}>
             <Typography sx={{
-              fontFamily: FF, fontSize: '0.75rem', fontWeight: 700, color: GOLD,
+              fontFamily: FF_HEADING, fontSize: '0.75rem', fontWeight: 700, color: GOLD,
               letterSpacing: '0.06em', textTransform: 'uppercase',
             }}>
               {t('forms.aspirant.electionContext', { defaultValue: 'Election & Constituency' })}
@@ -885,7 +901,7 @@ const CandidateInformationStep = ({
                       <Icon sx={{ fontSize: { xs: 24, sm: 26 }, color: isActive ? '#fff' : GOLD }} />
                     )}
                     <Typography sx={{
-                      fontFamily: FF, fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.88rem' },
+                      fontFamily: FF_HEADING, fontWeight: 700, fontSize: { xs: '0.78rem', sm: '0.88rem' },
                       lineHeight: 1.15,
                     }}>
                       {label}
@@ -918,14 +934,14 @@ const CandidateInformationStep = ({
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1,
               }}>
                 <Box sx={{ minWidth: 0 }}>
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.10em', color: GOLD, textTransform: 'uppercase' }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.10em', color: GOLD, textTransform: 'uppercase' }}>
                     {t('forms.aspirant.savedConstituency', { defaultValue: 'Saved Constituency' })}
                   </Typography>
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, lineHeight: 1.25, wordBreak: 'break-word' }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, lineHeight: 1.25, wordBreak: 'break-word' }}>
                     {activeConstituencyForUser.name}
                   </Typography>
                   {activeConstituencyForUser.subLabel && (
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: textSecondary, mt: 0.2 }}>
+                    <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: textSecondary, mt: 0.2 }}>
                       {activeConstituencyForUser.subLabel}
                     </Typography>
                   )}
@@ -935,7 +951,7 @@ const CandidateInformationStep = ({
                   startIcon={<EditIcon sx={{ fontSize: '0.95rem' }} />}
                   onClick={() => setPickerOpen(true)}
                   sx={{
-                    color: GOLD, fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                    color: GOLD, fontFamily: FF_HEADING, fontWeight: 700, textTransform: 'none',
                     border: `1px solid ${GOLD}`, borderRadius: '8px', px: 1.5,
                     flexShrink: 0,
                     '&:hover': { background: 'rgba(245,168,0,0.08)' },
@@ -952,7 +968,7 @@ const CandidateInformationStep = ({
                 bgcolor: isDark ? 'rgba(245,168,0,0.04)' : 'rgba(245,168,0,0.05)',
                 textAlign: 'center',
               }}>
-                <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: textPrimary, mb: 1 }}>
+                <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.88rem', color: textPrimary, mb: 1 }}>
                   {t('forms.aspirant.constituencyMissing', {
                     type: missingTypeLabel,
                     defaultValue: `If you want to contest, update your ${missingTypeLabel} constituency in your profile.`,
@@ -965,7 +981,7 @@ const CandidateInformationStep = ({
                   onClick={() => setPickerOpen(true)}
                   sx={{
                     color: GOLD, borderColor: GOLD,
-                    fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 700, textTransform: 'none',
                     '&:hover': { borderColor: GOLD, background: 'rgba(245,168,0,0.08)' },
                   }}
                 >
@@ -975,7 +991,7 @@ const CandidateInformationStep = ({
             )}
 
             {errors.constituencyId && missing && (
-              <Typography sx={{ color: 'rgba(255,80,80,0.85)', fontSize: '0.72rem', fontFamily: FF }}>
+              <Typography sx={{ color: 'rgba(255,80,80,0.85)', fontSize: '0.72rem', fontFamily: FF_BODY }}>
                 {t((errors.constituencyId as any).message || 'validation.required')}
               </Typography>
             )}
@@ -1000,8 +1016,10 @@ const CandidateInformationStep = ({
           helperText={errors.manifesto && t(errors.manifesto.message || 'validation.required')}
           placeholder={t('pages.candidateDetails.labels.about')}
           disabled={loading}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
           sx={darkFieldSx}
+          slotProps={{
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
+          }}
         />
       ),
     },
@@ -1017,29 +1035,31 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.instagramLink}
           helperText={errors.instagramLink && t((errors.instagramLink as any).message || 'validation.instagramLink')}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          InputProps={{
-            startAdornment: (
-              <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
-                      <stop offset="0%" stopColor="#fdf497" />
-                      <stop offset="5%" stopColor="#fdf497" />
-                      <stop offset="45%" stopColor="#fd5949" />
-                      <stop offset="60%" stopColor="#d6249f" />
-                      <stop offset="90%" stopColor="#285AEB" />
-                    </radialGradient>
-                  </defs>
-                  <rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="url(#ig-grad)" />
-                  <circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="2" fill="none" />
-                  <circle cx="17.5" cy="6.5" r="1.2" fill="white" />
-                </svg>
-              </Box>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
+                        <stop offset="0%" stopColor="#fdf497" />
+                        <stop offset="5%" stopColor="#fdf497" />
+                        <stop offset="45%" stopColor="#fd5949" />
+                        <stop offset="60%" stopColor="#d6249f" />
+                        <stop offset="90%" stopColor="#285AEB" />
+                      </radialGradient>
+                    </defs>
+                    <rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="url(#ig-grad)" />
+                    <circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="2" fill="none" />
+                    <circle cx="17.5" cy="6.5" r="1.2" fill="white" />
+                  </svg>
+                </Box>
+              ),
+            },
+
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
           }}
-          sx={darkFieldSx}
-        />
+          sx={darkFieldSx} />
       ),
     },
     {
@@ -1054,19 +1074,21 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.facebookLink}
           helperText={errors.facebookLink && t((errors.facebookLink as any).message || 'validation.facebookLink')}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          InputProps={{
-            startAdornment: (
-              <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="12" fill="#1877F2" />
-                  <path d="M15.5 8H13.5C13.2 8 13 8.2 13 8.5V10H15.5L15.2 12.5H13V19H10.5V12.5H9V10H10.5V8.5C10.5 6.6 11.6 5.5 13.5 5.5H15.5V8Z" fill="white" />
-                </svg>
-              </Box>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#1877F2" />
+                    <path d="M15.5 8H13.5C13.2 8 13 8.2 13 8.5V10H15.5L15.2 12.5H13V19H10.5V12.5H9V10H10.5V8.5C10.5 6.6 11.6 5.5 13.5 5.5H15.5V8Z" fill="white" />
+                  </svg>
+                </Box>
+              ),
+            },
+
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
           }}
-          sx={darkFieldSx}
-        />
+          sx={darkFieldSx} />
       ),
     },
     {
@@ -1081,19 +1103,21 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.linkedinLink}
           helperText={errors.linkedinLink && t((errors.linkedinLink as any).message || 'validation.linkedinLink')}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          InputProps={{
-            startAdornment: (
-              <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="12" fill="#0A66C2" />
-                  <path d="M8.5 10H6.5V17.5H8.5V10ZM7.5 9C8.05 9 8.5 8.55 8.5 8C8.5 7.45 8.05 7 7.5 7C6.95 7 6.5 7.45 6.5 8C6.5 8.55 6.95 9 7.5 9ZM17.5 17.5H15.5V13.75C15.5 12.9 14.85 12.25 14 12.25C13.15 12.25 12.5 12.9 12.5 13.75V17.5H10.5V10H12.5V11.05C12.97 10.4 13.78 10 14.5 10C16.16 10 17.5 11.34 17.5 13V17.5Z" fill="white" />
-                </svg>
-              </Box>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#0A66C2" />
+                    <path d="M8.5 10H6.5V17.5H8.5V10ZM7.5 9C8.05 9 8.5 8.55 8.5 8C8.5 7.45 8.05 7 7.5 7C6.95 7 6.5 7.45 6.5 8C6.5 8.55 6.95 9 7.5 9ZM17.5 17.5H15.5V13.75C15.5 12.9 14.85 12.25 14 12.25C13.15 12.25 12.5 12.9 12.5 13.75V17.5H10.5V10H12.5V11.05C12.97 10.4 13.78 10 14.5 10C16.16 10 17.5 11.34 17.5 13V17.5Z" fill="white" />
+                  </svg>
+                </Box>
+              ),
+            },
+
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
           }}
-          sx={darkFieldSx}
-        />
+          sx={darkFieldSx} />
       ),
     },
     {
@@ -1108,19 +1132,21 @@ const CandidateInformationStep = ({
           disabled={loading}
           error={!!errors.twitterLink}
           helperText={errors.twitterLink && t((errors.twitterLink as any).message || 'validation.twitterLink')}
-          inputProps={{ autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }}
-          InputProps={{
-            startAdornment: (
-              <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="12" fill="#000000" />
-                  <path d="M13.6 10.8L17.7 6H16.7L13.2 10.2L10.4 6H7L11.3 12.7L7 17.8H8L11.7 13.4L14.6 17.8H18L13.6 10.8ZM12.2 12.8L11.8 12.2L8.4 6.8H10L12.5 10.5L12.9 11.1L16.7 17.1H15L12.2 12.8Z" fill="white" />
-                </svg>
-              </Box>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <Box component="span" sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#000000" />
+                    <path d="M13.6 10.8L17.7 6H16.7L13.2 10.2L10.4 6H7L11.3 12.7L7 17.8H8L11.7 13.4L14.6 17.8H18L13.6 10.8ZM12.2 12.8L11.8 12.2L8.4 6.8H10L12.5 10.5L12.9 11.1L16.7 17.1H15L12.2 12.8Z" fill="white" />
+                  </svg>
+                </Box>
+              ),
+            },
+
+            htmlInput: { autoComplete: 'off', autoCorrect: 'off', autoCapitalize: 'off', spellCheck: false }
           }}
-          sx={darkFieldSx}
-        />
+          sx={darkFieldSx} />
       ),
     },
   ];
@@ -1132,12 +1158,10 @@ const CandidateInformationStep = ({
       border: `1px solid ${cardBorder}`,
       boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 30px rgba(17,24,39,0.08)',
     }}>
-
       {/* Top colour bar */}
       <Box sx={{ display: 'flex', height: '5px' }}>
         {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
       {/* ── Header ── */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}
@@ -1159,18 +1183,17 @@ const CandidateInformationStep = ({
           </Box>
           <Box>
             <Typography sx={{
-              fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.1rem', sm: '1.35rem' },
+              fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.1rem', sm: '1.35rem' },
               color: textPrimary, lineHeight: 1.2,
             }}>
               {t('forms.aspirant.formTitle')}
             </Typography>
-            <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: textSecondary, mt: '2px' }}>
+            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.9rem', color: textSecondary, mt: '2px' }}>
               {t('forms.aspirant.formSubtitle', { defaultValue: 'Fill in your candidate details' })}
             </Typography>
           </Box>
         </Box>
       </motion.div>
-
       {/* ── Form fields ── */}
       <Box sx={{ px: { xs: 2, sm: 4 }, pt: 3, pb: 1 }}>
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
@@ -1187,16 +1210,20 @@ const CandidateInformationStep = ({
                         bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.06)',
                         border: `1px solid ${isDark ? 'rgba(245,168,0,0.2)' : 'rgba(245,168,0,0.25)'}`,
                         color: isDark ? '#FFCB00' : 'rgba(15,23,42,0.8)',
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         fontSize: '0.78rem',
-                        '& .MuiAlert-message': { fontFamily: FF },
+                        '& .MuiAlert-message': { fontFamily: FF_BODY },
                       }}
                     >
                       {t('forms.aspirant.electionInfoMessage')}
                     </Alert>
                   </Grid>
                 )} */}
-                <Grid item xs={colXs} md={colMd}>
+                <Grid
+                  size={{
+                    xs: colXs,
+                    md: colMd
+                  }}>
                   <motion.div variants={itemVariants}>
                     <Box sx={{
                       p: { xs: '10px 12px', sm: '12px 14px' }, borderRadius: '10px',
@@ -1216,7 +1243,6 @@ const CandidateInformationStep = ({
           </Grid>
         </motion.div>
       </Box>
-
       {/* ── Bottom bar ── */}
       <Box sx={{
         px: { xs: 2, sm: 4 }, py: 2.5, mt: 2,
@@ -1227,7 +1253,7 @@ const CandidateInformationStep = ({
 
         {(() => {
           const commonBtnSx = {
-            fontFamily: FF,
+            fontFamily: FF_BODY,
             fontWeight: 700,
             textTransform: 'none',
             borderRadius: '8px',
@@ -1308,12 +1334,10 @@ const CandidateInformationStep = ({
           );
         })()}
       </Box>
-
       {/* Bottom colour bar */}
       <Box sx={{ display: 'flex', height: '3px' }}>
         {['#6B3A00', '#253A9A', '#C8180A'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
       {/* Constituency-picker modal — opened from the tab strip's
           "Update Profile" CTA. After save it updates the auth store, and the
           tab-strip effect picks up the new electionId + constituencyId. */}

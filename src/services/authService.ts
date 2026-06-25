@@ -69,6 +69,45 @@ export const adminLoginWithPassword = async (payload: { email: string; password:
 
 export const fetchProfile = () => apiClient.get<AuthUser>('/auth/me');
 
+// --- Cookie-based auth (COOKIE_AUTH) ---------------------------------------
+// These back the httpOnly-cookie flow. They are safe to call regardless of the
+// flag, but are only wired into the UI when VITE_COOKIE_AUTH=true.
+
+export interface GoogleExchangeResponse {
+  // Present for native/mobile clients that can't use cookies; ignored on web,
+  // where the httpOnly `session` cookie set by this call is what authenticates.
+  token?: string;
+  user: AuthUser;
+}
+
+/**
+ * Exchanges the single-use, 60-second OAuth `code` (returned on the callback)
+ * for a session. On success the backend sets the httpOnly `session` cookie via
+ * Set-Cookie; the response body carries the authenticated `user`. The `code` is
+ * single-use and short-lived — call this immediately on the callback page and
+ * never retry the same code.
+ */
+export const exchangeGoogleCode = async (code: string, state: string) => {
+  const { data } = await apiClient.post<GoogleExchangeResponse>(
+    '/auth/google/exchange',
+    { code, state }
+  );
+  return data;
+};
+
+/**
+ * Asks the backend to rotate the session cookie using the refresh cookie.
+ * Used by the apiClient 401 interceptor; rarely called directly.
+ */
+export const refreshSession = () => apiClient.post('/auth/refresh');
+
+/**
+ * Clears the httpOnly session cookie server-side. JavaScript cannot delete an
+ * httpOnly cookie, so logout MUST hit this endpoint. Succeeds (200) even when
+ * there is no active session.
+ */
+export const logoutSession = () => apiClient.post('/auth/logout');
+
 export interface UpdateUserConstituenciesPayload {
   lokSabhaConstituencyId?: number | null;
   stateAssemblyConstituencyId?: number | null;

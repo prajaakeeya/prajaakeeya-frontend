@@ -106,12 +106,13 @@ const AspirantMobileNav: React.FC<AspirantMobileNavProps> = ({ aspirantProfile, 
                     <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
                         {t('userDashboard.aspirant.title') || 'Aspirant Dashboard'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                    }}>
                         Ward {aspirantProfile.wardNumber} • {aspirantProfile.assembly}
                     </Typography>
                 </CardContent>
             </Card>
-
             <Card sx={{
                 borderRadius: 3,
                 boxShadow: '0 3px 14px rgba(0,0,0,0.06)',
@@ -151,9 +152,13 @@ const AspirantMobileNav: React.FC<AspirantMobileNavProps> = ({ aspirantProfile, 
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={item.title}
-                                        primaryTypographyProps={{
-                                            fontWeight: 600,
-                                            fontSize: '0.95rem'
+                                        slotProps={{
+                                            primary: {
+                                                sx: {
+                                                    fontWeight: 600,
+                                                    fontSize: '0.95rem'
+                                                }
+                                            }
                                         }}
                                     />
                                     <ChevronRightIcon sx={{ color: 'text.secondary' }} />

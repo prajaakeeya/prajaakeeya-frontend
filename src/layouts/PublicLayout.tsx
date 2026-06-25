@@ -22,10 +22,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
 import LanguageSelector from '../components/LanguageSelector';
 import HomeIcon from '@mui/icons-material/Home';
+import ForumIcon from '@mui/icons-material/ForumRounded';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import AppFooter from '../components/AppFooter';
 
 const PublicLayout = () => {
   const { t } = useTranslation();
@@ -37,6 +39,7 @@ const PublicLayout = () => {
 
   const navItems = [
     { label: t('pages.landing.nav.home'), path: '/', icon: <HomeIcon /> },
+    { label: 'Katte', path: '/guest/discussions', icon: <ForumIcon /> },
     { label: t('pages.landing.nav.about'), path: '/about', icon: <InfoIcon /> },
     // { label: t('pages.landing.nav.candidates'), path: '/candidateslist', icon: <PeopleIcon /> },
     { label: t('pages.landing.nav.elections'), path: '/elections', icon: <BarChartIcon /> },
@@ -79,8 +82,12 @@ const PublicLayout = () => {
             <Box sx={{ mr: 2, color: 'primary.main' }}>{item.icon}</Box>
             <ListItemText
               primary={item.label}
-              primaryTypographyProps={{
-                fontWeight: 500
+              slotProps={{
+                primary: {
+                  sx: {
+                    fontWeight: 500
+                  }
+                }
               }}
             />
           </ListItemButton>
@@ -111,7 +118,7 @@ const PublicLayout = () => {
   );
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff', display: 'flex', flexDirection: 'column' }}>
       <AppBar position="sticky" elevation={0} color="transparent" sx={{ top: 0, bgcolor: '#ffffff' }}>
         <Toolbar
           sx={{
@@ -166,7 +173,13 @@ const PublicLayout = () => {
             })}
           </Stack>
 
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              alignItems: "center",
+              display: { xs: 'none', md: 'flex' }
+            }}>
             <LanguageSelector
               sx={{ fontWeight: 700, minWidth: 64 }}
             />
@@ -182,7 +195,6 @@ const PublicLayout = () => {
           </Stack>
         </Toolbar>
       </AppBar>
-
       <Drawer
         variant="temporary"
         open={mobileOpen}
@@ -200,10 +212,10 @@ const PublicLayout = () => {
       >
         {drawer}
       </Drawer>
-
-      <Container maxWidth="lg" sx={{ pt: 0, pb: 0, px: { xs: 0, sm: 3 } }}>
+      <Container maxWidth="xl" sx={{ pt: 0, pb: 0, px: { xs: 0, sm: 3 }, flex: 1 }}>
         <Outlet />
       </Container>
+      <AppFooter />
     </Box>
   );
 };

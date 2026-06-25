@@ -23,6 +23,7 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import apiClient from '../../services/apiClient';
 import { useTranslation } from 'react-i18next';
+import { safeUrl } from '../../utils/safeUrl';
 
 interface AspirantPostsTabProps {
     posts: any[];
@@ -62,7 +63,7 @@ const AspirantPostsTab: React.FC<AspirantPostsTabProps> = ({
     return (
         <>
             <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 1.5, md: 3 }}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <Card sx={{ borderRadius: { xs: 1, md: 3 }, boxShadow: '0 3px 14px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.06)' }}>
                         <CardContent sx={{ p: { xs: 1.5, md: 3 } }}>
                             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 1.5, sm: 1 }, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'space-between', mb: 2 }}>
@@ -109,9 +110,13 @@ const AspirantPostsTab: React.FC<AspirantPostsTabProps> = ({
                                                     </Box>
                                                     {/* Right: Date, Location, Map link, Attending, Delete */}
                                                     <Box sx={{ flex: 1, minWidth: 0 }}>
-                                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                                        <Stack direction="row" spacing={0.5} sx={{
+                                                            alignItems: "center"
+                                                        }}>
                                                             <AccessTimeIcon sx={{ fontSize: 14, color: 'text.secondary', flexShrink: 0 }} />
-                                                            <Typography variant="caption" color="text.secondary" noWrap>
+                                                            <Typography variant="caption" noWrap sx={{
+                                                                color: "text.secondary"
+                                                            }}>
                                                                 {(() => {
                                                                     const startRaw = p.startTime ?? p.scheduledAt ?? null;
                                                                     const endRaw = p.endTime ?? null;
@@ -130,17 +135,29 @@ const AspirantPostsTab: React.FC<AspirantPostsTabProps> = ({
                                                                 })()}
                                                             </Typography>
                                                         </Stack>
-                                                        <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.5 }}>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={0.5}
+                                                            sx={{
+                                                                alignItems: "center",
+                                                                mt: 0.5
+                                                            }}>
                                                             <LocationOnIcon sx={{ fontSize: 14, color: 'primary.main', flexShrink: 0 }} />
                                                             <Typography variant="body2" sx={{ fontWeight: 600 }}>{p.location || '—'}</Typography>
                                                         </Stack>
                                                         {p.googleMapsLink && (
-                                                            <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.5 }}>
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={0.5}
+                                                                sx={{
+                                                                    alignItems: "center",
+                                                                    mt: 0.5
+                                                                }}>
                                                                 <LinkIcon sx={{ fontSize: 14, color: 'primary.main', flexShrink: 0 }} />
                                                                 <Typography
                                                                     component="a"
                                                                     variant="caption"
-                                                                    onClick={() => window.open(p.googleMapsLink, '_blank', 'noopener')}
+                                                                    onClick={() => { const u = safeUrl(p.googleMapsLink); if (u) window.open(u, '_blank', 'noopener'); }}
                                                                     sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'underline' }}
                                                                 >
                                                                     View on Google Maps
@@ -148,9 +165,16 @@ const AspirantPostsTab: React.FC<AspirantPostsTabProps> = ({
                                                             </Stack>
                                                         )}
                                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0 }}>
-                                                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                                            <Stack direction="row" spacing={0.5} sx={{
+                                                                alignItems: "center"
+                                                            }}>
                                                                 <ThumbUpIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
-                                                                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                                                                <Typography
+                                                                    variant="caption"
+                                                                    sx={{
+                                                                        color: "text.secondary",
+                                                                        fontWeight: 600
+                                                                    }}>
                                                                     {p.attendingCount ?? 0} {t('userDashboard.aspirant.attending') || 'Attending'}
                                                                 </Typography>
                                                             </Stack>
@@ -170,7 +194,9 @@ const AspirantPostsTab: React.FC<AspirantPostsTabProps> = ({
                                     ))}
                                 </Stack>
                             ) : (
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="body2" sx={{
+                                    color: "text.secondary"
+                                }}>
                                     {t('userDashboard.noPosts') || 'No posts yet.'}
                                 </Typography>
                             )}

@@ -451,22 +451,24 @@ const DocumentsUploadPage = () => {
         onClose={() => { setSuccessDialogOpen(false); navigate('/user/dashboard', { replace: true }); }}
         maxWidth="sm"
         fullWidth
-        BackdropProps={{ sx: { backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.74)' } }}
-        PaperProps={{
-          sx: {
-            bgcolor: isDark ? '#0A0808' : '#FFFFFF',
-            color: theme.palette.text.primary,
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: isDark ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
-            boxShadow: isDark
-              ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
-              : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
-            backgroundImage: isDark
-              ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
-              : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)',
-            backgroundSize: '44px 44px',
-          },
+        slotProps={{
+          backdrop: { sx: { backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.74)' } },
+          paper: {
+            sx: {
+              bgcolor: isDark ? '#0D0F12' : '#FFFFFF',
+              color: theme.palette.text.primary,
+              borderRadius: '16px',
+              overflow: 'hidden',
+              border: isDark ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
+              boxShadow: isDark
+                ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
+                : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
+              backgroundImage: isDark
+                ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
+                : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)',
+              backgroundSize: '44px 44px',
+            },
+          }
         }}
       >
         <Box sx={{ display: 'flex', height: '4px' }}>

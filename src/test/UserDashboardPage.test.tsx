@@ -109,7 +109,10 @@ describe('UserDashboardPage', () => {
     expect(await screen.findByText('1,234')).toBeInTheDocument();
   });
 
-  // NOTE: the action-tile navigation tests (Register-as-Aspirant, Public Issues,
-  // etc.) were removed — those tiles no longer live on the dashboard. The nav
-  // moved to the shared header (UserLayout), which owns that behavior now.
+  it('renders the action tiles on desktop', () => {
+    renderWithProviders(<UserDashboardPage />, { route: '/user/dashboard' });
+    expect(screen.getByText('userDashboard.actions.registeredAspirants')).toBeInTheDocument();
+    expect(screen.getByText('userDashboard.actions.civicIssues')).toBeInTheDocument();
+    expect(screen.getByText('userDashboard.actions.howUPPWorks')).toBeInTheDocument();
+  });
 });

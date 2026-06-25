@@ -1,0 +1,277 @@
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import type { PaletteMode } from "@mui/material";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BRAND COLORS — single source of truth for Prajaakeeya palette.
+// Import `BRAND` anywhere you need a brand color that doesn't live in the MUI
+// palette (e.g. decorative gradients, logo rings, particle colours).
+// ─────────────────────────────────────────────────────────────────────────────
+export const BRAND = {
+  red: '#C8180A',   // primary brand red
+  red2: '#E02010',   // lighter brand red
+  yellow: '#F5A800',   // brand gold / yellow
+  yellowLight: 'rgb(190,133,7)',  // darker gold for light theme text/icons
+  yellow2: '#FFCB00',   // bright accent yellow
+  saffron: '#f5550b',   // MUI primary (saffron orange)
+  blue: '#253A9A',   // accent blue
+  brown: '#6B3A00',   // accent brown
+  black: '#0A0808',   // near-black (dark theme base)
+  dark: '#110E0E',   // slightly lighter near-black
+  green: '#22c55e',
+} as const;
+
+// Shared UI radius tokens. Update here to change card roundness app-wide.
+export const UI_RADIUS = {
+  base: 4,
+  card: 12,
+} as const;
+
+// Particle / decorative colours (same brand, referenced in SplitAuthLayout)
+export const PARTICLE_COLORS = [
+  BRAND.red,
+  BRAND.yellow,
+  '#FFD740',
+  BRAND.yellow2,
+  BRAND.red2,
+] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THEME FACTORY — returns a fully-configured MUI theme for the given mode.
+// ─────────────────────────────────────────────────────────────────────────────
+export const getTheme = (mode: PaletteMode) =>
+  responsiveFontSizes(
+    createTheme({
+      spacing: 8,
+      shape: { borderRadius: UI_RADIUS.base },
+
+      palette: {
+        mode,
+
+        /* PRIMARY — saffron / gold */
+        primary: {
+          main: BRAND.saffron,
+          light: BRAND.yellow,
+          dark: '#B45309',
+          contrastText: mode === 'dark' ? '#FFFFFF' : '#111827',
+        },
+
+        /* SECONDARY */
+        secondary:
+          mode === 'dark'
+            ? {
+              main: BRAND.yellow,
+              light: BRAND.yellow2,
+              dark: '#B45309',
+              contrastText: BRAND.black,
+            }
+            : {
+              main: '#111827',
+              light: '#374151',
+              dark: '#020617',
+              contrastText: '#FFFFFF',
+            },
+
+        /* BACKGROUNDS */
+        background:
+          mode === 'dark'
+            ? { default: BRAND.black, paper: '#150E0E' }
+            : { default: '#F8FAFC', paper: '#FFFFFF' },
+
+        /* TEXT */
+        text:
+          mode === 'dark'
+            ? { primary: '#FFFFFF', secondary: 'rgba(255,255,255,0.65)' }
+            : { primary: '#111827', secondary: '#4B5563' },
+
+        /* DIVIDER */
+        divider:
+          mode === 'dark'
+            ? 'rgba(245,168,0,0.18)'
+            : 'rgba(17, 24, 39, 0.10)',
+
+        /* STATUS */
+        success: { main: mode === 'dark' ? '#22C55E' : '#15803D' },
+        error: { main: mode === 'dark' ? '#EF4444' : '#DC2626' },
+        warning: { main: mode === 'dark' ? '#F59E0B' : '#D97706' },
+        info: { main: mode === 'dark' ? '#60A5FA' : '#2563EB' },
+      },
+
+      // ── Typography ───────────────────────────────────────────────────────
+      typography: {
+        fontFamily:
+          '"Inter", "Noto Sans Kannada", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+
+        h1: {
+          fontFamily: '"Playfair Display", serif',
+          fontWeight: 800,
+          fontSize: '2.8rem',
+          lineHeight: 1.15,
+          letterSpacing: '-0.03em',
+        },
+        h2: {
+          fontFamily: '"Playfair Display", serif',
+          fontWeight: 700,
+          fontSize: '2.25rem',
+          lineHeight: 1.2,
+        },
+        h3: {
+          fontFamily: '"Playfair Display", serif',
+          fontWeight: 600,
+          fontSize: '1.9rem',
+        },
+        h4: {
+          fontFamily: '"Playfair Display", serif',
+          fontWeight: 600,
+          fontSize: '1.55rem',
+        },
+        h5: { fontWeight: 600, fontSize: '1.25rem' },
+        h6: { fontWeight: 600, fontSize: '1.1rem' },
+
+        body1: { fontSize: '1rem', lineHeight: 1.7 },
+        body2: { fontSize: '0.875rem', lineHeight: 1.6 },
+
+        button: {
+          textTransform: 'none',
+          fontWeight: 600,
+          letterSpacing: '0.03em',
+        },
+      },
+
+      // ── Component overrides ──────────────────────────────────────────────
+      components: {
+        /* BUTTONS */
+        MuiButton: {
+          styleOverrides: {
+            root: {
+              borderRadius: 10,
+              padding: '10px 26px',
+              minHeight: 44,
+              transition: 'all 0.25s ease',
+            },
+            contained: {
+              backgroundImage: `linear-gradient(145deg, ${BRAND.red}, ${BRAND.saffron})`,
+              color: '#ffffff',
+              boxShadow: '0 6px 18px rgba(217, 119, 6, 0.2)',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 12px 30px rgba(217, 119, 6, 0.35)',
+              },
+            },
+            outlined: {
+              borderWidth: 1.5,
+              borderColor: BRAND.yellow,
+              color: '#B45309',
+              '&:hover': {
+                backgroundColor: 'rgba(245, 158, 11, 0.08)',
+              },
+            },
+          },
+        },
+
+        /* CARDS */
+        MuiCard: {
+          styleOverrides: {
+            root: ({ theme }) => ({
+              borderRadius: UI_RADIUS.card,
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? '0 6px 20px rgba(0,0,0,0.45)'
+                  : '0 6px 20px rgba(17, 24, 39, 0.06)',
+              transition: 'all 0.25s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow:
+                  theme.palette.mode === 'dark'
+                    ? '0 14px 36px rgba(0,0,0,0.65)'
+                    : '0 14px 36px rgba(17, 24, 39, 0.12)',
+              },
+            }),
+          },
+        },
+
+        // Force a single card radius across the app, even when page-level sx sets larger values.
+        MuiCssBaseline: {
+          styleOverrides: {
+            '.MuiCard-root': {
+              borderRadius: `${UI_RADIUS.card}px !important`,
+            },
+          },
+        },
+
+        /* APP BAR */
+        MuiAppBar: {
+          styleOverrides: {
+            root: ({ theme }) => ({
+              backgroundColor:
+                theme.palette.mode === 'dark' ? BRAND.black : '#FFFFFF',
+              color:
+                theme.palette.mode === 'dark' ? '#FFFFFF' : '#111827',
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? '0 8px 30px rgba(0,0,0,0.45)'
+                  : '0 1px 6px rgba(17,24,39,0.08)',
+            }),
+          },
+        },
+
+        /* TEXT FIELD */
+        MuiTextField: {
+          styleOverrides: {
+            root: {
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 10,
+                '&.Mui-focused fieldset': {
+                  borderWidth: 2,
+                  borderColor: BRAND.yellow,
+                },
+              },
+            },
+          },
+        },
+
+        /* CHIPS */
+        MuiChip: {
+          styleOverrides: {
+            root: { borderRadius: 8, fontWeight: 600 },
+          },
+          variants: [
+            {
+              props: { variant: 'filled', color: 'primary' },
+              style: { backgroundColor: '#FEF3C7', color: '#92400E' },
+            },
+          ],
+        },
+
+        /* ALERT */
+        MuiAlert: {
+          styleOverrides: {
+            root: { borderRadius: 12 },
+          },
+        },
+
+        /* DRAWER */
+        MuiDrawer: {
+          styleOverrides: {
+            paper: ({ theme }) => ({
+              backgroundColor:
+                theme.palette.mode === 'dark' ? '#1C0808' : '#FFFFFF',
+              color:
+                theme.palette.mode === 'dark' ? '#FFFFFF' : '#111827',
+              borderRight:
+                theme.palette.mode === 'dark'
+                  ? `1px solid rgba(200,24,10,0.25)`
+                  : `1px solid rgba(17,24,39,0.12)`,
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? '4px 0 40px rgba(0,0,0,0.7)'
+                  : '4px 0 40px rgba(0,0,0,0.08)',
+            }),
+          },
+        },
+      },
+    })
+  );
+
+// Default export — dark theme (used as fallback / SSR default)
+const theme = getTheme('dark');
+export default theme;

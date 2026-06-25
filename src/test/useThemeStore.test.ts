@@ -12,9 +12,12 @@ describe('useThemeStore', () => {
     expect(useThemeStore.getState().mode).toBe('dark');
   });
 
-  it('toggleTheme switches dark -> light -> dark', () => {
+  it('toggleTheme switches dark -> light -> grey -> dark', () => {
     useThemeStore.getState().toggleTheme();
     expect(useThemeStore.getState().mode).toBe('light');
+
+    useThemeStore.getState().toggleTheme();
+    expect(useThemeStore.getState().mode).toBe('grey');
 
     useThemeStore.getState().toggleTheme();
     expect(useThemeStore.getState().mode).toBe('dark');
@@ -23,5 +26,8 @@ describe('useThemeStore', () => {
   it('setMode sets the mode explicitly', () => {
     useThemeStore.getState().setMode('light');
     expect(useThemeStore.getState().mode).toBe('light');
+
+    useThemeStore.getState().setMode('grey');
+    expect(useThemeStore.getState().mode).toBe('grey');
   });
 });

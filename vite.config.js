@@ -30,6 +30,11 @@ export default defineConfig(({ command, mode }) => {
         'src/vite-env.d.ts', '**/types/**', 'src/test/**', 'e2e/**',
       ],
     },
+    server: {
+      deps: {
+        inline: true,
+      },
+    },
   },
   plugins: [
     react(),
@@ -97,10 +102,43 @@ export default defineConfig(({ command, mode }) => {
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,woff2}'],
+        // C-PERF-1: Precache only the critical app shell — NOT every asset.
+        // The old '**/*.{js,...}' precached ~5 MB on first install: all 11
+        // language chunks (~2.6 MB), every Admin page, and images, even for an
+        // English-only voter who never opens /admin. We now precache just the
+        // shell and let everything else cache on first actual use via the
+        // runtime rule below (offline support preserved — languages are loaded
+        // through dynamic import() in src/i18n, so they fetch on demand).
+        globPatterns: [
+          'index.html',
+          'manifest.webmanifest',
+          'favicon.ico',
+          'assets/index-*.js',
+          'assets/vendor-*.js',
+          'assets/i18n-vendor-*.js',
+          'assets/*.css',
+        ],
+        globIgnores: [
+          'assets/[a-z][a-z]-*.js', // language chunks (bn-, hi-, kn-, ta-, ma-, …)
+          'assets/Admin*.js',       // admin page chunks
+          '**/images/**',           // images load on the pages that use them
+          '**/*.map',
+        ],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
+          {
+            // Route / language / page chunks that aren't precached: cache them
+            // on first visit so subsequent loads (and offline) work, without
+            // paying for all of them up front. Matches Vite's hashed assets.
+            urlPattern: /\/assets\/.*-[A-Za-z0-9_-]{8}\.js$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'app-chunks',
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -154,8 +192,18 @@ export default defineConfig(({ command, mode }) => {
       : []),
   ],
   resolve: {
+    alias: {
+      'react-transition-group/TransitionGroupContext': 'react-transition-group/cjs/TransitionGroupContext.js',
+    },
     extensions: ['.tsx', '.ts', '.jsx', '.js']
   },
+  // L-SEC-1: strip all console.* and debugger statements from the production
+  // bundle. Several call sites log raw server error payloads (err.response.data),
+  // which can carry PII/internal details — this guarantees none of that reaches a
+  // user's devtools in prod, current or future, without touching the 73 call sites
+  // (they stay intact for local dev). Error reporting is unaffected: it goes
+  // through Sentry.captureException, not console.
+  esbuild: { drop: command === 'build' ? ['console', 'debugger'] : [] },
   build: {
     // 'hidden' emits source maps for Sentry to upload but omits the
     // //# sourceMappingURL comment, so the deleted maps aren't referenced.
@@ -165,16 +213,21 @@ export default defineConfig(({ command, mode }) => {
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
-          // Keep React + MUI + emotion + framer-motion in ONE chunk.
-          // Splitting React away from MUI creates a circular chunk reference
-          // that can break module init order at runtime — keep them together.
+          // C-PERF-3: framer-motion gets its own chunk. It's a leaf dependency
+          // (imports React, but nothing in the `vendor` triad imports it back),
+          // so unlike React/MUI/emotion it carries NO circular-reference risk.
+          // It's only used by a handful of (mostly lazy) routes, so isolating it
+          // keeps ~100 KB out of the entry vendor chunk that loads on every page.
+          if (id.includes('framer-motion')) return 'framer';
+          // Keep React + MUI + emotion in ONE chunk. Splitting React away from
+          // MUI creates a circular chunk reference that can break module init
+          // order at runtime — keep this triad together.
           if (
             id.includes('/react/') ||
             id.includes('/react-dom/') ||
             id.includes('react-router') ||
             id.includes('@mui') ||
-            id.includes('@emotion') ||
-            id.includes('framer-motion')
+            id.includes('@emotion')
           ) {
             return 'vendor';
           }

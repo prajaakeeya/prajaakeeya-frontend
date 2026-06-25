@@ -54,7 +54,7 @@ describe('SplitAuthLayout', () => {
     expect(screen.getByAltText('Prajaakeeya Logo')).toBeInTheDocument();
     // The theme toggle button is labelled by its aria-label (light mode here).
     expect(
-      screen.getByRole('button', { name: 'Switch to dark theme' }),
+      screen.getByRole('button', { name: 'Switch to grey theme' }),
     ).toBeInTheDocument();
   });
 
@@ -74,6 +74,14 @@ describe('SplitAuthLayout', () => {
       </SplitAuthLayout>,
     );
     expect(useThemeStore.getState().mode).toBe('light');
+    
+    // Toggle 1: light -> grey
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Switch to grey theme' }),
+    );
+    expect(useThemeStore.getState().mode).toBe('grey');
+
+    // Toggle 2: grey -> dark
     fireEvent.click(
       screen.getByRole('button', { name: 'Switch to dark theme' }),
     );

@@ -57,19 +57,24 @@ const AdminDashboardPage = () => {
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {t('adminDashboard.title')}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" sx={{
+          color: "text.secondary"
+        }}>
           {t('adminDashboard.subtitle') || 'Overview of your ward management system'}
         </Typography>
       </Box>
-
       {error && (
         <Alert severity="error" sx={{ borderRadius: 2 }}>
           {error}
         </Alert>
       )}
-
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 3
+          }}>
           <StatsCard
             label={t('adminDashboard.cards.voters')}
             value={data.totals.citizens}
@@ -77,7 +82,12 @@ const AdminDashboardPage = () => {
             color="info"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 3
+          }}>
           <StatsCard
             label={t('adminDashboard.cards.aspirants')}
             value={data.totals.aspirants}
@@ -86,7 +96,6 @@ const AdminDashboardPage = () => {
           />
         </Grid>
       </Grid>
-
       {/* Extraction Progress removed from dashboard */}
     </Stack>
   );

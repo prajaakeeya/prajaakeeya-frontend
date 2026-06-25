@@ -1,5 +1,6 @@
 import apiClient from './apiClient';
 import { AuthUser } from '../types/auth';
+import { COOKIE_AUTH } from '../config/authMode';
 
 export interface AspirantChatMessageDto {
   id: number;
@@ -38,9 +39,16 @@ export function subscribeToAspirantChat(
   token: string,
   handlers: ChatStreamHandlers,
 ): EventSource | null {
-  if (typeof window === 'undefined' || typeof EventSource === 'undefined' || !token) return null;
-  const url = `${API_BASE}/aspirants/${aspirantId}/chat/stream?token=${encodeURIComponent(token)}`;
-  const es = new EventSource(url);
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return null;
+  // Cookie mode: EventSource can't set headers, but it DOES send cookies when
+  // withCredentials is true — so authenticate via the httpOnly session cookie
+  // and drop the ?token= query param (which also avoids the URL-leak issue,
+  // audit H-SEC-1). Legacy mode still needs a token in the query string.
+  if (!COOKIE_AUTH && !token) return null;
+  const url = COOKIE_AUTH
+    ? `${API_BASE}/aspirants/${aspirantId}/chat/stream`
+    : `${API_BASE}/aspirants/${aspirantId}/chat/stream?token=${encodeURIComponent(token)}`;
+  const es = new EventSource(url, COOKIE_AUTH ? { withCredentials: true } : undefined);
   es.onerror = (e) => console.warn('[chat-sse] connection error / closed (auto-retry)', e);
   es.addEventListener('message.created', (e) => {
     try { handlers.onCreated?.(JSON.parse((e as MessageEvent).data)); } catch { /* ignore */ }

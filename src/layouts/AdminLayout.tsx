@@ -30,12 +30,15 @@ import {
 LocationCity as LocationCityIcon,
   Grass as GrassIcon,
   LightMode as LightModeIcon,
-  DarkMode as DarkModeIcon
+  DarkMode as DarkModeIcon,
+  Contrast as ContrastIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
+import { BRAND } from '../theme';
+import AppFooter from '../components/AppFooter';
 
 const drawerWidth = 280;
 
@@ -87,8 +90,8 @@ const AdminLayout = () => {
   };
 
   const drawer = (
-    <Box sx={{ bgcolor: '#f5550b', minHeight: '100vh' }}>
-      <Box sx={{ p: 2, pt: 2, bgcolor: '#f5550b' }}>
+    <Box sx={{ bgcolor: BRAND.red, minHeight: '100vh' }}>
+      <Box sx={{ p: 2, pt: 2, bgcolor: BRAND.red }}>
         <Typography variant="overline" sx={{ px: 2, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
           {t('common.navigation')}
         </Typography>
@@ -97,7 +100,7 @@ const AdminLayout = () => {
         sx={{
           px: 1.5,
           pt: 1,
-          bgcolor: '#f5550b',
+          bgcolor: BRAND.red,
           minHeight: '100vh'
         }}
       >
@@ -113,60 +116,60 @@ const AdminLayout = () => {
               sx={{
                 mb: 0.5,
                 borderRadius: 2,
-                bgcolor: isSelected ? 'white' : '#f5550b',
-                color: isSelected ? '#f5550b' : 'white',
+                bgcolor: isSelected ? 'white' : BRAND.red,
+                color: isSelected ? BRAND.red : 'white',
                 fontWeight: isSelected ? 700 : 500,
                 '&:hover': {
                   bgcolor: isSelected ? 'white' : 'rgba(255, 255, 255, 0.1)',
-                  color: isSelected ? '#f5550b' : 'white',
+                  color: isSelected ? BRAND.red : 'white',
                   '& .MuiListItemIcon-root': {
-                    color: isSelected ? '#f5550b' : 'white',
+                    color: isSelected ? BRAND.red : 'white',
                   },
                   '& .MuiListItemText-primary': {
-                    color: isSelected ? '#f5550b' : 'white',
+                    color: isSelected ? BRAND.red : 'white',
                   }
                 },
                 '&:active': {
                   bgcolor: isSelected ? 'white' : 'rgba(255, 255, 255, 0.15)',
-                  color: isSelected ? '#f5550b' : 'white',
+                  color: isSelected ? BRAND.red : 'white',
                 },
                 '&:focus': {
-                  bgcolor: isSelected ? 'white' : '#f5550b',
-                  color: isSelected ? '#f5550b' : 'white',
+                  bgcolor: isSelected ? 'white' : BRAND.red,
+                  color: isSelected ? BRAND.red : 'white',
                 },
                 '&.Mui-selected': {
                   bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  color: `${BRAND.red} !important`,
                   '& .MuiListItemIcon-root': {
-                    color: '#f5550b !important',
+                    color: `${BRAND.red} !important`,
                   },
                   '& .MuiListItemText-primary': {
-                    color: '#f5550b !important',
+                    color: `${BRAND.red} !important`,
                     fontWeight: 700,
                   }
                 },
                 '&.Mui-selected:hover': {
                   bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  color: `${BRAND.red} !important`,
                 },
                 '&.Mui-selected:active': {
                   bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  color: `${BRAND.red} !important`,
                 },
                 '&.Mui-selected:focus': {
                   bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  color: `${BRAND.red} !important`,
                 },
                 '& .MuiListItemIcon-root': {
-                  color: isSelected ? '#f5550b' : 'white',
+                  color: isSelected ? BRAND.red : 'white',
                 },
                 '& .MuiListItemText-primary': {
-                  color: isSelected ? '#f5550b' : 'white',
+                  color: isSelected ? BRAND.red : 'white',
                   fontWeight: isSelected ? 700 : 500,
                 }
               }}
             >
-              <ListItemIcon sx={{ color: isSelected ? '#f5550b' : 'white', minWidth: 40 }}>
+              <ListItemIcon sx={{ color: isSelected ? BRAND.red : 'white', minWidth: 40 }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText primary={item.label} />
@@ -246,13 +249,25 @@ const AdminLayout = () => {
                 />
               </Box>
             </Box>
-            <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+            <Tooltip title={
+              mode === 'dark'
+                ? 'Switch to light mode'
+                : mode === 'light'
+                ? 'Switch to grey mode'
+                : 'Switch to dark mode'
+            }>
               <IconButton
                 onClick={toggleTheme}
                 size="small"
                 sx={{ color: 'text.secondary' }}
               >
-                {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+                {mode === 'dark' ? (
+                  <DarkModeIcon fontSize="small" />
+                ) : mode === 'light' ? (
+                  <LightModeIcon fontSize="small" />
+                ) : (
+                  <ContrastIcon fontSize="small" />
+                )}
               </IconButton>
             </Tooltip>
             <IconButton
@@ -285,7 +300,7 @@ const AdminLayout = () => {
               boxSizing: 'border-box',
               width: drawerWidth,
               borderRight: 'none',
-              bgcolor: '#f5550b',
+              bgcolor: BRAND.red,
               overflow: 'auto',
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': {
@@ -314,13 +329,16 @@ const AdminLayout = () => {
           bgcolor: 'background.default',
           p: { xs: 2, sm: 3, md: 4 },
           minHeight: '100vh',
-          width: { md: `calc(100% - ${drawerWidth}px)` }
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Toolbar />
-        <Box sx={{ maxWidth: 1400, mx: 'auto' }}>
+        <Box sx={{ maxWidth: 1400, mx: 'auto', flex: 1, width: '100%' }}>
           <Outlet />
         </Box>
+        <AppFooter />
       </Box>
     </Box>
   );

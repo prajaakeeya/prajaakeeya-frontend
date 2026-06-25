@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import '@fontsource-variable/geist';
+
+/* C-PERF-2: Inter + Playfair Display are now loaded via the single
+   consolidated <link> in index.html (faster, non-render-blocking) instead
+   of this @import, which CSS serialises after the parent stylesheet. */
 
 /* Global base styles */
 html,
@@ -11,15 +15,17 @@ body {
     margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Geist Variable', 'Geist', sans-serif;
     /* Background and colour are controlled by MUI CssBaseline via the active theme */
 }
 
 h1,
 h2,
 h3,
-h4 {
-    font-family: 'Playfair Display', serif;
+h4,
+h5,
+h6 {
+    font-family: 'Heming', 'Geist Variable', 'Geist', sans-serif;
 }
 
 /* Small helper to ensure pseudo-element gradients show outside overflow-hidden cards */

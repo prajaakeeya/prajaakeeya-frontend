@@ -81,6 +81,7 @@ import capitolInactiveImg from '../assets/images/capitol.png';
 import capitolActiveImg from '../assets/images/capitol1.webp';
 import { BRAND } from '../theme';
 import SopAgreementCard from '../components/aspirant/SopAgreementCard';
+import { safeUrl } from '../utils/safeUrl';
 
 interface Candidate {
   id: number;
@@ -665,9 +666,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
   const textSecondary = theme.palette.text.secondary;
   const textDim = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(17,24,39,0.42)';
   const textFaint = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(17,24,39,0.52)';
-  const cardBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #130B0B 100%)' : theme.palette.background.paper;
-  const panelBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #160C0C 100%)' : theme.palette.background.paper;
-  const dialogBg = isDark ? 'linear-gradient(160deg, #1C1212 0%, #150E0E 100%)' : theme.palette.background.paper;
+  const cardBg = isDark ? 'linear-gradient(160deg, #1A1C1D 0%, #13161A 100%)' : theme.palette.background.paper;
+  const panelBg = isDark ? 'linear-gradient(160deg, #1A1C1D 0%, #13161A 100%)' : theme.palette.background.paper;
+  const dialogBg = isDark ? 'linear-gradient(160deg, #1A1C1D 0%, #13161A 100%)' : theme.palette.background.paper;
   const insetBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.04)';
   const insetBorder = isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(17,24,39,0.10)';
   const cardBorder = isDark ? '1px solid rgba(245,168,0,0.1)' : '1px solid rgba(245,168,0,0.22)';
@@ -1550,7 +1551,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
       </Box>
       )}
       */}
-
       <Stack className="ward-candidates-page" spacing={3}>
         {/* Voting window notification (temporarily disabled) */}
         {/* {false && votingWindow && (
@@ -1599,7 +1599,13 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
 
         {/* Page header (hidden when a voting window is present so the banner appears directly above filters, and when embedded in the dashboard which has its own hero) */}
         {!embedded && !votingWindow && (
-          <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'center', md: 'center' }} justifyContent="space-between" spacing={2}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
+            sx={{
+              alignItems: { xs: 'center', md: 'center' },
+              justifyContent: "space-between"
+            }}>
             <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
               <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5, color: textPrimary, fontFamily: '"Baloo 2", cursive', letterSpacing: '-0.5px' }}>
                 {t('pages.wardCandidates.title') || 'Aspirants'}
@@ -1743,18 +1749,20 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
               '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)' },
             }}
-            SelectProps={{
+            slotProps={{ select: {
               MenuProps: {
-                PaperProps: {
-                  sx: {
-                    bgcolor: isDark ? '#1a1515' : '#ffffff',
-                    '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                    '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                slotProps: {
+                  paper: {
+                    sx: {
+                      bgcolor: isDark ? '#1a1515' : '#ffffff',
+                      '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
+                      '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
+                      '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                    },
                   },
                 },
               },
-            }}
+            } }}
           >
             {elections.map((el) => (
               <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
@@ -1770,7 +1778,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedElectionId}
                 loading={loadingGpStates}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1795,7 +1803,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedGpState}
                 loading={loadingGpDistricts}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1825,7 +1833,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedElectionId}
                 loading={loadingMunicipalities}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1853,7 +1861,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedMunicipality}
                 loading={loadingCityConstituencies}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1886,7 +1894,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 '& .MuiAutocomplete-popupIndicator': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(17,24,39,0.55)' },
                 '& .MuiAutocomplete-clearIndicator': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(17,24,39,0.55)' },
               }}
-              ListboxProps={{
+              slotProps={{ listbox: {
                 sx: {
                   bgcolor: isDark ? '#1a1515' : '#fff',
                   '& .MuiAutocomplete-option': {
@@ -1895,7 +1903,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     '&.Mui-focused': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.04)' },
                   },
                 },
-              }}
+              } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1926,7 +1934,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               disabled={!selectedGpDistrict}
               loading={loadingGpTaluks}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1951,7 +1959,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               disabled={!selectedGpTaluk}
               loading={loadingGpGrams}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1978,7 +1986,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               loading={loadingGpVillages}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              slotProps={{ listbox: { sx: { bgcolor: isDark ? '#1a1515' : '#fff' } } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -2226,14 +2234,26 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
         {/* Inline loader — keeps the tabs / constituency header visible above
             while only the list area below shows a spinner during a tab switch. */}
         {loading && (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="320px">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "320px"
+            }}>
             <CircularProgress sx={{ color: BRAND.red }} />
           </Box>
         )}
 
         {/* "No candidates yet" + "Register as aspirant" — shown when only demo is present */}
         {!loading && candidates.length > 0 && candidates.every(c => isDemoCandidate(c)) && user && (user.role !== 'aspirant' || aspirantStatus === 'pending') && (
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} alignItems="stretch" sx={{ width: '100%' }}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2.5}
+            sx={{
+              alignItems: "stretch",
+              width: '100%'
+            }}>
             {/* No candidates yet card */}
             <Box sx={{
               flex: 1, p: 3, borderRadius: '16px', textAlign: 'center',
@@ -2444,7 +2464,12 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                               </Box>
                             </Box>
 
-                            <Stack spacing={1} alignItems="flex-end" sx={{ flexShrink: 0 }}>
+                            <Stack
+                              spacing={1}
+                              sx={{
+                                alignItems: "flex-end",
+                                flexShrink: 0
+                              }}>
                               <Chip
                                 label={(() => {
                                   const INDEPENDENT_VARIANTS = ['independent', 'ಸ್ವತಂತ್ರ'];
@@ -2509,309 +2534,312 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       });
                       if (!visibleMeetings.length) return null;
                       return (
-                      <>
-                        <Box sx={{ mt: 0.5 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                            <VideocamIcon sx={{ fontSize: 16, color: GOLD }} />
-                            <Typography sx={{ fontWeight: 700, fontSize: '0.82rem', color: textPrimary }}>
-                              {t('pages.wardCandidates.videoMeetTitle')}
-                            </Typography>
-                          </Box>
-                          {visibleMeetings.map((meeting: any, mIdx: number) => {
-                            const _mTs = meeting.scheduledAt ? Number(meeting.scheduledAt) : NaN;
-                            const _md = !isNaN(_mTs) ? new Date(_mTs > 1e12 ? _mTs : _mTs * 1000) : null;
-                            const scheduledAt = _md && !isNaN(_md.getTime()) ? _md : null;
-                            const meetEndMs = (() => {
-                              const et = meeting.endTime ?? null;
-                              if (et != null && !isNaN(Number(et))) { const n = Number(et); return n > 1e12 ? n : n * 1000; }
-                              return scheduledAt ? scheduledAt.getTime() + 3600000 : null;
-                            })();
-                            const meetingStatus = getMeetingTimeStatus(scheduledAt ? scheduledAt.getTime() : null, meetEndMs, now, isDemo);
-                            return (
-                              <Box key={meeting.id || mIdx} sx={{ mb: mIdx < visibleMeetings.length - 1 ? 1 : 0, p: 1, borderRadius: '8px', bgcolor: insetBg, border: `1px solid ${BRAND.red}` }}>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
-                                  <Box sx={{ minWidth: 0, flex: 1 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.8, mb: 0.2, flexWrap: 'nowrap' }}>
-                                      <Box sx={{ flexShrink: 0, mt: '2px' }}>{getPlatformIcon(meeting.platform, 18)}</Box>
-                                      <Typography sx={{ fontWeight: 800, fontSize: '0.82rem', color: textPrimary, overflowWrap: 'anywhere', wordBreak: 'break-word' }}>
-                                        {t('pages.wardCandidates.meetDefaultTitle')}
-                                      </Typography>
-                                    </Box>
-                                    {scheduledAt && (
-                                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4, flexWrap: 'wrap' }}>
-                                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
-                                            <CalendarIcon sx={{ fontSize: 13, color: isDark ? '#fff' : textPrimary }} />
-                                            <Typography variant="caption" sx={{ color: isDark ? '#fff' : textPrimary, fontSize: '0.7rem', fontWeight: 700 }}>
-                                              {scheduledAt.toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
+                        <>
+                          <Box sx={{ mt: 0.5 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                              <VideocamIcon sx={{ fontSize: 16, color: GOLD }} />
+                              <Typography sx={{ fontWeight: 700, fontSize: '0.82rem', color: textPrimary }}>
+                                {t('pages.wardCandidates.videoMeetTitle')}
+                              </Typography>
+                            </Box>
+                            {visibleMeetings.map((meeting: any, mIdx: number) => {
+                              const _mTs = meeting.scheduledAt ? Number(meeting.scheduledAt) : NaN;
+                              const _md = !isNaN(_mTs) ? new Date(_mTs > 1e12 ? _mTs : _mTs * 1000) : null;
+                              const scheduledAt = _md && !isNaN(_md.getTime()) ? _md : null;
+                              const meetEndMs = (() => {
+                                const et = meeting.endTime ?? null;
+                                if (et != null && !isNaN(Number(et))) { const n = Number(et); return n > 1e12 ? n : n * 1000; }
+                                return scheduledAt ? scheduledAt.getTime() + 3600000 : null;
+                              })();
+                              const meetingStatus = getMeetingTimeStatus(scheduledAt ? scheduledAt.getTime() : null, meetEndMs, now, isDemo);
+                              return (
+                                <Box key={meeting.id || mIdx} sx={{ mb: mIdx < visibleMeetings.length - 1 ? 1 : 0, p: 1, borderRadius: '8px', bgcolor: insetBg, border: `1px solid ${BRAND.red}` }}>
+                                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
+                                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.8, mb: 0.2, flexWrap: 'nowrap' }}>
+                                        <Box sx={{ flexShrink: 0, mt: '2px' }}>{getPlatformIcon(meeting.platform, 18)}</Box>
+                                        <Typography sx={{ fontWeight: 800, fontSize: '0.82rem', color: textPrimary, overflowWrap: 'anywhere', wordBreak: 'break-word' }}>
+                                          {t('pages.wardCandidates.meetDefaultTitle')}
+                                        </Typography>
+                                      </Box>
+                                      {scheduledAt && (
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3 }}>
+                                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4, flexWrap: 'wrap' }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
+                                              <CalendarIcon sx={{ fontSize: 13, color: isDark ? '#fff' : textPrimary }} />
+                                              <Typography variant="caption" sx={{ color: isDark ? '#fff' : textPrimary, fontSize: '0.7rem', fontWeight: 700 }}>
+                                                {scheduledAt.toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
+                                              </Typography>
+                                            </Box>
+                                            <Chip
+                                              size="small"
+                                              label={meetingStatus === 'live' ? 'Live' : meetingStatus === 'past' ? 'Past Meeting' : 'Upcoming Meeting'}
+                                              sx={{
+                                                height: 16,
+                                                fontSize: '0.55rem',
+                                                fontWeight: 600,
+                                                borderRadius: '6px',
+                                                flexShrink: 0,
+                                                background: meetingStatus === 'live'
+                                                  ? 'rgba(239,68,68,0.18)'
+                                                  : meetingStatus === 'past'
+                                                    ? 'rgba(251,146,60,0.15)'
+                                                    : 'rgba(34,197,94,0.15)',
+                                                color: meetingStatus === 'live' ? '#ef4444' : meetingStatus === 'past' ? '#fb923c' : '#22c55e',
+                                                boxShadow: 'none',
+                                                border: meetingStatus === 'live'
+                                                  ? '1px solid rgba(239,68,68,0.45)'
+                                                  : meetingStatus === 'past'
+                                                    ? '1px solid rgba(251,146,60,0.35)'
+                                                    : '1px solid rgba(34,197,94,0.35)',
+                                                '& .MuiChip-label': { px: 0.8 }
+                                              }}
+                                            />
+                                          </Box>
+                                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4, ml: 0.3 }}>
+                                            <Typography variant="caption" sx={{ color: isDark ? '#fff' : textPrimary, fontSize: '0.65rem', fontWeight: 600 }}>
+                                              {(() => {
+                                                const startStr = scheduledAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+                                                let endDate: Date;
+                                                const et = meeting.endTime ?? null;
+                                                if (et != null && !isNaN(Number(et))) {
+                                                  const etNum = Number(et);
+                                                  endDate = new Date(etNum > 1e12 ? etNum : etNum * 1000);
+                                                } else {
+                                                  endDate = new Date(scheduledAt.getTime() + 3600000);
+                                                }
+                                                return `${startStr} - ${endDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+                                              })()}
+                                            </Typography>
+                                            <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' }}>
+                                              {(() => { const h = scheduledAt.getHours(); return h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening'; })()}
                                             </Typography>
                                           </Box>
-                                          <Chip
-                                            size="small"
-                                            label={meetingStatus === 'live' ? 'Live' : meetingStatus === 'past' ? 'Past Meeting' : 'Upcoming Meeting'}
-                                            sx={{
-                                              height: 16,
-                                              fontSize: '0.55rem',
-                                              fontWeight: 600,
-                                              borderRadius: '6px',
-                                              flexShrink: 0,
-                                              background: meetingStatus === 'live'
-                                                ? 'rgba(239,68,68,0.18)'
-                                                : meetingStatus === 'past'
-                                                  ? 'rgba(251,146,60,0.15)'
-                                                  : 'rgba(34,197,94,0.15)',
-                                              color: meetingStatus === 'live' ? '#ef4444' : meetingStatus === 'past' ? '#fb923c' : '#22c55e',
-                                              boxShadow: 'none',
-                                              border: meetingStatus === 'live'
-                                                ? '1px solid rgba(239,68,68,0.45)'
-                                                : meetingStatus === 'past'
-                                                  ? '1px solid rgba(251,146,60,0.35)'
-                                                  : '1px solid rgba(34,197,94,0.35)',
-                                              '& .MuiChip-label': { px: 0.8 }
-                                            }}
-                                          />
                                         </Box>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4, ml: 0.3 }}>
-                                          <Typography variant="caption" sx={{ color: isDark ? '#fff' : textPrimary, fontSize: '0.65rem', fontWeight: 600 }}>
-                                            {(() => {
-                                              const startStr = scheduledAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-                                              let endDate: Date;
-                                              const et = meeting.endTime ?? null;
-                                              if (et != null && !isNaN(Number(et))) {
-                                                const etNum = Number(et);
-                                                endDate = new Date(etNum > 1e12 ? etNum : etNum * 1000);
-                                              } else {
-                                                endDate = new Date(scheduledAt.getTime() + 3600000);
-                                              }
-                                              return `${startStr} - ${endDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-                                            })()}
-                                          </Typography>
-                                          <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' }}>
-                                            {(() => { const h = scheduledAt.getHours(); return h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening'; })()}
-                                          </Typography>
+                                      )}
+                                    </Box>
+                                    {/* Like button */}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                      <Button
+                                        size="small"
+                                        disabled={!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs}
+                                        onClick={() => {
+                                          const mId = Number(meeting.id);
+                                          const willLike = !meeting.liked;
+                                          if (mId > 0 && !isDemoCandidate(candidate)) void respondMeeting(mId, { attending: willLike }).catch(() => {});
+                                          const keySet = getStoredMeetingLiked();
+                                          const newSet = new Set(keySet);
+                                          if (willLike) newSet.add(mId); else newSet.delete(mId);
+                                          storeMeetingLiked(newSet);
+                                          setAspirantMeetings(prev => {
+                                            const copy = { ...prev };
+                                            copy[candidate.id] = (copy[candidate.id] || []).map((mm: any) =>
+                                              mm.id === meeting.id ? { ...mm, liked: willLike, attendingCount: (Number(mm.attendingCount || 0) + (willLike ? 1 : -1)) } : mm
+                                            );
+                                            return copy;
+                                          });
+                                        }}
+                                        sx={{ color: isDark ? '#fff' : textPrimary, textTransform: 'none', fontSize: '0.7rem', fontWeight: 700, minWidth: 0, px: 0.5 }}
+                                      >
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1 }}>
+                                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            {meeting.liked ? <ThumbUpIcon sx={{ fontSize: 14 }} /> : <ThumbUpOffAltIcon sx={{ fontSize: 14 }} />}
+                                            <Box component="span" sx={{ fontWeight: 700, fontSize: '0.95rem' }}>{Number(meeting.attendingCount || meeting.likeCount || 0)}</Box>
+                                          </Box>
+                                          <Typography variant="caption" sx={{ fontSize: '0.64rem', mt: 0.25, color: textFaint }}>{t('pages.wardCandidates.attending', { defaultValue: 'Attending' }).replace(/\s*\(?\s*\{\{[^}]+\}\}\s*\)?/g, '')}</Typography>
                                         </Box>
-                                      </Box>
-                                    )}
+                                      </Button>
+                                    </Box>
                                   </Box>
-                                  {/* Like button */}
-                                  <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                  {/* Meeting aggregate rating */}
+                                  {meeting.rating?.totalRatings > 0 && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.8 }}>
+                                      <Box sx={{ display: 'flex', alignItems: 'center' }}>{renderStars(meeting.rating.averageRating, 13)}</Box>
+                                      <Typography sx={{ fontSize: '0.7rem', fontWeight: 800, color: BRAND.yellow, lineHeight: 1 }}>{Number(meeting.rating.averageRating).toFixed(1)}</Typography>
+                                      <Typography sx={{ fontSize: '0.63rem', color: textFaint, lineHeight: 1 }}>({meeting.rating.totalRatings} {meeting.rating.totalRatings === 1 ? 'rating' : 'ratings'})</Typography>
+                                    </Box>
+                                  )}
+                                  {/* Join button */}
+                                  {meeting.meetingLink && (
                                     <Button
-                                      size="small"
+                                      variant="contained" size="small" fullWidth
                                       disabled={!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs}
+                                      startIcon={<Box sx={{ display: 'flex', alignItems: 'center' }}>{getPlatformIcon(meeting.platform, 25, (!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs) ? 'default' : (meeting.platform === 'instagram' || meeting.platform === 'facebook') ? 'white' : 'default')}</Box>}
+                                      endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
+                                      sx={{ mt: 1.2, height: 34, borderRadius: '8px', textTransform: 'none', fontWeight: 800, color: '#fff', fontSize: '0.74rem', ...getPlatformButtonStyle(meeting.platform), '&.Mui-disabled': { background: 'rgba(120,120,120,0.25)', color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.6)', '& .MuiSvgIcon-root': { color: isDark ? 'rgba(255,255,255,0.35)' : '#1976d2' } } }}
                                       onClick={() => {
-                                        const mId = Number(meeting.id);
-                                        const willLike = !meeting.liked;
-                                        if (mId > 0 && !isDemoCandidate(candidate)) void respondMeeting(mId, { attending: willLike }).catch(() => {});
-                                        const keySet = getStoredMeetingLiked();
-                                        const newSet = new Set(keySet);
-                                        if (willLike) newSet.add(mId); else newSet.delete(mId);
-                                        storeMeetingLiked(newSet);
-                                        setAspirantMeetings(prev => {
-                                          const copy = { ...prev };
-                                          copy[candidate.id] = (copy[candidate.id] || []).map((mm: any) =>
-                                            mm.id === meeting.id ? { ...mm, liked: willLike, attendingCount: (Number(mm.attendingCount || 0) + (willLike ? 1 : -1)) } : mm
-                                          );
-                                          return copy;
-                                        });
+                                        void trackInteraction(candidate.id);
+                                        const raw = meeting.meetingLink;
+                                        const prefixed = raw && !/^https?:\/\//i.test(raw) ? `https://${raw}` : raw;
+                                        // C-SEC-4: meetingLink is aspirant-supplied — never navigate to a
+                                        // script-capable scheme. safeUrl returns null for those; bail out.
+                                        const link = safeUrl(prefixed);
+                                        if (!link) return;
+                                        // iOS standalone PWA / wrapped WebView silently no-ops window.open('_blank'),
+                                        // which is why Instagram (and other) meeting links rendered blank on iOS while
+                                        // working on Android. Same-window navigation lets iOS hand the universal link
+                                        // to the native IG / FB / Zoom / Meet app.
+                                        const isStandalone =
+                                          window.matchMedia?.('(display-mode: standalone)').matches ||
+                                          (navigator as any).standalone === true ||
+                                          !!(window as any).ReactNativeWebView;
+                                        if (isStandalone) window.location.href = link;
+                                        else window.open(link, '_blank', 'noopener');
                                       }}
-                                      sx={{ color: isDark ? '#fff' : textPrimary, textTransform: 'none', fontSize: '0.7rem', fontWeight: 700, minWidth: 0, px: 0.5 }}
                                     >
-                                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                          {meeting.liked ? <ThumbUpIcon sx={{ fontSize: 14 }} /> : <ThumbUpOffAltIcon sx={{ fontSize: 14 }} />}
-                                          <Box component="span" sx={{ fontWeight: 700, fontSize: '0.95rem' }}>{Number(meeting.attendingCount || meeting.likeCount || 0)}</Box>
-                                        </Box>
-                                        <Typography variant="caption" sx={{ fontSize: '0.64rem', mt: 0.25, color: textFaint }}>{t('pages.wardCandidates.attending', { defaultValue: 'Attending' }).replace(/\s*\(?\s*\{\{[^}]+\}\}\s*\)?/g, '')}</Typography>
-                                      </Box>
+                                      {!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs ? 'Meeting Ended' : (meeting.platform && PLATFORM_TEXT_KEYS[meeting.platform] ? t(PLATFORM_TEXT_KEYS[meeting.platform]) : t('pages.wardCandidates.joinVideoMeeting'))}
                                     </Button>
-                                  </Box>
-                                </Box>
-                                {/* Meeting aggregate rating */}
-                                {meeting.rating?.totalRatings > 0 && (
-                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.8 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>{renderStars(meeting.rating.averageRating, 13)}</Box>
-                                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 800, color: BRAND.yellow, lineHeight: 1 }}>{Number(meeting.rating.averageRating).toFixed(1)}</Typography>
-                                    <Typography sx={{ fontSize: '0.63rem', color: textFaint, lineHeight: 1 }}>({meeting.rating.totalRatings} {meeting.rating.totalRatings === 1 ? 'rating' : 'ratings'})</Typography>
-                                  </Box>
-                                )}
-                                {/* Join button */}
-                                {meeting.meetingLink && (
-                                  <Button
-                                    variant="contained" size="small" fullWidth
-                                    disabled={!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs}
-                                    startIcon={<Box sx={{ display: 'flex', alignItems: 'center' }}>{getPlatformIcon(meeting.platform, 25, (!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs) ? 'default' : (meeting.platform === 'instagram' || meeting.platform === 'facebook') ? 'white' : 'default')}</Box>}
-                                    endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
-                                    sx={{ mt: 1.2, height: 34, borderRadius: '8px', textTransform: 'none', fontWeight: 800, color: '#fff', fontSize: '0.74rem', ...getPlatformButtonStyle(meeting.platform), '&.Mui-disabled': { background: 'rgba(120,120,120,0.25)', color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.6)', '& .MuiSvgIcon-root': { color: isDark ? 'rgba(255,255,255,0.35)' : '#1976d2' } } }}
-                                    onClick={() => {
-                                      void trackInteraction(candidate.id);
-                                      const raw = meeting.meetingLink;
-                                      const link = raw && !/^https?:\/\//i.test(raw) ? `https://${raw}` : raw;
-                                      if (!link) return;
-                                      // iOS standalone PWA / wrapped WebView silently no-ops window.open('_blank'),
-                                      // which is why Instagram (and other) meeting links rendered blank on iOS while
-                                      // working on Android. Same-window navigation lets iOS hand the universal link
-                                      // to the native IG / FB / Zoom / Meet app.
-                                      const isStandalone =
-                                        window.matchMedia?.('(display-mode: standalone)').matches ||
-                                        (navigator as any).standalone === true ||
-                                        !!(window as any).ReactNativeWebView;
-                                      if (isStandalone) window.location.href = link;
-                                      else window.open(link, '_blank', 'noopener');
-                                    }}
-                                  >
-                                    {!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs ? 'Meeting Ended' : (meeting.platform && PLATFORM_TEXT_KEYS[meeting.platform] ? t(PLATFORM_TEXT_KEYS[meeting.platform]) : t('pages.wardCandidates.joinVideoMeeting'))}
-                                  </Button>
-                                )}
-                                {/* Rating info message — show when meeting ended but rating window hasn't opened yet */}
-                                {(() => {
-                                  if (isDemoCandidate(candidate)) return null;
-                                  const meetingEnded = !!meetEndMs && now > meetEndMs;
-                                  if (!meetingEnded || !scheduledAt) return null;
-                                  const nextDay = new Date(scheduledAt);
-                                  nextDay.setDate(nextDay.getDate() + 1);
-                                  nextDay.setHours(10, 0, 0, 0);
-                                  const ratingStart = nextDay.getTime();
-                                  nextDay.setHours(22, 0, 0, 0);
-                                  const ratingEnd = nextDay.getTime();
-                                  if (now >= ratingStart && now <= ratingEnd) return null; // rating window is open, don't show message
-                                  if (now > ratingEnd) return null; // rating window already passed
-                                  const ratingDate = new Date(ratingStart).toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' });
-                                  return (
-                                    <Typography sx={{ fontSize: '0.7rem', color: GOLD, fontWeight: 600, mt: 0.8, textAlign: 'center' }}>
-                                      {t('pages.wardCandidates.ratingWindowInfo', { defaultValue: 'Meeting ended. Ratings open tomorrow from 10 AM to 10 PM.' })}
-                                    </Typography>
-                                  );
-                                })()}
-                                {/* Rating widget — for demo: always visible; for real: enabled 10 AM on meeting day to 10 PM next day */}
-                                {(() => {
-                                  const isDemo = isDemoCandidate(candidate);
-                                  if (!isDemo && !scheduledAt) return null;
-                                  // Rating window: next day after meeting, 10 AM to 10 PM
-                                  let ratingWindowStart: number | null = null;
-                                  let ratingWindowEnd: number | null = null;
-                                  if (scheduledAt) {
+                                  )}
+                                  {/* Rating info message — show when meeting ended but rating window hasn't opened yet */}
+                                  {(() => {
+                                    if (isDemoCandidate(candidate)) return null;
+                                    const meetingEnded = !!meetEndMs && now > meetEndMs;
+                                    if (!meetingEnded || !scheduledAt) return null;
                                     const nextDay = new Date(scheduledAt);
                                     nextDay.setDate(nextDay.getDate() + 1);
                                     nextDay.setHours(10, 0, 0, 0);
-                                    ratingWindowStart = nextDay.getTime();
+                                    const ratingStart = nextDay.getTime();
                                     nextDay.setHours(22, 0, 0, 0);
-                                    ratingWindowEnd = nextDay.getTime();
-                                  }
-                                  const withinRatingWindow = ratingWindowStart != null && ratingWindowEnd != null && now >= ratingWindowStart && now <= ratingWindowEnd;
-                                  if (!isDemo && !withinRatingWindow) {
-                                    // Outside 10 AM–10 PM: only show if user already rated
-                                    const storedRating = meetingRatings[meeting.id] ?? getStoredMeetingRating(meeting.id);
-                                    if (storedRating < 1) return null;
-                                  }
-                                  const currentRating = meetingRatings[meeting.id] ?? getStoredMeetingRating(meeting.id);
-                                  if (!isDemo) {
-                                    if (!withinRatingWindow && currentRating < 1) return null;
-                                    if (withinRatingWindow && meeting.isRated === true && currentRating < 1) return null;
-                                  }
-                                  const windowExpired = !isDemo && !withinRatingWindow;
-                                  const showMeetingButtons = !windowExpired && currentRating < 1 && meeting.isRated !== true;
-                                  return (
-                                    <Box sx={{ mt: 1.2, mb: 0.5 }}>
-                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.9 }}>
-                                        <Box component="span" sx={{ color: '#10b981', fontSize: '0.8rem', lineHeight: 1 }}>⚡</Box>
-                                        <Typography sx={{ fontSize: '0.6rem', fontWeight: 900, color: GOLD, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                                          {showMeetingButtons ? 'Rate this Meeting' : "Supporter's Rating"}
-                                        </Typography>
-                                      </Box>
-                                      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0.5 }}>
-                                        {RATING_OPTIONS.map(opt => {
-                                          const isSelected = currentRating === opt.value;
-                                          const breakdown = (meeting as any).rating?.distribution ?? null;
-                                          const totalB: number = (meeting as any).rating?.totalRatings ?? 0;
-                                          const pct = breakdown && totalB > 0 ? Math.round(((breakdown[String(opt.value)] || 0) / totalB) * 100) : null;
-                                          const r = 22;
-                                          const circ = 2 * Math.PI * r;
-                                          const dashOffset = circ - (circ * (pct ?? (isSelected ? 100 : 0)) / 100);
-                                          const hoverAnim = ({ 1: 'rShake 0.35s ease infinite', 2: 'rNod 0.55s ease-in-out infinite', 3: 'rTada 0.75s ease-in-out infinite', 4: 'rHeartBeat 0.45s ease-in-out infinite', 5: 'rFireDance 0.4s ease-in-out infinite' } as Record<number, string>)[opt.value];
-                                          return (
-                                            <Box
-                                              key={opt.value}
-                                              onClick={showMeetingButtons ? () => handleRateMeeting(Number(meeting.id), opt.value) : undefined}
-                                              sx={{
-                                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.4,
-                                                cursor: showMeetingButtons ? 'pointer' : 'default',
-                                                transition: 'transform 0.2s ease',
-                                                opacity: !showMeetingButtons && !isSelected ? 0.45 : 1,
-                                                userSelect: 'none',
-                                                ...(showMeetingButtons && {
-                                                  '&:hover': { transform: 'translateY(-5px) scale(1.06)' },
-                                                  '&:hover .ri-ring': { filter: `drop-shadow(0 0 9px ${opt.color})`, transition: 'filter 0.2s ease' },
-                                                  '&:hover .ri-emoji': { animation: `${hoverAnim} !important` },
-                                                }),
-                                              }}
-                                            >
-                                              <Box sx={{ position: 'relative', width: 50, height: 50 }}>
-                                                <svg width="50" height="50" style={{ position: 'absolute', top: 0, left: 0 }}>
-                                                  <circle cx="25" cy="25" r={r} fill={isSelected ? opt.bg : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)')} stroke={isSelected ? opt.color : (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)')} strokeWidth="1.5" />
-                                                </svg>
-                                                <Box component="span" className="ri-ring" sx={{ position: 'absolute', top: 0, left: 0, display: 'block', lineHeight: 0, transition: 'filter 0.2s ease' }}>
-                                                  <svg width="50" height="50" style={{ display: 'block', transform: 'rotate(-90deg)' }}>
-                                                    <circle
-                                                      cx="25" cy="25" r={r}
-                                                      fill="none"
-                                                      stroke={opt.color}
-                                                      strokeWidth="3"
-                                                      strokeDasharray={circ}
-                                                      strokeDashoffset={dashOffset}
-                                                      strokeLinecap="round"
-                                                      style={{ transition: 'stroke-dashoffset 0.8s ease' }}
-                                                    />
-                                                  </svg>
-                                                </Box>
-                                                <Box
-                                                  className="ri-emoji"
-                                                  sx={{
-                                                    position: 'absolute', inset: 0,
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    fontSize: '1.25rem', lineHeight: 1,
-                                                    '@keyframes emojiFloat': { '0%, 100%': { transform: 'translateY(0) scale(1)' }, '50%': { transform: 'translateY(-2px) scale(1.1)' } },
-                                                    '@keyframes emojiPulse': { '0%, 100%': { transform: 'scale(1.1)' }, '50%': { transform: 'scale(1.28)' } },
-                                                    '@keyframes rShake': { '0%, 100%': { transform: 'translateX(0) rotate(0deg)' }, '20%': { transform: 'translateX(-4px) rotate(-10deg)' }, '40%': { transform: 'translateX(4px) rotate(10deg)' }, '60%': { transform: 'translateX(-3px) rotate(-6deg)' }, '80%': { transform: 'translateX(3px) rotate(6deg)' } },
-                                                    '@keyframes rNod': { '0%, 100%': { transform: 'translateY(0) scale(1.1)' }, '50%': { transform: 'translateY(-5px) scale(1.25)' } },
-                                                    '@keyframes rTada': { '0%': { transform: 'scale(1)' }, '10%, 20%': { transform: 'scale(0.85) rotate(-10deg)' }, '30%, 50%, 70%, 90%': { transform: 'scale(1.3) rotate(10deg)' }, '40%, 60%, 80%': { transform: 'scale(1.3) rotate(-10deg)' }, '100%': { transform: 'scale(1) rotate(0deg)' } },
-                                                    '@keyframes rHeartBeat': { '0%': { transform: 'scale(1)' }, '14%': { transform: 'scale(1.35)' }, '28%': { transform: 'scale(1)' }, '42%': { transform: 'scale(1.35)' }, '70%': { transform: 'scale(1)' } },
-                                                    '@keyframes rFireDance': { '0%, 100%': { transform: 'scale(1.1) rotate(0deg)' }, '20%': { transform: 'scale(1.4) rotate(-12deg) translateY(-3px)' }, '40%': { transform: 'scale(1.15) rotate(12deg)' }, '60%': { transform: 'scale(1.4) rotate(-8deg) translateY(-3px)' }, '80%': { transform: 'scale(1.15) rotate(8deg)' } },
-                                                    animation: isSelected ? 'emojiPulse 0.8s ease-in-out infinite' : 'emojiFloat 3s ease-in-out infinite',
-                                                    animationDelay: `${opt.value * 0.18}s`,
-                                                  }}
-                                                >
-                                                  {opt.emoji}
-                                                </Box>
-                                              </Box>
-                                              <Typography sx={{ fontSize: '0.65rem', fontWeight: 900, color: isSelected ? opt.color : textPrimary, lineHeight: 1, minHeight: '0.8rem' }}>
-                                                {pct !== null ? `${pct}%` : ''}
-                                              </Typography>
-                                              <Typography sx={{ fontSize: '0.4rem', fontWeight: 800, color: isSelected ? opt.color : (isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.5)'), letterSpacing: '0.03em', textAlign: 'center', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
-                                                {opt.label.toUpperCase()}
-                                              </Typography>
-                                            </Box>
-                                          );
-                                        })}
-                                      </Box>
-                                      {(() => {
-                                        const totalB: number = (meeting as any).rating?.totalRatings ?? 0;
-                                        if (totalB === 0) return null;
-                                        return (
-                                          <Typography sx={{ fontSize: '0.52rem', color: textFaint, textAlign: 'center', mt: 0.7, letterSpacing: '0.05em', fontWeight: 700 }}>
-                                            TOTAL RESPONDENTS: {totalB}
+                                    const ratingEnd = nextDay.getTime();
+                                    if (now >= ratingStart && now <= ratingEnd) return null; // rating window is open, don't show message
+                                    if (now > ratingEnd) return null; // rating window already passed
+                                    const ratingDate = new Date(ratingStart).toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' });
+                                    return (
+                                      <Typography sx={{ fontSize: '0.7rem', color: GOLD, fontWeight: 600, mt: 0.8, textAlign: 'center' }}>
+                                        {t('pages.wardCandidates.ratingWindowInfo', { defaultValue: 'Meeting ended. Ratings open tomorrow from 10 AM to 10 PM.' })}
+                                      </Typography>
+                                    );
+                                  })()}
+                                  {/* Rating widget — for demo: always visible; for real: enabled 10 AM on meeting day to 10 PM next day */}
+                                  {(() => {
+                                    const isDemo = isDemoCandidate(candidate);
+                                    if (!isDemo && !scheduledAt) return null;
+                                    // Rating window: next day after meeting, 10 AM to 10 PM
+                                    let ratingWindowStart: number | null = null;
+                                    let ratingWindowEnd: number | null = null;
+                                    if (scheduledAt) {
+                                      const nextDay = new Date(scheduledAt);
+                                      nextDay.setDate(nextDay.getDate() + 1);
+                                      nextDay.setHours(10, 0, 0, 0);
+                                      ratingWindowStart = nextDay.getTime();
+                                      nextDay.setHours(22, 0, 0, 0);
+                                      ratingWindowEnd = nextDay.getTime();
+                                    }
+                                    const withinRatingWindow = ratingWindowStart != null && ratingWindowEnd != null && now >= ratingWindowStart && now <= ratingWindowEnd;
+                                    if (!isDemo && !withinRatingWindow) {
+                                      // Outside 10 AM–10 PM: only show if user already rated
+                                      const storedRating = meetingRatings[meeting.id] ?? getStoredMeetingRating(meeting.id);
+                                      if (storedRating < 1) return null;
+                                    }
+                                    const currentRating = meetingRatings[meeting.id] ?? getStoredMeetingRating(meeting.id);
+                                    if (!isDemo) {
+                                      if (!withinRatingWindow && currentRating < 1) return null;
+                                      if (withinRatingWindow && meeting.isRated === true && currentRating < 1) return null;
+                                    }
+                                    const windowExpired = !isDemo && !withinRatingWindow;
+                                    const showMeetingButtons = !windowExpired && currentRating < 1 && meeting.isRated !== true;
+                                    return (
+                                      <Box sx={{ mt: 1.2, mb: 0.5 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.9 }}>
+                                          <Box component="span" sx={{ color: '#10b981', fontSize: '0.8rem', lineHeight: 1 }}>⚡</Box>
+                                          <Typography sx={{ fontSize: '0.6rem', fontWeight: 900, color: GOLD, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                                            {showMeetingButtons ? 'Rate this Meeting' : "Supporter's Rating"}
                                           </Typography>
-                                        );
-                                      })()}
-                                    </Box>
-                                  );
-                                })()}
-                              </Box>
-                            );
-                          })}
-                        </Box>
-                        {/* Divider after video meet */}
-                        <Box sx={{ height: '1px', my: 1, background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
-                      </>
+                                        </Box>
+                                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0.5 }}>
+                                          {RATING_OPTIONS.map(opt => {
+                                            const isSelected = currentRating === opt.value;
+                                            const breakdown = (meeting as any).rating?.distribution ?? null;
+                                            const totalB: number = (meeting as any).rating?.totalRatings ?? 0;
+                                            const pct = breakdown && totalB > 0 ? Math.round(((breakdown[String(opt.value)] || 0) / totalB) * 100) : null;
+                                            const r = 22;
+                                            const circ = 2 * Math.PI * r;
+                                            const dashOffset = circ - (circ * (pct ?? (isSelected ? 100 : 0)) / 100);
+                                            const hoverAnim = ({ 1: 'rShake 0.35s ease infinite', 2: 'rNod 0.55s ease-in-out infinite', 3: 'rTada 0.75s ease-in-out infinite', 4: 'rHeartBeat 0.45s ease-in-out infinite', 5: 'rFireDance 0.4s ease-in-out infinite' } as Record<number, string>)[opt.value];
+                                            return (
+                                              <Box
+                                                key={opt.value}
+                                                onClick={showMeetingButtons ? () => handleRateMeeting(Number(meeting.id), opt.value) : undefined}
+                                                sx={{
+                                                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.4,
+                                                  cursor: showMeetingButtons ? 'pointer' : 'default',
+                                                  transition: 'transform 0.2s ease',
+                                                  opacity: !showMeetingButtons && !isSelected ? 0.45 : 1,
+                                                  userSelect: 'none',
+                                                  ...(showMeetingButtons && {
+                                                    '&:hover': { transform: 'translateY(-5px) scale(1.06)' },
+                                                    '&:hover .ri-ring': { filter: `drop-shadow(0 0 9px ${opt.color})`, transition: 'filter 0.2s ease' },
+                                                    '&:hover .ri-emoji': { animation: `${hoverAnim} !important` },
+                                                  }),
+                                                }}
+                                              >
+                                                <Box sx={{ position: 'relative', width: 50, height: 50 }}>
+                                                  <svg width="50" height="50" style={{ position: 'absolute', top: 0, left: 0 }}>
+                                                    <circle cx="25" cy="25" r={r} fill={isSelected ? opt.bg : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)')} stroke={isSelected ? opt.color : (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)')} strokeWidth="1.5" />
+                                                  </svg>
+                                                  <Box component="span" className="ri-ring" sx={{ position: 'absolute', top: 0, left: 0, display: 'block', lineHeight: 0, transition: 'filter 0.2s ease' }}>
+                                                    <svg width="50" height="50" style={{ display: 'block', transform: 'rotate(-90deg)' }}>
+                                                      <circle
+                                                        cx="25" cy="25" r={r}
+                                                        fill="none"
+                                                        stroke={opt.color}
+                                                        strokeWidth="3"
+                                                        strokeDasharray={circ}
+                                                        strokeDashoffset={dashOffset}
+                                                        strokeLinecap="round"
+                                                        style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+                                                      />
+                                                    </svg>
+                                                  </Box>
+                                                  <Box
+                                                    className="ri-emoji"
+                                                    sx={{
+                                                      position: 'absolute', inset: 0,
+                                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                      fontSize: '1.25rem', lineHeight: 1,
+                                                      '@keyframes emojiFloat': { '0%, 100%': { transform: 'translateY(0) scale(1)' }, '50%': { transform: 'translateY(-2px) scale(1.1)' } },
+                                                      '@keyframes emojiPulse': { '0%, 100%': { transform: 'scale(1.1)' }, '50%': { transform: 'scale(1.28)' } },
+                                                      '@keyframes rShake': { '0%, 100%': { transform: 'translateX(0) rotate(0deg)' }, '20%': { transform: 'translateX(-4px) rotate(-10deg)' }, '40%': { transform: 'translateX(4px) rotate(10deg)' }, '60%': { transform: 'translateX(-3px) rotate(-6deg)' }, '80%': { transform: 'translateX(3px) rotate(6deg)' } },
+                                                      '@keyframes rNod': { '0%, 100%': { transform: 'translateY(0) scale(1.1)' }, '50%': { transform: 'translateY(-5px) scale(1.25)' } },
+                                                      '@keyframes rTada': { '0%': { transform: 'scale(1)' }, '10%, 20%': { transform: 'scale(0.85) rotate(-10deg)' }, '30%, 50%, 70%, 90%': { transform: 'scale(1.3) rotate(10deg)' }, '40%, 60%, 80%': { transform: 'scale(1.3) rotate(-10deg)' }, '100%': { transform: 'scale(1) rotate(0deg)' } },
+                                                      '@keyframes rHeartBeat': { '0%': { transform: 'scale(1)' }, '14%': { transform: 'scale(1.35)' }, '28%': { transform: 'scale(1)' }, '42%': { transform: 'scale(1.35)' }, '70%': { transform: 'scale(1)' } },
+                                                      '@keyframes rFireDance': { '0%, 100%': { transform: 'scale(1.1) rotate(0deg)' }, '20%': { transform: 'scale(1.4) rotate(-12deg) translateY(-3px)' }, '40%': { transform: 'scale(1.15) rotate(12deg)' }, '60%': { transform: 'scale(1.4) rotate(-8deg) translateY(-3px)' }, '80%': { transform: 'scale(1.15) rotate(8deg)' } },
+                                                      animation: isSelected ? 'emojiPulse 0.8s ease-in-out infinite' : 'emojiFloat 3s ease-in-out infinite',
+                                                      animationDelay: `${opt.value * 0.18}s`,
+                                                    }}
+                                                  >
+                                                    {opt.emoji}
+                                                  </Box>
+                                                </Box>
+                                                <Typography sx={{ fontSize: '0.65rem', fontWeight: 900, color: isSelected ? opt.color : textPrimary, lineHeight: 1, minHeight: '0.8rem' }}>
+                                                  {pct !== null ? `${pct}%` : ''}
+                                                </Typography>
+                                                <Typography sx={{ fontSize: '0.4rem', fontWeight: 800, color: isSelected ? opt.color : (isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.5)'), letterSpacing: '0.03em', textAlign: 'center', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
+                                                  {opt.label.toUpperCase()}
+                                                </Typography>
+                                              </Box>
+                                            );
+                                          })}
+                                        </Box>
+                                        {(() => {
+                                          const totalB: number = (meeting as any).rating?.totalRatings ?? 0;
+                                          if (totalB === 0) return null;
+                                          return (
+                                            <Typography sx={{ fontSize: '0.52rem', color: textFaint, textAlign: 'center', mt: 0.7, letterSpacing: '0.05em', fontWeight: 700 }}>
+                                              TOTAL RESPONDENTS: {totalB}
+                                            </Typography>
+                                          );
+                                        })()}
+                                      </Box>
+                                    );
+                                  })()}
+                                </Box>
+                              );
+                            })}
+                          </Box>
+                          {/* Divider after video meet */}
+                          <Box sx={{ height: '1px', my: 1, background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
+                        </>
                       );
                     })()}
 
@@ -2847,7 +2875,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                             const startDate = !isNaN(startNum) ? new Date(startNum > 1e12 ? startNum : startNum * 1000) : null;
                             const endDate = !isNaN(endNum) ? new Date(endNum > 1e12 ? endNum : endNum * 1000) : null;
                             const visitStatus = getMeetingTimeStatus(startDate ? startDate.getTime() : null, endDate ? endDate.getTime() : null, now, isDemoCandidate(candidate));
-                            const mapsLink = visit.googleMapsLink ?? (/^https?:\/\//i.test(visit.location || '') ? visit.location : null);
+                            // C-SEC-4: googleMapsLink is aspirant-supplied — sanitize before rendering as an href.
+                            const mapsLink = safeUrl(visit.googleMapsLink) ?? (/^https?:\/\//i.test(visit.location || '') ? visit.location : null);
                             return (
                               <Box key={visit.id || idx} sx={{ mb: 1, p: 1, borderRadius: '8px', bgcolor: insetBg, border: `1px solid ${BRAND.red}`, position: 'relative' }}>
                                 <Button
@@ -3531,7 +3560,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           onClose={() => setEligibilityDialogOpen(false)}
           maxWidth="xs"
           fullWidth
-          PaperProps={{
+          slotProps={{ paper: {
             sx: {
               background: dialogBg,
               border: `1px solid rgba(245,168,0,0.18)`,
@@ -3539,7 +3568,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               boxShadow: isDark ? '0 24px 80px rgba(0,0,0,0.85)' : '0 24px 80px rgba(17,24,39,0.18)',
               overflow: 'hidden',
             },
-          }}
+          } }}
         >
           <Box sx={{ height: 4, background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)` }} />
           <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
@@ -3608,7 +3637,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           onClose={() => setVoteThankOpen(false)}
           maxWidth="xs"
           fullWidth
-          PaperProps={{
+          slotProps={{ paper: {
             sx: {
               borderRadius: 4,
               overflow: 'visible',
@@ -3617,7 +3646,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 : 'linear-gradient(145deg, #ffffff 0%, #f8f8ff 100%)',
               boxShadow: '0 24px 60px rgba(0,0,0,0.3)',
             }
-          }}
+          } }}
         >
           {/* Thumb icon floating above dialog */}
           <Box sx={{
@@ -3713,7 +3742,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           </DialogTitle>
           <DialogContent dividers>
             <Stack spacing={2}>
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={2} sx={{
+                alignItems: "center"
+              }}>
                 <Box
                   sx={{
                     width: 40,
@@ -3730,7 +3761,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{activeAspirant?.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">Interview room</Typography>
+                  <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                  }}>Interview room</Typography>
                 </Box>
               </Stack>
 
@@ -3745,9 +3778,10 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       key={m.id}
                       direction="row"
                       spacing={2}
-                      alignItems="flex-start"
-                      justifyContent={isMe ? 'flex-end' : 'flex-start'}
-                    >
+                      sx={{
+                        alignItems: "flex-start",
+                        justifyContent: isMe ? 'flex-end' : 'flex-start'
+                      }}>
                       {!isMe && (
                         <Avatar sx={{ width: 44, height: 44, bgcolor: 'primary.main' }}>{(m.user?.name || 'U').charAt(0)}</Avatar>
                       )}
@@ -3762,7 +3796,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                         }}
                       >
                         {!isMe && (
-                          <Stack direction="row" spacing={1} alignItems="center">
+                          <Stack direction="row" spacing={1} sx={{
+                            alignItems: "center"
+                          }}>
                             <Typography variant="caption" sx={{ display: 'block', fontWeight: 600, mb: 0.5 }}>
                               {m.user?.name}
                             </Typography>
@@ -3790,12 +3826,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               placeholder={t('pages.wardCandidates.chatPlaceholder') || 'Write a question...'}
               value={chatText}
               onChange={(e) => setChatText(e.target.value)}
-              inputProps={{
-                autoCorrect: 'off',
-                autoCapitalize: 'off',
-                spellCheck: false,
-                autoComplete: 'off'
-              }}
               onKeyDown={async (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -3814,6 +3844,14 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                   } finally {
                     setPosting(false);
                   }
+                }
+              }}
+              slotProps={{
+                htmlInput: {
+                  autoCorrect: 'off',
+                  autoCapitalize: 'off',
+                  spellCheck: false,
+                  autoComplete: 'off'
                 }
               }}
             />
@@ -3857,7 +3895,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           onClose={() => setAspirantPopupOpen(false)}
           maxWidth="sm"
           fullWidth
-          PaperProps={{
+          slotProps={{ paper: {
             sx: {
               background: dialogBg,
               border: `1px solid rgba(245,168,0,0.18)`,
@@ -3865,7 +3903,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               boxShadow: isDark ? '0 24px 80px rgba(0,0,0,0.85)' : '0 24px 80px rgba(17,24,39,0.18)',
               overflow: 'hidden',
             },
-          }}
+          } }}
         >
           {/* Conic accent bar */}
           <Box sx={{ height: 4, background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)` }} />
@@ -3944,7 +3982,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 exit={{ opacity: 0, transition: { duration: 0.6 } }}
                 style={{
                   position: 'fixed', inset: 0, zIndex: 9999,
-                  background: 'radial-gradient(ellipse at 50% 15%, #2a1008 0%, #150E0E 55%, #0d0505 100%)',
+                  background: 'radial-gradient(ellipse at 50% 15%, #2a1008 0%, #13161A 55%, #0d0505 100%)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', overflow: 'hidden', padding: '24px',
                 }}
@@ -3993,7 +4031,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                         padding: 3, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}
                     >
-                      <Box sx={{ width: '100%', height: '100%', borderRadius: '50%', bgcolor: '#150E0E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Box sx={{ width: '100%', height: '100%', borderRadius: '50%', bgcolor: '#0D0F12', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <motion.div
                           initial={{ scale: 0, rotate: -30 }}
                           animate={{ scale: 1, rotate: 0 }}
@@ -4083,7 +4121,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           </AnimatePresence>
         </Portal>
       </Stack>
-
       {/* Aspirant prompt — shown when arriving from welcome/celebration flow */}
       <Portal>
         <AnimatePresence>
@@ -4185,7 +4222,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           )}
         </AnimatePresence>
       </Portal>
-
       {/* Scroll-to-top FAB — raised on mobile so it clears the bottom nav */}
       <Box
         sx={{
@@ -4218,7 +4254,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           <KeyboardArrowUpIcon sx={{ fontSize: 28 }} />
         </Fab>
       </Box>
-
       {/* Demo aspirant SOP popup */}
       <SopAgreementCard
         sopAgreed
@@ -4229,7 +4264,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
         onClose={() => setDemoSopOpen(false)}
         isKannada={(i18n.language || '').startsWith('kn')}
       />
-
       {/* Real aspirant SOP popup — opens the signed-agreement card inline so
           users stay on the candidate list instead of navigating to a viewer. */}
       <SopAgreementCard

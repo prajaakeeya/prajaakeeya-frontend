@@ -147,7 +147,7 @@ const AdminVotingWindowPage: React.FC = () => {
                                     onChange={(e) => setFormData(prev => ({ ...prev, electionId: e.target.value }))}
                                     required
                                     fullWidth
-                                    SelectProps={{ native: false }}
+                                    slotProps={{ select: { native: false } }}
                                 >
                                     {elections.map((el) => (
                                         <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
@@ -161,7 +161,7 @@ const AdminVotingWindowPage: React.FC = () => {
                                     required
                                     fullWidth
                                     type="datetime-local"
-                                    InputLabelProps={{ shrink: true }}
+                                    slotProps={{ inputLabel: { shrink: true } }}
                                 />
 
                                 <TextField
@@ -171,7 +171,7 @@ const AdminVotingWindowPage: React.FC = () => {
                                     required
                                     fullWidth
                                     type="datetime-local"
-                                    InputLabelProps={{ shrink: true }}
+                                    slotProps={{ inputLabel: { shrink: true } }}
                                 />
 
                                 <TextField

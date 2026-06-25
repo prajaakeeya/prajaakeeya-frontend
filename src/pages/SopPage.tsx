@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Button, Typography, Stack } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, AccountTree as AccountTreeIcon } from '@mui/icons-material';
@@ -9,7 +9,9 @@ import SopFlowChart from '../components/aspirant/SopFlowChart';
 import { BRAND } from '../theme';
 import useAuthStore from '../store/useAuthStore';
 import { fetchVotingWindow } from '../services/voteService';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const SopPage = () => {
     const navigate = useNavigate();
@@ -94,11 +96,11 @@ const SopPage = () => {
                         <Box>
                             <Typography
                                 variant="h4"
-                                sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
+                                sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
                             >
                                 {t('pages.landing.sopOverline') || 'How Prajakeeya Works'}
                             </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: FF, color: textSecondary, mt: 0.3 }}>
+                            <Typography variant="body2" sx={{ fontFamily: FF_BODY, color: textSecondary, mt: 0.3 }}>
                                 {t('pages.landing.sopFlow.coreRule') ||
                                     'Understand the governance process and how citizens can raise and track civic issues.'}
                             </Typography>
@@ -136,7 +138,7 @@ const SopPage = () => {
                             borderRadius: 3,
                             textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
+                            fontFamily: FF_BODY,
                             py: 1.5,
                             fontSize: '0.95rem',
                             color: '#fff',
@@ -165,7 +167,7 @@ const SopPage = () => {
                         borderRadius: 3,
                         textTransform: 'none',
                         fontWeight: 700,
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         py: 1.5,
                         fontSize: '0.95rem',
                         color: '#fff',
@@ -188,7 +190,7 @@ const SopPage = () => {
                             borderRadius: 3,
                             textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
+                            fontFamily: FF_BODY,
                             py: 1.5,
                             fontSize: '0.95rem',
                             borderColor: '#F5A800',

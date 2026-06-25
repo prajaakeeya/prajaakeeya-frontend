@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {
   LockOutlined,
-  PeopleOutline,
+  PeopleOutlined,
   PersonAdd,
   LocationOn,
   InfoOutlined,
@@ -28,7 +28,8 @@ import {
   ShareOutlined,
   VerifiedUserOutlined,
 } from "@mui/icons-material";
-import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
+import { DarkModeRounded, LightModeRounded, CloudRounded } from "@mui/icons-material";
+import RainEffect from "../components/RainEffect";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
@@ -76,7 +77,7 @@ function buildSections(t: TFunction): PolicySection[] {
       subsections: [
         {
           title: t(`${p}.s2.sub21.title`),
-          icon: <PeopleOutline />,
+          icon: <PeopleOutlined />,
           paragraphs: [t(`${p}.s2.sub21.p1`)],
           bullets: [
             { text: t(`${p}.s2.sub21.b1`) },
@@ -383,22 +384,24 @@ function BulletList({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function PrivacyPolicyPage() {
+  const { mode, toggleTheme, rainEnabled, toggleRain } = useThemeStore();
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
 
   // theme-derived tokens
-  const pageBg = isDark ? BRAND.black : "#F3F0EB";
-  const cardBg = isDark
-    ? "linear-gradient(160deg,#1C1212 0%,#150E0E 100%)"
-    : "linear-gradient(160deg,#FFFFFF 0%,#FFF8F0 100%)";
+  const pageBg = mode === "grey" ? "#202225" : isDark ? BRAND.black : "#F3F0EB";
+  const cardBg = mode === "grey"
+    ? "linear-gradient(160deg,#282a2d 0%,#202225 100%)"
+    : isDark
+      ? "linear-gradient(160deg,#1C1212 0%,#13161A 100%)"
+      : "linear-gradient(160deg,#FFFFFF 0%,#FFF8F0 100%)";
   const cardShadow = isDark
     ? "0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(200,24,10,0.2)"
     : "0 8px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(200,24,10,0.1)";
-  const headerBg = isDark ? "rgba(10,8,8,0.85)" : "rgba(243,240,235,0.92)";
+  const headerBg = mode === "grey" ? "rgba(32,34,37,0.85)" : isDark ? "rgba(10,8,8,0.85)" : "rgba(243,240,235,0.92)";
   const bodyText = isDark ? "rgba(255,255,255,0.75)" : "rgba(17,24,39,0.78)";
   const dimText = isDark ? "rgba(255,255,255,0.4)" : "rgba(17,24,39,0.5)";
 
@@ -547,6 +550,28 @@ export default function PrivacyPolicyPage() {
 
         {/* Toggles */}
         <Box sx={{ display: "flex", gap: 1 }}>
+          {mode === 'grey' && (
+            <Button
+              size="small"
+              onClick={toggleRain}
+              sx={{
+                minWidth: 38,
+                width: 38,
+                height: 38,
+                p: 0,
+                borderRadius: "50%",
+                bgcolor: '#4E535C',
+                color: rainEnabled ? '#AECAE8' : '#9CA3AF',
+                border: `1.5px solid ${rainEnabled ? '#C0C6CF' : '#626873'}`,
+                boxShadow: rainEnabled ? '0 2px 8px rgba(192,198,207,0.3)' : '0 2px 8px rgba(0,0,0,0.12)',
+                mr: 1,
+                "&:hover": { bgcolor: '#5A606A' },
+              }}
+              title="Toggle Rain Effect"
+            >
+              <span style={{ fontSize: '18px' }}>🌧️</span>
+            </Button>
+          )}
           <Button
             size="small"
             onClick={toggleTheme}
@@ -557,7 +582,7 @@ export default function PrivacyPolicyPage() {
               p: 0,
               borderRadius: "50%",
               bgcolor: isDark ? "rgba(255,255,255,0.08)" : "#FFFFFF",
-              color: isDark ? BRAND.yellow : "#111827",
+              color: mode === 'light' ? '#111827' : mode === 'grey' ? '#9CA3AF' : BRAND.yellow,
               border: `1px solid ${isDark ? "rgba(255,255,255,0.14)" : "rgba(17,24,39,0.12)"}`,
               boxShadow: isDark
                 ? "0 2px 8px rgba(0,0,0,0.35)"
@@ -568,10 +593,12 @@ export default function PrivacyPolicyPage() {
             }}
             aria-label={t("privacyPolicy.header.themeToggleLabel")}
           >
-            {isDark ? (
+            {mode === 'dark' ? (
+              <DarkModeRounded fontSize="small" />
+            ) : mode === 'light' ? (
               <LightModeRounded fontSize="small" />
             ) : (
-              <DarkModeRounded fontSize="small" />
+              <CloudRounded fontSize="small" />
             )}
           </Button>
           <LanguageSelector
@@ -902,6 +929,7 @@ export default function PrivacyPolicyPage() {
           })}
         </Typography>
       </Box>
+      {mode === 'grey' && rainEnabled && <RainEffect />}
     </Box>
   );
 }

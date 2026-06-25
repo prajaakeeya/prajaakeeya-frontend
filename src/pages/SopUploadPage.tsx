@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -27,12 +27,15 @@ import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
 import { getAspirantById } from '../services/aspirantService';
 import apiClient from '../services/apiClient';
+import { safeUrl } from '../utils/safeUrl';
 
 const GOLD = '#F5A800';
 const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
+const DARK = '#0D0F12';
 const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const SOP_EN_URL = '';
 
@@ -107,7 +110,9 @@ const SopUploadPage = () => {
     return () => { mounted = false; };
   }, []);
 
-  const downloadPdf = async (url: string, filename: string) => {
+  const downloadPdf = async (rawUrl: string, filename: string) => {
+    // C-SEC-4: bail on script-capable schemes before fetch / window.open.
+    const url = safeUrl(rawUrl);
     if (!url) return;
     setDownloading(true);
     try {
@@ -148,15 +153,14 @@ const SopUploadPage = () => {
     <Stack spacing={3}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: FF }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: FF_HEADING }}>
             {t('forms.aspirant.title')}
           </Typography>
-          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: FF }}>
+          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: FF_BODY }}>
             {t('forms.aspirant.formSubtitle')}
           </Typography>
         </Box>
       </Box>
-
       <Box sx={{
         bgcolor: DARK,
         borderRadius: 2,
@@ -187,7 +191,7 @@ const SopUploadPage = () => {
               <UploadFileIcon sx={{ color: GOLD, fontSize: 28 }} />
             </Box>
             <Box>
-              <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.08rem', sm: '1.32rem' }, color: textPrimary }}>
+              <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.08rem', sm: '1.32rem' }, color: textPrimary }}>
                 {t('forms.aspirant.documents.title')}
               </Typography>
             </Box>
@@ -199,14 +203,14 @@ const SopUploadPage = () => {
           <Grid container spacing={2.2}>
 
             {/* Download card */}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <motion.div variants={itemVariants} initial="hidden" animate="visible">
                 <Box sx={{ borderRadius: '11px', background: surface1, border: `1px solid ${surfaceBorder}`, overflow: 'hidden' }}>
                   <Box sx={{ height: '3px', bgcolor: '#C8180A' }} />
                   <Box sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <FileDownloadIcon sx={{ color: '#C8180A' }} />
-                      <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, fontSize: '0.95rem' }}>
+                      <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, color: textPrimary, fontSize: '0.95rem' }}>
                         {t('forms.aspirant.documents.downloadSop') || 'Download SOP (English & Kannada)'}
                       </Typography>
                     </Box>
@@ -229,10 +233,10 @@ const SopUploadPage = () => {
             </Grid>
 
             {/* Upload card */}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <motion.div variants={itemVariants} initial="hidden" animate="visible">
                 <Box sx={{ borderRadius: 2, background: surface1, border: `1px solid ${surfaceBorder}`, p: 2 }}>
-                  <Typography sx={{ fontFamily: FF, fontWeight: 800, mb: 1, color: textPrimary }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, mb: 1, color: textPrimary }}>
                     {t('forms.aspirant.documents.signAndUploadSop') || 'Sign and Upload SOP (English & Kannada)'}
                   </Typography>
 
@@ -244,7 +248,7 @@ const SopUploadPage = () => {
                         size="small"
                         onDelete={() => setSopEn(null)}
                         sx={{
-                          fontFamily: FF,
+                          fontFamily: FF_BODY,
                           color: isDark ? '#d8ffe9' : '#0f5132',
                           bgcolor: isDark ? 'rgba(43,180,104,0.2)' : 'rgba(43,180,104,0.22)',
                           border: '1px solid rgba(43,180,104,0.38)',
@@ -255,7 +259,7 @@ const SopUploadPage = () => {
 
                   {sopEn?.error && (
                     <Alert severity="error" sx={{ mt: 1, mb: 1, py: 0.3, bgcolor: isDark ? 'rgba(255,65,65,0.08)' : 'rgba(255,65,65,0.12)', color: isDark ? '#ffd3d3' : '#8b1111' }}>
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.76rem' }}>
+                      <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.76rem' }}>
                         {sopEn.errorKey ? t(sopEn.errorKey, { defaultValue: sopEn.errorKey }) : sopEn.errorMessage}
                       </Typography>
                     </Alert>
@@ -345,13 +349,15 @@ const SopUploadPage = () => {
           bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(17,24,39,0.02)',
           borderTop: `1px solid ${cardBorder}`,
         }}>
-          <Stack direction="row" spacing={1.5} justifyContent="space-between">
+          <Stack direction="row" spacing={1.5} sx={{
+            justifyContent: "space-between"
+          }}>
             <Stack direction="row" spacing={1}>
               <Button
                 variant="outlined"
                 onClick={() => navigate('/user/dashboard', { replace: true })}
                 sx={{
-                  fontFamily: FF, fontWeight: 700,
+                  fontFamily: FF_HEADING, fontWeight: 700,
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
                   '&:hover': { borderColor: 'rgba(245,168,0,0.45)', color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -364,7 +370,7 @@ const SopUploadPage = () => {
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/user/aspirants/documents')}
                 sx={{
-                  fontFamily: FF, fontWeight: 700,
+                  fontFamily: FF_HEADING, fontWeight: 700,
                   color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
@@ -379,7 +385,7 @@ const SopUploadPage = () => {
               onClick={handleNext}
               disabled={!canProceed}
               sx={{
-                fontFamily: FF, fontWeight: 800,
+                fontFamily: FF_HEADING, fontWeight: 800,
                 px: { xs: 2.8, sm: 3.5 },
                 background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
                 color: '#fff',
@@ -403,29 +409,30 @@ const SopUploadPage = () => {
           ))}
         </Box>
       </Box>
-
       {/* Success dialog */}
       <Dialog
         open={successDialogOpen}
         onClose={() => { setSuccessDialogOpen(false); navigate('/user/dashboard', { replace: true }); }}
         maxWidth="sm"
         fullWidth
-        BackdropProps={{ sx: { backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.74)' } }}
-        PaperProps={{
-          sx: {
-            bgcolor: isDark ? '#0A0808' : '#FFFFFF',
-            color: theme.palette.text.primary,
-            borderRadius: '16px',
-            overflow: 'hidden',
-            border: isDark ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
-            boxShadow: isDark
-              ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
-              : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
-            backgroundImage: isDark
-              ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
-              : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)',
-            backgroundSize: '44px 44px',
-          },
+        slotProps={{
+          backdrop: { sx: { backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.74)' } },
+          paper: {
+            sx: {
+              bgcolor: isDark ? '#0D0F12' : '#FFFFFF',
+              color: theme.palette.text.primary,
+              borderRadius: '16px',
+              overflow: 'hidden',
+              border: isDark ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
+              boxShadow: isDark
+                ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
+                : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
+              backgroundImage: isDark
+                ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
+                : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)',
+              backgroundSize: '44px 44px',
+            },
+          }
         }}
       >
         <Box sx={{ display: 'flex', height: '4px' }}>

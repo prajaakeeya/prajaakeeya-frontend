@@ -12,9 +12,17 @@ import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import useAuthStore from "./store/useAuthStore";
-import { setupPushForUser, setPushNavigator, consumePendingPushRoute } from "./services/pushNotifications";
+import { COOKIE_AUTH } from "./config/authMode";
+// C-PERF-4 follow-up: load the push-notification service lazily. A static import
+// pulls the whole Firebase SDK (firebase/app + firebase/messaging) into the main
+// entry chunk, so every visitor downloads it on first paint even though push only
+// matters for authenticated users who grant permission. Importing it on demand
+// inside the effects below moves Firebase into its own chunk, off the critical path.
+const loadPush = () => import("./services/pushNotifications");
 import Preloader, { dismissPreloader } from "./components/Preloader";
 import OfflineBanner from "./components/OfflineBanner";
+import usePreferenceStore from "./store/usePreferenceStore";
+import { BRAND } from "./theme";
 
 // Coming Soon branch renders these BEFORE the <Suspense> boundary, so keep
 // them static (the legal pages are tiny and also reused in normal routes).
@@ -31,8 +39,6 @@ const COMING_SOON = false;
 const AdminLoginPage = lazy(() => import("./pages/AdminLoginPage"));
 const AdminDashboardPage = lazy(() => import("./pages/AdminDashboardPage"));
 const CreateWardPage = lazy(() => import("./pages/CreateWardPage"));
-const ReportsListPage = lazy(() => import("./pages/admin/ReportsListPage"));
-const ReportDetailsPage = lazy(() => import("./pages/admin/ReportDetailsPage"));
 const AdminUsersListPage = lazy(() => import("./pages/admin/AdminUsersListPage"));
 const AdminUserDetailsPage = lazy(() => import("./pages/admin/AdminUserDetailsPage"));
 const AdminCreateUserPage = lazy(() => import("./pages/admin/AdminCreateUserPage"));
@@ -65,10 +71,13 @@ const RegisteredAspirantsPage = lazy(() => import("./pages/RegisteredAspirantsPa
 const AspirantViewDetailsPage = lazy(() => import("./pages/AspirantViewDetailsPage"));
 const DemoAspirantViewPage = lazy(() => import("./pages/DemoAspirantViewPage"));
 const VotingResultPage = lazy(() => import("./pages/VotingResultPage"));
+const KattePage = lazy(() => import("./pages/KattePage"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 const LoadingPage = lazy(() => import("./pages/LoadingPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const OathPage = lazy(() => import("./pages/OathPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const PreferencesPage = lazy(() => import("./pages/PreferencesPage"));
 
 // Aspirant mobile route pages
 const AspirantProfilePage = lazy(() => import("./pages/aspirant/AspirantProfilePage"));
@@ -86,6 +95,7 @@ const GuestAspirantsPage = lazy(() => import("./pages/guest/GuestAspirantsPage")
 const GuestRegisteredAspirantsPage = lazy(() => import("./pages/guest/GuestRegisteredAspirantsPage"));
 const GuestCivicIssuesPage = lazy(() => import("./pages/guest/GuestCivicIssuesPage"));
 const GuestSopPage = lazy(() => import("./pages/guest/GuestSopPage"));
+const GuestPlaceholderPage = lazy(() => import("./pages/guest/GuestPlaceholderPage"));
 
 const UserChatPage = lazy(() => import("./pages/UserChatPage"));
 
@@ -101,14 +111,17 @@ const RedirectIfAuth = ({ children }: { children: React.ReactElement }) => {
 const App = () => {
   const { t } = useTranslation();
   const { isAdmin, isAuthenticated, token, user, fetchProfile } = useAuthStore();
+  const { activeLayout } = usePreferenceStore();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Let push-notification deep links (iOS native bridge) navigate in-SPA
     // instead of doing a full page reload.
-    setPushNavigator((path) => navigate(path));
-    return () => setPushNavigator(null);
+    void loadPush().then((m) => m.setPushNavigator((path) => navigate(path)));
+    return () => {
+      void loadPush().then((m) => m.setPushNavigator(null));
+    };
   }, [navigate]);
 
   useEffect(() => {
@@ -119,12 +132,13 @@ const App = () => {
     // "navigates only after a refresh"). Triggers: mount, visibilitychange,
     // window focus, and the PUSH_NAVIGATE message as a fast-path nudge. The
     // consumer deletes the stash, so multiple triggers never double-navigate.
-    void consumePendingPushRoute();
+    const consumeRoute = () => void loadPush().then((m) => m.consumePendingPushRoute());
+    consumeRoute();
 
     const onVisible = () => {
-      if (document.visibilityState === "visible") void consumePendingPushRoute();
+      if (document.visibilityState === "visible") consumeRoute();
     };
-    const onFocus = () => void consumePendingPushRoute();
+    const onFocus = () => consumeRoute();
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", onFocus);
 
@@ -132,7 +146,7 @@ const App = () => {
     if ("serviceWorker" in navigator) {
       onSwMessage = (event: MessageEvent) => {
         const msg = event.data as { type?: string } | null;
-        if (msg && msg.type === "PUSH_NAVIGATE") void consumePendingPushRoute();
+        if (msg && msg.type === "PUSH_NAVIGATE") consumeRoute();
       };
       navigator.serviceWorker.addEventListener("message", onSwMessage);
       // addEventListener('message') does not start the client message queue;
@@ -150,8 +164,12 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // On page reload / first mount, if we have a persisted token, fetch fresh user data
-    if (token) {
+    // On page reload / first mount, restore the session by fetching fresh user
+    // data. Legacy mode only bothers when a token was persisted. Cookie mode has
+    // no client-side token — the httpOnly session cookie is the only signal —
+    // so we always ask /auth/me, which returns the user if the cookie is valid
+    // or 401s (→ interceptor handles refresh/logout) if not.
+    if (COOKIE_AUTH || token) {
       void fetchProfile();
     }
   }, [token, fetchProfile]);
@@ -187,8 +205,22 @@ const App = () => {
     // Wire web push (FCM) for the signed-in user: registers silently if the
     // user already granted notifications, otherwise prompts on their next
     // gesture. No-op unless Firebase env is configured + push is supported.
-    if (isAuthenticated && token) {
-      return setupPushForUser();
+    // Cookie mode has no client-side token, so gate on isAuthenticated alone —
+    // requiring `token` here would silently disable push for cookie-auth users.
+    if (isAuthenticated && (COOKIE_AUTH || token)) {
+      // The service's setupPushForUser() returns a cleanup fn, but the dynamic
+      // import resolves async — capture it and run it when the effect tears down
+      // (even if teardown happens before the import settles).
+      let cleanup: (() => void) | undefined;
+      let cancelled = false;
+      void loadPush().then((m) => {
+        if (cancelled) return;
+        cleanup = m.setupPushForUser();
+      });
+      return () => {
+        cancelled = true;
+        cleanup?.();
+      };
     }
   }, [isAuthenticated, token]);
 
@@ -228,18 +260,77 @@ const App = () => {
 
   return (
     <>
-      {(location.pathname === "/" ||
-        location.pathname === "/index.html" ||
-        location.pathname === "/loading") && <Preloader />}
-      <OfflineBanner />
-      <Suspense
+      {activeLayout && (
+        <style>{`
+          /* Preferences Overrides */
+
+          /* --- REVERSE VIEW PREFERENCE --- */
+          .layout-pref-reverse .MuiGrid-container,
+          .layout-pref-reverse .MuiGrid2-container,
+          .layout-pref-reverse .MuiGrid-root.MuiGrid-container,
+          .layout-pref-reverse .MuiGrid2-root.MuiGrid2-container {
+            flex-direction: row-reverse !important;
+          }
+
+          /* --- STRAIGHT STACK VIEW PREFERENCE --- */
+          .layout-pref-straight .MuiGrid-item,
+          .layout-pref-straight .MuiGrid2-root:not(.MuiGrid2-container) {
+            max-width: 100% !important;
+            flex-basis: 100% !important;
+            width: 100% !important;
+          }
+
+          /* --- CARD OVER FLOW VIEW PREFERENCE --- */
+          .layout-pref-cardover .MuiGrid-item,
+          .layout-pref-cardover .MuiGrid2-root:not(.MuiGrid2-container) {
+            max-width: 100% !important;
+            flex-basis: 100% !important;
+            width: 100% !important;
+            position: sticky !important;
+            background-color: inherit;
+            border-radius: 12px;
+          }
+
+          /* Card over z-indexes for smooth overlapping transitions */
+          .layout-pref-cardover .MuiGrid-item:nth-of-type(1),
+          .layout-pref-cardover .MuiGrid2-root:nth-of-type(1) {
+            top: 100px !important;
+            z-index: 10 !important;
+          }
+
+          .layout-pref-cardover .MuiGrid-item:nth-of-type(2),
+          .layout-pref-cardover .MuiGrid2-root:nth-of-type(2) {
+            top: 130px !important;
+            z-index: 20 !important;
+          }
+
+          .layout-pref-cardover .MuiGrid-item:nth-of-type(3),
+          .layout-pref-cardover .MuiGrid2-root:nth-of-type(3) {
+            top: 160px !important;
+            z-index: 30 !important;
+          }
+
+          .layout-pref-cardover .MuiCard-root,
+          .layout-pref-cardover .MuiPaper-root {
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.15), 0 10px 30px rgba(0,0,0,0.15) !important;
+          }
+        `}</style>
+      )}
+
+      <Box className={activeLayout ? `layout-pref-${activeLayout}` : ""} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {(location.pathname === "/" ||
+          location.pathname === "/index.html" ||
+          location.pathname === "/loading") && <Preloader />}
+        <OfflineBanner />
+        <Suspense
         fallback={
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="100vh"
-          >
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "100vh"
+            }}>
             <CircularProgress />
           </Box>
         }
@@ -286,6 +377,7 @@ const App = () => {
           <Route element={<PublicLayout />}>
             {/* <Route path="/aspirantslist" element={<WardCandidateListPage />} /> */}
             <Route path="/elections" element={<VotingResultPage />} />
+            <Route path="/about" element={<AboutPage />} />
           </Route>
 
           {/* Signed SOP should use the same header as UserLayout */}
@@ -314,8 +406,6 @@ const App = () => {
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="wards/create" element={<CreateWardPage />} />
             <Route path="voting-results" element={<VotingResultPage />} />
-            <Route path="reports" element={<ReportsListPage />} />
-            <Route path="reports/:id" element={<ReportDetailsPage />} />
             <Route path="users" element={<AdminUsersListPage />} />
             <Route path="users/create" element={<AdminCreateUserPage />} />
             <Route path="users/:id/edit" element={<AdminEditUserPage />} />
@@ -331,7 +421,7 @@ const App = () => {
             />
             <Route path="registered-aspirants" element={<AdminAspirantListPage />} />
             <Route path="registered-aspirants/:id" element={<AdminUserDetailsPage />} />
-            <Route path="/admin/users/:id" element={<AdminUserDetailsPage />} />
+            <Route path="users/:id" element={<AdminUserDetailsPage />} />
           </Route>
 
           {/* Standalone onboarding route — auth required, no UserLayout chrome */}
@@ -408,8 +498,13 @@ const App = () => {
               element={<WardVotersPage />}
             />
             <Route path="chat/:aspirantId" element={<UserChatPage />} />
+            <Route path="discussions" element={<KattePage />} />
             <Route path="sop" element={<SopPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="karyakartas" element={<GuestPlaceholderPage title="Karyakartas" />} />
+            <Route path="stats" element={<GuestPlaceholderPage title="Stats" />} />
+            <Route path="contact-us" element={<GuestPlaceholderPage title="Contact Us" />} />
+            <Route path="about" element={<AboutPage />} />
           </Route>
 
           {/* Guest routes — no auth required */}
@@ -431,11 +526,18 @@ const App = () => {
               path="aspirants/demo/view"
               element={<DemoAspirantViewPage />}
             />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="elections" element={<VotingResultPage />} />
+            <Route path="stats" element={<GuestPlaceholderPage title="Stats" />} />
+            <Route path="contact-us" element={<GuestPlaceholderPage title="Contact Us" />} />
+            <Route path="karyakartas" element={<GuestPlaceholderPage title="Karyakartas" />} />
+            <Route path="discussions" element={<KattePage />} />
           </Route>
 
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/oauth/success" element={<AuthCallbackPage />} />
           <Route path="/loading" element={<LoadingPage />} />
+          <Route path="/preferences" element={<PreferencesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route
             path="/terms-and-conditions"
@@ -449,6 +551,7 @@ const App = () => {
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Suspense>
+      </Box>
     </>
   );
 };

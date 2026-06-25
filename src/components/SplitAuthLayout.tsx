@@ -5,7 +5,8 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
+import { DarkModeRounded, LightModeRounded, CloudRounded } from "@mui/icons-material";
+import RainEffect from "./RainEffect";
 import { motion } from "framer-motion";
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -52,15 +53,17 @@ export default function SplitAuthLayout({
 }: SplitAuthLayoutProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const { mode: storeMode, toggleTheme, rainEnabled, toggleRain } = useThemeStore();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { i18n, t } = useTranslation();
 
   // Derive colours from the theme + BRAND constants so both modes look great
-  const bg = isDark ? BRAND.black : "#F3F0EB";
-  const cardBg = isDark
-    ? "linear-gradient(160deg, #1C1212 0%, #150E0E 100%)"
-    : "linear-gradient(160deg, #FFFFFF 0%, #FFF8F0 100%)";
+  const bg = storeMode === "grey" ? "rgb(242, 241, 230)" : isDark ? BRAND.black : "#F3F0EB";
+  const cardBg = storeMode === "grey"
+    ? "#FFFFFF"
+    : isDark
+      ? "#1E2021"
+      : "linear-gradient(160deg, #FFFFFF 0%, #FFF8F0 100%)";
   const cardShadow = isDark
     ? "0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(200,24,10,0.25), inset 0 1px 0 rgba(255,255,255,0.06)"
     : "0 24px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(200,24,10,0.12), inset 0 1px 0 rgba(255,255,255,0.8)";
@@ -280,12 +283,52 @@ export default function SplitAuthLayout({
           justifyContent: "space-between",
           px: isMobile ? 1.5 : 3,
           py: isMobile ? 1 : 1.2,
-          bgcolor: isDark ? "rgba(8,6,10,0.92)" : "rgba(255,255,255,0.92)",
+          bgcolor: isDark ? "rgba(18,20,21,0.92)" : "rgba(255,255,255,0.92)",
           backdropFilter: "blur(12px)",
         }}
       >
-        <Box sx={{ width: 40 }} />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Box
+            component="img"
+            src={prajakeeyaLogo}
+            alt="Prajaakeeya Logo"
+            sx={{ height: 32, objectFit: "contain", borderRadius: "6px" }}
+          />
+          <Typography
+            sx={{
+              fontFamily: '"Baloo 2", cursive',
+              fontSize: "18px",
+              fontWeight: 800,
+              color: isDark ? "#FFE566" : BRAND.red,
+              display: { xs: "none", sm: "block" }
+            }}
+          >
+            ಪ್ರಜಾಕೀಯ
+          </Typography>
+        </Box>
         <Box sx={{ display: "flex", gap: 1 }}>
+          {storeMode === 'grey' && (
+            <Button
+              size="small"
+              onClick={toggleRain}
+              sx={{
+                minWidth: 40,
+                width: 40,
+                height: 40,
+                p: 0,
+                borderRadius: 50,
+                bgcolor: '#4E535C',
+                color: rainEnabled ? '#AECAE8' : '#9CA3AF',
+                border: `1.5px solid ${rainEnabled ? '#C0C6CF' : '#626873'}`,
+                boxShadow: rainEnabled ? '0 0 10px rgba(192,198,207,0.4)' : 'none',
+                transition: "all 0.2s ease",
+                "&:hover": { bgcolor: '#5A606A' },
+              }}
+              title="Toggle Rain Effect"
+            >
+              <span style={{ fontSize: '18px' }}>🌧️</span>
+            </Button>
+          )}
           <Button
             size="small"
             onClick={toggleTheme}
@@ -296,7 +339,7 @@ export default function SplitAuthLayout({
               p: 0,
               borderRadius: 50,
               bgcolor: isDark ? "rgba(255,255,255,0.08)" : "#FFFFFF",
-              color: isDark ? "#F5A800" : "#111827",
+              color: storeMode === 'light' ? '#111827' : storeMode === 'grey' ? '#9CA3AF' : '#F5A800',
               border: `1px solid ${isDark ? "rgba(255,255,255,0.14)" : "rgba(17,24,39,0.12)"}`,
               boxShadow: isDark
                 ? "0 2px 10px rgba(0,0,0,0.35)"
@@ -309,13 +352,19 @@ export default function SplitAuthLayout({
               },
             }}
             aria-label={
-              isDark ? "Switch to light theme" : "Switch to dark theme"
+              storeMode === 'dark'
+                ? 'Switch to light theme'
+                : storeMode === 'light'
+                ? 'Switch to grey theme'
+                : 'Switch to dark theme'
             }
           >
-            {isDark ? (
+            {storeMode === 'dark' ? (
+              <DarkModeRounded fontSize="small" />
+            ) : storeMode === 'light' ? (
               <LightModeRounded fontSize="small" />
             ) : (
-              <DarkModeRounded fontSize="small" />
+              <CloudRounded fontSize="small" />
             )}
           </Button>
           <LanguageSelector
@@ -325,288 +374,20 @@ export default function SplitAuthLayout({
               py: 0.6,
               fontSize: "0.82rem",
               fontWeight: 700,
-              borderRadius: 50,
-              bgcolor: BRAND.yellow,
-              color: BRAND.black,
+              borderRadius: 1,
+              bgcolor: "transparent",
+              color: isDark ? "#F5A800" : "#BE8507",
+              border: `1.5px solid #F5A800`,
+              fontFamily: '"Sora", sans-serif',
               textTransform: "none",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
               transition: "all 0.2s ease",
-              "&:hover": { bgcolor: "#d99000" },
+              "&:hover": { bgcolor: "rgba(245, 168, 0, 0.08)" },
             }}
           />
         </Box>
       </Box>
 
-      {/* ══════════════════════════════════════════════════════════════════
-                LEFT PANEL — Branding (desktop only)
-            ══════════════════════════════════════════════════════════════════ */}
-      {!isMobile && (
-        <Box
-          component={motion.div as any}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          sx={{
-            width: { md: "52%", lg: "50%" },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            pt: "60px",
-            pb: "28px",
-            overflowY: "auto",
-            zIndex: 3,
-            position: "relative",
-            flexShrink: 0,
-          }}
-        >
-          {/* Status row */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              maxWidth: 400,
-              px: 2,
-              mb: 3,
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: "9.5px",
-                fontWeight: 600,
-                letterSpacing: "2.5px",
-                textTransform: "uppercase",
-                color: panelTextVeryDim,
-              }}
-            >
-              Prajaakeeya
-            </Typography>
-            <Box
-              component={motion.div as any}
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
-              sx={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: BRAND.yellow,
-                boxShadow: `0 0 8px ${BRAND.yellow}`,
-              }}
-            />
-          </Box>
-
-          {/* Logo ring */}
-          <Box
-            component={motion.div as any}
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: [0.34, 1.56, 0.64, 1] }}
-          >
-            <Box
-              sx={{
-                width: 174,
-                height: 174,
-                borderRadius: "38px",
-                background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)`,
-                padding: "3px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "35px",
-                  background: bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow:
-                    "0 0 40px rgba(245,168,0,0.2), inset 0 0 20px rgba(200,24,10,0.1)",
-                }}
-              >
-                <motion.img
-                  src={prajakeeyaLogo}
-                  alt="Prajaakeeya Logo"
-                  animate={{
-                    filter: [
-                      "drop-shadow(0 0 14px rgba(245,168,0,0.4))",
-                      "drop-shadow(0 0 28px rgba(245,168,0,0.8)) drop-shadow(0 0 50px rgba(200,24,10,0.3))",
-                      "drop-shadow(0 0 14px rgba(245,168,0,0.4))",
-                    ],
-                  }}
-                  transition={{
-                    duration: 3.5,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                  }}
-                  style={{
-                    width: 152,
-                    height: 152,
-                    borderRadius: "32px",
-                    objectFit: "contain",
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-
-          {/* App name */}
-          <Box
-            component={motion.div as any}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              mt: 2.75,
-              gap: 0,
-            }}
-          >
-            <Typography
-              sx={{
-                fontFamily: '"Baloo 2", cursive',
-                fontSize: "44px",
-                fontWeight: 900,
-                letterSpacing: "2px",
-                lineHeight: 1.17,
-                background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.yellow2} 45%, ${BRAND.yellow} 100%)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 2px 12px rgba(245,168,0,0.35))",
-              }}
-            >
-              ಪ್ರಜಾಕೀಯ
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: '"Tiro Kannada", serif',
-                fontSize: "20px",
-                color: panelTextDim,
-                letterSpacing: "3px",
-              }}
-            >
-              Prajaakeeya
-            </Typography>
-          </Box>
-
-          {/* Divider with fist */}
-          <Box
-            component={motion.div as any}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.45 }}
-            sx={{ display: "flex", alignItems: "center", gap: 1.25, mt: 1.75 }}
-          >
-            <Box
-              sx={{
-                width: 60,
-                height: "1.5px",
-                background: `linear-gradient(90deg, transparent, ${BRAND.red})`,
-              }}
-            />
-            <Box
-              sx={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: `linear-gradient(135deg, ${BRAND.red}, ${BRAND.yellow})`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "13px",
-                boxShadow: `0 0 12px rgba(245,168,0,0.4)`,
-              }}
-            >
-              ✊
-            </Box>
-            <Box
-              sx={{
-                width: 60,
-                height: "1.5px",
-                background: `linear-gradient(90deg, ${BRAND.yellow}, transparent)`,
-              }}
-            />
-          </Box>
-
-          {/* Loader + footer */}
-          <Box
-            component={motion.div as any}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.9 }}
-            sx={{
-              width: "100%",
-              maxWidth: 400,
-              px: 2.5,
-              mt: 2,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1.25,
-            }}
-          >
-            {/* Loader bar */}
-            <Box
-              sx={{
-                width: "100%",
-                height: "2.5px",
-                background: loaderTrack,
-                borderRadius: 1,
-                overflow: "hidden",
-              }}
-            >
-              <Box
-                component={motion.div as any}
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2.5, delay: 1, ease: [0.4, 0, 0.2, 1] }}
-                sx={{
-                  height: "100%",
-                  background: `linear-gradient(90deg, ${BRAND.red}, ${BRAND.yellow2}, ${BRAND.red2})`,
-                  borderRadius: 1,
-                  boxShadow: "0 0 10px rgba(245,168,0,0.5)",
-                }}
-              />
-            </Box>
-
-            <Typography
-              sx={{
-                fontSize: i18n.language?.startsWith("kn") ? "13px" : "10px",
-                color: footerText,
-                letterSpacing: i18n.language?.startsWith("kn")
-                  ? "1.5px"
-                  : "2.2px",
-                textTransform: i18n.language?.startsWith("kn")
-                  ? "none"
-                  : "uppercase",
-                fontWeight: i18n.language?.startsWith("kn") ? 500 : 300,
-                fontFamily: i18n.language?.startsWith("kn")
-                  ? '"Tiro Kannada", serif'
-                  : "inherit",
-              }}
-            >
-              {i18n.t("pages.login.footerMotto")}
-            </Typography>
-
-            {/* Social links */}
-            {/* <Box sx={{ display: 'flex', gap: 1.5, mt: 0.5 }}>
-                            {socialLinks.map(s => (
-                                <Box key={s.alt} component="a" href={s.href} target="_blank" rel="noopener noreferrer"
-                                    sx={{ display: 'flex', opacity: 0.75, transition: 'opacity 0.2s', '&:hover': { opacity: 1 } }}>
-                                    <Box component="img" src={s.src} alt={s.alt} sx={{ width: 20, height: 20 }} />
-                                </Box>
-                            ))}
-                        </Box> */}
-          </Box>
-        </Box>
-      )}
+      {/* Left panel removed to center auth card */}
 
       {/* ══════════════════════════════════════════════════════════════════
                 RIGHT PANEL — Auth card
@@ -793,25 +574,27 @@ export default function SplitAuthLayout({
             </Box>
           </Box>
         </Box>
-
-        {/* Footer - fixed at bottom */}
-        {showFooter && (
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: 4,
-              left: 0,
-              right: 0,
-              zIndex: 350,
-              bgcolor: isDark ? "rgba(8,6,10,0.92)" : "rgba(255,255,255,0.92)",
-              backdropFilter: "blur(12px)",
-              borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(17,24,39,0.08)"}`,
-            }}
-          >
-            <AuthFooter />
-          </Box>
-        )}
       </Box>
+
+      {/* Footer - fixed at bottom */}
+      {showFooter && (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 4,
+            left: 0,
+            right: 0,
+            zIndex: 350,
+            bgcolor: isDark ? "rgba(8,6,10,0.92)" : "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(12px)",
+            borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(17,24,39,0.08)"}`,
+            width: "100%",
+          }}
+        >
+          <AuthFooter />
+        </Box>
+      )}
+      {storeMode === 'grey' && rainEnabled && <RainEffect />}
     </Box>
   );
 }

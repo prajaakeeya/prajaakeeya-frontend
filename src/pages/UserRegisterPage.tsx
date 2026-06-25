@@ -22,6 +22,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getGoogleOAuthUrl } from "../services/authService";
+import { COOKIE_AUTH } from "../config/authMode";
 import useAuthStore from "../store/useAuthStore";
 import * as yup from "yup";
 import SplitAuthLayout from "../components/SplitAuthLayout";
@@ -126,7 +127,13 @@ const UserRegisterPage = () => {
     if (!stored) return;
     try {
       const parsed = JSON.parse(stored);
-      if (parsed?.token && parsed?.user) {
+      // In cookie mode there is no token (the httpOnly session cookie was
+      // already set by the exchange), so require only `user`; legacy mode still
+      // carries the JWT and both must be present.
+      const hasValidPending = COOKIE_AUTH
+        ? Boolean(parsed?.user)
+        : Boolean(parsed?.token && parsed?.user);
+      if (hasValidPending) {
         setPendingAuth(parsed);
         setShowCelebration(true);
       }
@@ -427,7 +434,7 @@ const UserRegisterPage = () => {
                   border: `1.5px solid ${isDark ? "rgba(255,255,255,0.18)" : "rgba(17,24,39,0.15)"}`,
                   color: isDark ? "#fff" : "rgba(17,24,39,0.88)",
                   background: isDark
-                    ? "linear-gradient(135deg, #0A0808 0%, #1C1212 50%, #2A1A0A 100%)"
+                    ? "linear-gradient(135deg, #0D0F12 0%, #121415 50%, #13161A 100%)"
                     : "#ffffff",
                   backdropFilter: "blur(4px)",
                   boxShadow: isDark
@@ -436,7 +443,7 @@ const UserRegisterPage = () => {
                   "&:hover": {
                     border: "1.5px solid #F5A800",
                     background: isDark
-                      ? "linear-gradient(135deg, #150E0E 0%, #251515 50%, #35200A 100%)"
+                      ? "linear-gradient(135deg, #1E2021 0%, #1E2021 100%)"
                       : "#FFF8F0",
                     boxShadow: isDark
                       ? "0 6px 24px rgba(0,0,0,0.55)"
@@ -479,14 +486,14 @@ const UserRegisterPage = () => {
                     border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(17,24,39,0.15)'}`,
                     color: isDark ? '#fff' : 'rgba(17,24,39,0.88)',
                     background: isDark
-                      ? 'linear-gradient(135deg, #0A0808 0%, #1C1212 50%, #2A1A0A 100%)'
+                      ? 'linear-gradient(135deg, #0D0F12 0%, #1C1212 50%, #2A1A0A 100%)'
                       : '#ffffff',
                     backdropFilter: 'blur(4px)',
                     boxShadow: isDark ? '0 4px 18px rgba(0,0,0,0.5)' : '0 2px 10px rgba(17,24,39,0.12)',
                     '&:hover': {
                       border: '1.5px solid #F5A800',
                       background: isDark
-                        ? 'linear-gradient(135deg, #150E0E 0%, #251515 50%, #35200A 100%)'
+                        ? 'linear-gradient(135deg, #13161A 0%, #251515 50%, #35200A 100%)'
                         : '#FFF8F0',
                       boxShadow: isDark ? '0 6px 24px rgba(0,0,0,0.55)' : '0 4px 16px rgba(245,168,0,0.2)',
                       transform: 'translateY(-1px)',
@@ -640,7 +647,6 @@ const UserRegisterPage = () => {
         </Box>
       </SplitAuthLayout>
       {/* Capture modal removed with selfie flow */}
-
       {/* Celebration Portal */}
       <Portal>
         <AnimatePresence>

@@ -215,7 +215,9 @@ const AdminAssemblyPage: React.FC = () => {
                     {items.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                          <Typography color="text.secondary">No records</Typography>
+                          <Typography sx={{
+                            color: "text.secondary"
+                          }}>No records</Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -239,7 +241,6 @@ const AdminAssemblyPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
       <Dialog open={formOpen} onClose={closeForm} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? 'Edit Assembly' : 'Add Assembly'}</DialogTitle>
         <DialogContent>
@@ -278,7 +279,6 @@ const AdminAssemblyPage: React.FC = () => {
           <Button variant="contained" onClick={submitForm} disabled={formLoading} startIcon={formLoading ? <CircularProgress size={18} /> : undefined}>{editing ? 'Update' : 'Create'}</Button>
         </DialogActions>
       </Dialog>
-
       <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
         <DialogTitle>Delete Assembly constituency</DialogTitle>
         <DialogContent>

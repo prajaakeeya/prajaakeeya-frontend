@@ -39,7 +39,7 @@ const AspirantRequestsTab: React.FC<AspirantRequestsTabProps> = ({
 
     return (
         <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }}>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Card sx={{ borderRadius: 3, boxShadow: '0 3px 14px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.06)' }}>
                     <CardContent>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -62,7 +62,12 @@ const AspirantRequestsTab: React.FC<AspirantRequestsTabProps> = ({
                                             <CardContent sx={{ p: 2 }}>
                                                 <Box>
                                                     <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{b.voterName ?? '-'}</Typography>
-                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{b.message}</Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            color: "text.secondary",
+                                                            mt: 0.5
+                                                        }}>{b.message}</Typography>
                                                 </Box>
                                             </CardContent>
                                         </Card>
@@ -88,7 +93,9 @@ const AspirantRequestsTab: React.FC<AspirantRequestsTabProps> = ({
                             )
                         ) : (
                             <Box>
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="body2" sx={{
+                                    color: "text.secondary"
+                                }}>
                                     {t('userDashboard.aspirant.noRequests') || 'No requests yet.'}
                                 </Typography>
                                 {bookingsFetchError && (
@@ -97,7 +104,12 @@ const AspirantRequestsTab: React.FC<AspirantRequestsTabProps> = ({
                                     </Typography>
                                 )}
                                 {bookingsLastFetchedAt && (
-                                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "text.secondary",
+                                            display: 'block'
+                                        }}>
                                         {t('userDashboard.aspirant.lastChecked') || 'Last checked:'} {new Date(bookingsLastFetchedAt).toLocaleString()}
                                     </Typography>
                                 )}

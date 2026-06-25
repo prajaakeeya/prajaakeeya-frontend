@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -57,7 +57,8 @@ import savePlanetImg from '../assets/images/save-the-planet.webp';
 import capitolInactiveImg from '../assets/images/capitol.png';
 import capitolActiveImg from '../assets/images/capitol1.webp';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
 
 const CivicIssuesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -524,7 +525,7 @@ const CivicIssuesPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 1, sm: 0 } }}>
+    <Box sx={{ maxWidth: '100%', mx: 'auto', px: { xs: 1, sm: 0 } }}>
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38 }}>
         <Box sx={{
@@ -560,7 +561,7 @@ const CivicIssuesPage: React.FC = () => {
                 <ReportProblemIcon sx={{ color: GOLD, fontSize: 26 }} />
               </Box>
               <Box>
-                <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
+                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
                   {t('civicIssues.title')}
                 </Typography>
                 {/* Election + constituency sub-line removed — the same info is
@@ -568,29 +569,29 @@ const CivicIssuesPage: React.FC = () => {
                     was rendering twice on /user/civic-issues. */}
                 {/* {filterElectionName && filterConstituencyName ? (
                   <Box>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
+                    <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
                       {filterElectionName}
                     </Typography>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
+                    <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
                       {t('civicIssues.constituency')}: {filterConstituencyName}
                     </Typography>
                   </Box>
                 ) : (selectedElectionId && selectedConstituency) ? (
                   <Box>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
+                    <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
                       {elections.find((e) => e.id === selectedElectionId)?.name}
                     </Typography>
                     {selectedElectionType === 'municipal_corporation' && selectedMunicipality ? (
                       <>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
+                        <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
                           {t('civicIssues.municipality', { defaultValue: 'Municipality' })}: {selectedMunicipality.name}
                         </Typography>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.2, fontWeight: 600 }}>
+                        <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.2, fontWeight: 600 }}>
                           {t('civicIssues.ward', { defaultValue: 'Ward' })}: {selectedConstituency?.number} - {selectedConstituency?.name}
                         </Typography>
                       </>
                     ) : (
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
+                      <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
                         {t('civicIssues.constituency')}: {selectedConstituency.name}
                       </Typography>
                     )}
@@ -683,7 +684,7 @@ const CivicIssuesPage: React.FC = () => {
                     )}
                     <Typography
                       sx={{
-                        fontFamily: FF,
+                        fontFamily: FF_HEADING,
                         fontWeight: 700,
                         fontSize: { xs: '0.78rem', sm: '0.88rem' },
                         lineHeight: 1.15,
@@ -712,7 +713,7 @@ const CivicIssuesPage: React.FC = () => {
                       textAlign: 'center',
                     }}
                   >
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: textMid, mb: 1 }}>
+                    <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.9rem', color: textMid, mb: 1 }}>
                       {t('civicIssues.constituencyNotSet', {
                         defaultValue: 'No constituency saved for this category. Update your profile to see issues here.',
                       })}
@@ -749,10 +750,10 @@ const CivicIssuesPage: React.FC = () => {
                         border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(17,24,39,0.10)'}`,
                       }}
                     >
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
+                      <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
                         {t('civicIssues.municipality', { defaultValue: 'Municipality' })}
                       </Typography>
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, wordBreak: 'break-word' }}>
+                      <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, wordBreak: 'break-word' }}>
                         {municipalityName}
                       </Typography>
                     </Box>
@@ -769,14 +770,14 @@ const CivicIssuesPage: React.FC = () => {
                     }}
                   >
                     <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
+                      <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
                         {isMunicipal
                           ? t('civicIssues.ward', { defaultValue: 'Ward' })
                           : wantedType === 'gram_panchayat'
                             ? t('civicIssues.village', { defaultValue: 'Village' })
                             : t('civicIssues.constituency', { defaultValue: 'Constituency' })}
                       </Typography>
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, wordBreak: 'break-word' }}>
+                      <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, wordBreak: 'break-word' }}>
                         {selectedConstituency
                           ? `${selectedConstituency.number ? `${selectedConstituency.number} - ` : ''}${selectedConstituency.name}`
                           : `#${userConstId}`}
@@ -784,10 +785,10 @@ const CivicIssuesPage: React.FC = () => {
                     </Box>
                     {totalHandRaises != null && (
                       <Box sx={{ flexShrink: 0, textAlign: 'center' }}>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: textMid, lineHeight: 1.1 }}>
+                        <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: textMid, lineHeight: 1.1 }}>
                           {t('civicIssues.totalReported', { defaultValue: 'Total Reported' })}
                         </Typography>
-                        <Typography sx={{ fontFamily: FF, fontSize: '1.15rem', fontWeight: 800, color: GOLD, lineHeight: 1.1, mt: 0.2 }}>
+                        <Typography sx={{ fontFamily: FF_HEADING, fontSize: '1.15rem', fontWeight: 800, color: GOLD, lineHeight: 1.1, mt: 0.2 }}>
                           {totalHandRaises}
                         </Typography>
                       </Box>
@@ -804,7 +805,7 @@ const CivicIssuesPage: React.FC = () => {
       {!loading && !fetchError && issues.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38 }}>
           <Box sx={{ mb: 3 }}>
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '1.1rem', color: textPrimary, mb: 2 }}>
+            <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: '1.1rem', color: textPrimary, mb: 2 }}>
               {t('civicIssues.reportedIssues', { defaultValue: 'Reported Issues' })} ({issues.length})
             </Typography>
             <Stack spacing={1.5}>
@@ -870,8 +871,8 @@ const CivicIssuesPage: React.FC = () => {
         </Box>
       ) : fetchError ? (
         <Box sx={{ bgcolor: BG, borderRadius: 3, border: `1px solid ${borderFaint}`, py: 6, textAlign: 'center' }}>
-          <Typography sx={{ fontFamily: FF, color: '#C8180A', fontWeight: 700, mb: 1 }}>{t('civicIssues.error')}</Typography>
-          <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: textMid }}>{fetchError}</Typography>
+          <Typography sx={{ fontFamily: FF_BODY, color: '#C8180A', fontWeight: 700, mb: 1 }}>{t('civicIssues.error')}</Typography>
+          <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.88rem', color: textMid }}>{fetchError}</Typography>
         </Box>
       ) : (
         <Stack spacing={1.5}>
@@ -940,7 +941,7 @@ const CivicIssuesPage: React.FC = () => {
                             </Box>
                             <Box sx={{ minWidth: 0 }}>
                               <Typography sx={{
-                                fontFamily: FF, fontWeight: 800,
+                                fontFamily: FF_HEADING, fontWeight: 800,
                                 fontSize: { xs: '0.98rem', sm: '1.06rem' },
                                 color: textPrimary, mb: 0.3,
                                 whiteSpace: 'normal',
@@ -950,7 +951,7 @@ const CivicIssuesPage: React.FC = () => {
                               }}>
                                 {displayName}
                               </Typography>
-                              <Typography sx={{ fontFamily: FF, fontSize: '0.78rem', color: textDim }}>
+                              <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.78rem', color: textDim }}>
                                 {t('civicIssues.handRaise', { count: cat.count })}
                               </Typography>
                             </Box>
@@ -964,7 +965,7 @@ const CivicIssuesPage: React.FC = () => {
                                 size="small"
                                 startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
                                 sx={{
-                                  fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                                  fontFamily: FF_HEADING, fontWeight: 700, textTransform: 'none',
                                   borderRadius: 2, fontSize: '0.82rem',
                                   color: isDark ? 'rgba(76,175,80,0.85)' : '#388e3c',
                                   borderColor: isDark ? 'rgba(76,175,80,0.35)' : 'rgba(76,175,80,0.5)',
@@ -984,7 +985,7 @@ const CivicIssuesPage: React.FC = () => {
                                 onClick={() => handleRaise(cat)}
                                 startIcon={isRaising ? <CircularProgress size={14} sx={{ color: GOLD }} /> : <HandRaiseIcon sx={{ fontSize: 16 }} />}
                                 sx={{
-                                  fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                                  fontFamily: FF_HEADING, fontWeight: 700, textTransform: 'none',
                                   borderRadius: 2, fontSize: '0.82rem',
                                   borderColor: 'rgba(245,168,0,0.45)',
                                   color: GOLD,
@@ -1017,7 +1018,7 @@ const CivicIssuesPage: React.FC = () => {
             borderRadius: 3,
             textTransform: 'none',
             fontWeight: 700,
-            fontFamily: FF,
+            fontFamily: FF_BODY,
             py: 1.5,
             fontSize: '0.95rem',
             color: '#fff',

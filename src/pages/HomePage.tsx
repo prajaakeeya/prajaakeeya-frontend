@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button } from '@mui/material';
-import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
+import React from 'react';
+import { Box, Grid, Container, useTheme, Typography, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material';
 import useThemeStore from '../store/useThemeStore';
-import LanguageSelector from '../components/LanguageSelector';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
-import unlockImg from '../assets/images/unlock.png';
+import introPerceptiveImg from '../assets/images/intro_perceptive.png';
+import peopleAreOwnerImg from '../assets/images/people_are_owner.png';
+import employeesImg from '../assets/images/employees.webp';
+import officeImg from '../assets/images/office.webp';
+import RainEffect from '../components/RainEffect';
+import AppFooter from '../components/AppFooter';
+import { BRAND } from '../theme';
+import usePreferenceStore from '../store/usePreferenceStore';
 
 /* ═══════════════ ICONS ═══════════════ */
 
-const LockIcon = ({ isDark: _isDark }: { isDark: boolean }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ animation: 'lockBlink 1s ease-in-out infinite' }}>
-    <rect x="5" y="11" width="14" height="10" rx="2.5" stroke="rgb(255,0,0)" strokeWidth="1.8" />
-    <path d="M8 11V8a4 4 0 118 0v3" stroke="rgb(255,0,0)" strokeWidth="1.8" strokeLinecap="round" />
-    <circle cx="12" cy="16.5" r="1.5" fill="rgb(255,0,0)" />
+const LockIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ animation: 'lockBlink 1.5s ease-in-out infinite' }}>
+    <rect x="5" y="11" width="14" height="10" rx="2.5" stroke="#C8180A" strokeWidth="1.8" />
+    <path d="M8 11V8a4 4 0 118 0v3" stroke="#C8180A" strokeWidth="1.8" strokeLinecap="round" />
+    <circle cx="12" cy="16.5" r="1.5" fill="#C8180A" />
   </svg>
 );
 
 const OpenLockIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-    <rect x="5" y="11" width="14" height="10" rx="2.5" stroke="#22C55E" strokeWidth="1.8" />
-    <path d="M8 11V8a4 4 0 118 0" stroke="#22C55E" strokeWidth="1.8" strokeLinecap="round" />
-    <circle cx="12" cy="16.5" r="1.5" fill="#22C55E" />
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <rect x="5" y="11" width="14" height="10" rx="2.5" stroke="#F5A800" strokeWidth="1.8" />
+    <path d="M8 11V8a4 4 0 118 0" stroke="#F5A800" strokeWidth="1.8" strokeLinecap="round" />
+    <circle cx="12" cy="16.5" r="1.5" fill="#F5A800" />
   </svg>
 );
 
@@ -33,23 +37,6 @@ const ArrowIcon = () => (
   </svg>
 );
 
-/* ═══════════════ SIGNAL LIGHT ═══════════════ */
-
-const RedLight: React.FC<{ size?: number }> = ({ size = 40 }) => (
-  <div style={{
-    width: size, height: size, borderRadius: '50%', flexShrink: 0,
-    background: 'linear-gradient(135deg, rgb(224, 32, 16) 0%, rgb(255, 203, 0) 45%, rgb(245, 168, 0) 100%)',
-    boxShadow: `0 0 ${size * .4}px ${size * .12}px rgba(245,168,0,.5), 0 0 ${size * .8}px ${size * .25}px rgba(245,168,0,.18), inset 0 -3px 6px rgba(0,0,0,.35), inset 0 2px 4px rgba(255,255,255,.2)`,
-    position: 'relative',
-    animation: 'redPulse 2.5s ease-in-out infinite',
-  }}>
-    <div style={{
-      position: 'absolute', top: '20%', left: '28%', width: '26%', height: '18%',
-      borderRadius: '50%', background: 'rgba(255,255,255,.35)', filter: 'blur(2px)',
-    }} />
-  </div>
-);
-
 /* ═══════════════ ANIMATED CROWN ═══════════════ */
 
 const AnimatedCrown = () => (
@@ -57,12 +44,12 @@ const AnimatedCrown = () => (
     <div className="sparkle s1" /><div className="sparkle s2" />
     <div className="sparkle s3" /><div className="sparkle s4" />
     <div className="crown-glow" />
-    <svg className="crown-svg" width="40" height="40" viewBox="0 0 48 48" fill="none">
-      <path d="M6 35L10 13l10 10L24 6l4 17 10-10 4 22H6z" fill="url(#crG)" stroke="#B8860B" strokeWidth="1.2" strokeLinejoin="round" />
+    <svg className="crown-svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+      <path d="M6 35L10 13l10 10L24 6l4 17 10-10 4 22H6z" fill="url(#crG)" stroke="#F5A800" strokeWidth="1.2" strokeLinejoin="round" />
       <rect x="6" y="35" width="36" height="5.5" rx="2.5" fill="url(#crBand)" />
-      <circle cx="14" cy="37.8" r="1.8" fill="#E11D48" />
-      <circle cx="24" cy="37.8" r="2" fill="#2563EB" />
-      <circle cx="34" cy="37.8" r="1.8" fill="#059669" />
+      <circle cx="14" cy="37.8" r="1.8" fill="#C8180A" />
+      <circle cx="24" cy="37.8" r="2" fill="#F5A800" />
+      <circle cx="34" cy="37.8" r="1.8" fill="#C8180A" />
       <circle cx="24" cy="6" r="2.2" fill="#FFD700" stroke="#DAA520" strokeWidth=".8" />
       <circle cx="10" cy="13" r="1.6" fill="#FFD700" stroke="#DAA520" strokeWidth=".6" />
       <circle cx="38" cy="13" r="1.6" fill="#FFD700" stroke="#DAA520" strokeWidth=".6" />
@@ -78,306 +65,486 @@ const AnimatedCrown = () => (
   </div>
 );
 
-/* ═══════════════ STATIC CSS (animations & shapes only) ═══════════════ */
-
-const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-  .anim-down{opacity:0;transform:translateY(-22px);transition:opacity .55s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
-  .anim-down.on{opacity:1;transform:translateY(0)}
-  .anim-left{opacity:0;transform:translateX(-26px);transition:opacity .45s ease,transform .5s cubic-bezier(.34,1.56,.64,1)}
-  .anim-left.on{opacity:1;transform:translateX(0)}
-  .anim-up{opacity:0;transform:translateY(34px) scale(.96);transition:opacity .5s ease,transform .6s cubic-bezier(.34,1.56,.64,1)}
-  .anim-up.on{opacity:1;transform:translateY(0) scale(1)}
-  .anim-fade{opacity:0;transition:opacity .5s ease}
-  .anim-fade.on{opacity:1}
-
-  @keyframes redPulse{
-    0%,100%{box-shadow:0 0 15px 5px rgba(245,168,0,.45),0 0 30px 10px rgba(245,168,0,.15),inset 0 -3px 6px rgba(0,0,0,.35),inset 0 2px 4px rgba(255,255,255,.2)}
-    50%{box-shadow:0 0 22px 8px rgba(245,168,0,.6),0 0 50px 18px rgba(245,168,0,.2),inset 0 -3px 6px rgba(0,0,0,.35),inset 0 2px 4px rgba(255,255,255,.2)}
-  }
-
-  .stripe-red{
-    position:absolute;top:0;left:0;bottom:0;width:4px;
-    background:linear-gradient(180deg,#EF4444,#7F1D1D);
-    border-radius:22px 0 0 22px;
-  }
-
-  .crown-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px}
-  .crown-svg{position:relative;z-index:2;animation:crownFloat 3s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(255,215,0,.35))}
-  @keyframes crownFloat{
-    0%,100%{transform:translateY(0) rotate(0deg)}
-    25%{transform:translateY(-6px) rotate(1.5deg)}
-    50%{transform:translateY(-10px) rotate(0deg)}
-    75%{transform:translateY(-6px) rotate(-1.5deg)}
-  }
-  .crown-glow{position:absolute;inset:-8px;border-radius:50%;z-index:0;background:radial-gradient(circle,rgba(255,215,0,.15) 0%,transparent 70%);animation:glowP 3s ease-in-out infinite}
-  @keyframes glowP{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
-  .sparkle{position:absolute;width:6px;height:6px;border-radius:50%;z-index:3;background:#FFD700;animation:sparkA 2.4s ease-in-out infinite}
-  .s1{top:6px;left:20px;animation-delay:0s}
-  .s2{top:10px;right:14px;animation-delay:.6s;width:5px;height:5px}
-  .s3{bottom:16px;left:10px;animation-delay:1.2s;width:4px;height:4px}
-  .s4{bottom:10px;right:20px;animation-delay:1.8s;width:5px;height:5px}
-  @keyframes sparkA{0%,100%{opacity:0;transform:scale(0)}15%{opacity:1;transform:scale(1)}30%{opacity:1;transform:scale(1.2)}50%{opacity:0;transform:scale(0)}}
-
-  .shimmer{position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),transparent);animation:shimAnim 5s ease-in-out infinite;pointer-events:none}
-  @keyframes shimAnim{0%{left:-120%}100%{left:200%}}
-
-  .leader-word{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1.5;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,.35)}
-
-  .pulse-dot{width:7px;height:7px;border-radius:50%;background:rgb(255,0,0);animation:dotP 2s ease infinite;display:inline-block}
-  @keyframes dotP{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-
-  .enter-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#C8180A 0%,#E8720A 50%,#F5A800 100%);border:none;border-radius:16px;padding:16px;cursor:pointer;font-size:15px;font-weight:700;color:#fff;letter-spacing:.5px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 24px rgba(200,80,10,.35);transition:transform .15s ease,box-shadow .15s ease}
-  .enter-btn:active{transform:scale(.97);box-shadow:0 2px 12px rgba(200,80,10,.2)}
-  .enter-btn:hover{background:linear-gradient(135deg,#df210f 0%,#f08010 50%,#ffbe1a 100%);box-shadow:0 6px 32px rgba(200,80,10,.5)}
-`;
-
-/* ═══════════════ MAIN ═══════════════ */
+/* ═══════════════ MAIN REDESIGN ═══════════════ */
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
-  const toggleTheme = useThemeStore((s) => s.toggleTheme);
-  const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
-  const [step, setStep] = useState(0);
+  const { mode, rainEnabled } = useThemeStore();
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    const timers = [
-      setTimeout(() => setStep(1), 300),
-      setTimeout(() => setStep(2), 800),
-      setTimeout(() => setStep(3), 1400),
-      setTimeout(() => setStep(4), 1900),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  // ── Theme-aware tokens ──
   const bg = theme.palette.background.default;
   const paper = theme.palette.background.paper;
 
-  const noEntryCardStyle: React.CSSProperties = {
-    position: 'relative',
-    background: isDark
-      ? 'linear-gradient(150deg,#1C0A0A 0%,#160707 40%,#120505 100%)'
-      : '#FFF5F5',
-    border: `1px solid ${isDark ? 'rgba(239,68,68,.18)' : 'rgba(239,68,68,.3)'}`,
-    borderRadius: 22, padding: '20px 18px', overflow: 'hidden',
-    transition: 'transform .2s ease',
-  };
+  // Custom CSS mimicking the Stitch layout and style tokens using clean Vanilla CSS
+  const CSS = `
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
 
-  const welcomeCardStyle: React.CSSProperties = {
-    position: 'relative',
-    background: isDark ? 'linear-gradient(135deg, rgba(200,24,10,0.18), rgba(245,168,0,0.12))' : 'rgb(255,245,245)',
-    border: `1px solid ${isDark ? 'rgba(245,168,0,0.28)' : 'rgba(239,68,68,0.3)'}`,
-    borderRadius: 24, padding: '24px 22px', overflow: 'hidden',
-    transition: 'transform .2s ease',
-    animation: 'wGlow 3s ease-in-out infinite 2.4s',
-    boxShadow: isDark ? '0 8px 32px rgba(200,24,10,0.15), 0 0 0 0 rgba(245,168,0,0)' : 'none',
-  };
+    body {
+      font-family: 'Sora', sans-serif;
+    }
 
-  const redTagStyle: React.CSSProperties = {
-    fontSize: 9.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1,
-    color: isDark ? '#FCA5A5' : '#DC2626',
-    background: isDark ? 'rgba(239,68,68,.08)' : 'rgba(239,68,68,.06)',
-    border: `1px solid ${isDark ? 'rgba(239,68,68,.15)' : 'rgba(239,68,68,.25)'}`,
-    borderRadius: 6, padding: '3px 10px', display: 'inline-block',
-  };
+    .glass-nav {
+      position: fixed;
+      top: 24px;
+      left: 5%;
+      right: 5%;
+      width: 90%;
+      margin: 0 auto;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px;
+      background: ${isDark ? 'rgba(18, 20, 21, 0.9)' : 'rgba(255, 255, 255, 0.9)'};
+      backdrop-filter: blur(12px);
+      border: 1px solid ${isDark ? '#5B403D' : 'rgba(239, 68, 68, 0.2)'};
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Always visible since hero is removed */
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
 
-  const awakeBadgeStyle: React.CSSProperties = {
-    display: 'inline-flex', alignItems: 'center', gap: 8,
-    fontSize: 10, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 1.5,
-    color: isDark ? '#FFD700' : 'rgb(146, 24, 24)',
-    marginBottom: 18,
-  };
+    .glass-nav.scrolled {
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      padding: 10px 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      
+      /* Make visible when scrolled */
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
 
-  const S: Record<string, React.CSSProperties> = {
-    root: {
-      background: bg,
-      fontFamily: "'DM Sans', sans-serif",
-      color: isDark ? '#fff' : '#111827',
-      padding: '72px 18px 0', maxWidth: 480, margin: '0 auto', overflowX: 'hidden',
-    },
-    noEntryHeader: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 0, position: 'relative' },
-    noEntryBadge: { fontSize: 22, fontWeight: 800, letterSpacing: isEn ? 3 : 0, lineHeight: 1.5, color: 'rgb(255,0,0)', textTransform: 'uppercase' },
-    personRow: { display: 'flex', alignItems: 'flex-start', gap: 14, justifyContent: 'center' },
-    personText: { flex: 1, minWidth: 0, textAlign: 'center' as const },
-    innerSep: { height: 1, margin: '8px 0', background: isDark ? 'linear-gradient(90deg,transparent,rgba(239,68,68,.15),transparent)' : 'linear-gradient(90deg,transparent,rgba(239,68,68,.2),transparent)' },
-    redTitle: {
-      fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: isEn ? 3 : 0, lineHeight: 1.5, margin: '0 0 2px',
-      ...(isDark
-        ? { background: 'linear-gradient(135deg, rgb(224,32,16) 0%, rgb(255,203,0) 45%, rgb(245,168,0) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
-        : { color: '#7F1D1D' }),
-    },
-    quote: { fontSize: 17, color: isDark ? '#ffffff' : '#000000', lineHeight: 1.45, margin: '0 0 10px', textAlign: 'center' as const },
-    tagRow: { display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' },
-    divider: { display: 'flex', alignItems: 'center', gap: 16, margin: '22px 0' },
-    divLine: { flex: 1, height: 1, background: isDark ? 'linear-gradient(90deg,transparent,#333,transparent)' : 'linear-gradient(90deg,transparent,#D1D5DB,transparent)' },
-    divText: { fontSize: 12, fontWeight: 800, letterSpacing: 4, color: isDark ? '#444' : '#9CA3AF' },
-    sectionLabel: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, position: 'relative' },
-    greenLabel: { fontSize: 22, fontWeight: 800, letterSpacing: 3, color: '#22C55E', whiteSpace: 'nowrap' },
-    greenLine: { flex: 1, height: 1, background: 'linear-gradient(90deg,rgba(34,197,94,.4),transparent)' },
-    greenLineLeft: { flex: 1, height: 1, background: 'linear-gradient(270deg,rgba(34,197,94,.4),transparent)' },
-    crownCenter: { display: 'flex', justifyContent: 'center', marginBottom: 0, position: 'relative', zIndex: 1 },
-    greenTitle: { fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: isEn ? 5 : 0, lineHeight: 1.5, color: isDark ? '#FFFFFF' : '#14532D', margin: '0 0 12px', textAlign: 'center', position: 'relative', zIndex: 1, overflow: 'visible' as const },
-    wQuote: { fontSize: 17, color: isDark ? '#FFFFFF' : '#166534', lineHeight: 1.55, marginBottom: 6, position: 'relative', zIndex: 1 },
-    greenDiv: { width: 60, height: 2, background: 'linear-gradient(90deg,#22C55E,transparent)', borderRadius: 2, margin: '12px 0 14px', position: 'relative', zIndex: 1 },
-    declaration: { fontSize: 15, color: isDark ? '#FFFFFF' : '#166534', fontWeight: 500, lineHeight: 1.6, marginBottom: 14, position: 'relative', zIndex: 1 },
-  };
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
 
+    .nav-link {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: ${isDark ? '#E2E2E3' : '#374151'};
+      text-decoration: none;
+      transition: color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      color: ${isDark ? '#F5A800' : '#BE8507'};
+    }
+
+    .nav-pill-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      border: 1px solid #F5A800;
+      color: #F5A800;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: rgba(245, 168, 0, 0.05);
+      margin-bottom: 24px;
+      animation: breathe 3s infinite ease-in-out;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    .hero-btn-red {
+      padding: 16px 36px;
+      background: #C8180A;
+      color: #FFFFFF;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(200, 24, 10, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .hero-btn-red:hover {
+      background: #E02010;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(200, 24, 10, 0.45);
+    }
+
+    .hero-btn-gold {
+      padding: 16px 36px;
+      background: transparent;
+      color: ${isDark ? '#F5A800' : '#BE8507'};
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      border: 1.5px solid #F5A800;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .hero-btn-gold:hover {
+      background: rgba(245, 168, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .premium-card {
+      background: ${paper};
+      border-radius: 12px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .premium-card.red-theme {
+      border: 1px solid ${isDark ? '#5B403D' : 'rgba(239,68,68,.3)'};
+    }
+    .premium-card.red-theme:hover {
+      border-color: #C8180A;
+      box-shadow: 0 8px 32px rgba(200, 24, 10, 0.15);
+    }
+
+    .premium-card.gold-theme {
+      border: 1px solid ${isDark ? '#F5A800' : 'rgba(245, 168, 0, 0.3)'};
+      box-shadow: ${isDark ? '0 8px 32px rgba(200,24,10,0.15)' : 'none'};
+    }
+    .premium-card.gold-theme:hover {
+      border-color: #F5A800;
+      box-shadow: 0 8px 40px rgba(245, 168, 0, 0.18);
+    }
+
+    .crown-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 8px;
+    }
+    .crown-svg {
+      position: relative;
+      z-index: 2;
+      animation: crownFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(245,168,0,.35));
+    }
+    @keyframes crownFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    .crown-glow {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      z-index: 0;
+      background: radial-gradient(circle, rgba(245,168,0,0.2) 0%, transparent 70%);
+      animation: glowP 3s ease-in-out infinite;
+    }
+    @keyframes glowP {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      z-index: 3;
+      background: #F5A800;
+      animation: sparkA 2.4s ease-in-out infinite;
+    }
+    .s1 { top: 6px; left: 20px; animation-delay: 0s; }
+    .s2 { top: 10px; right: 14px; animation-delay: .6s; }
+    .s3 { bottom: 16px; left: 10px; animation-delay: 1.2s; }
+    .s4 { bottom: 10px; right: 20px; animation-delay: 1.8s; }
+    @keyframes sparkA {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      30% { opacity: 1; transform: scale(1.2); }
+      60% { opacity: 0; transform: scale(0); }
+    }
+
+    @keyframes lockBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .value-card {
+      background: ${paper};
+      border: 1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'};
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    .value-card:hover {
+      border-color: ${isDark ? '#F5A800' : '#BE8507'};
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .cta-banner {
+      background: ${isDark ? 'rgba(30, 32, 33, 0.6)' : 'rgba(255, 255, 255, 0.9)'};
+      border: 2px solid ${isDark ? 'rgba(200, 24, 10, 0.15)' : 'rgba(239, 68, 68, 0.2)'};
+      border-radius: 24px;
+      padding: 64px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+  `;
+
+  const { activeLayout } = usePreferenceStore();
+  const isActive = activeLayout !== null;
+
+  // Derive layout flags from the single active layout
+  const isReverse  = activeLayout === 'reverse';
+  const isStraight = activeLayout === 'straight' || activeLayout === 'cardover';
+  const isLeft     = false;
+  const isRight    = false;
   return (
-    <>
+    <Box sx={{ bgcolor: bg, minHeight: '100vh', color: isDark ? '#E2E2E3' : '#111827', pb: 0, overflowX: 'hidden' }}>
       <style>{CSS}</style>
-      <style>{`
-        @keyframes wGlow{
-          0%,100%{box-shadow:0 8px 32px rgba(200,24,10,0.15),0 0 0 0 rgba(245,168,0,0)}
-          50%{box-shadow:0 8px 40px rgba(200,24,10,0.22),0 0 0 4px rgba(245,168,0,0.07)}
-        }
-        @keyframes lockBlink{
-          0%,100%{opacity:1}
-          50%{opacity:0.15}
-        }
-      `}</style>
 
-      {/* Top bar */}
-      <Box sx={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 400,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        px: 2, py: 1.2,
-        bgcolor: isDark ? 'rgba(10,8,8,0.92)' : 'rgba(255,255,255,0.92)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'}`,
-      }}>
-        <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya" sx={{ height: 40 }} />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            size="small"
-            onClick={toggleTheme}
-            sx={{
-              minWidth: 40, width: 40, height: 40, p: 0, borderRadius: 50,
-              bgcolor: isDark ? 'rgba(255,255,255,0.08)' : '#FFFFFF',
-              color: isDark ? '#F5A800' : '#111827',
-              border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(17,24,39,0.12)'}`,
-              boxShadow: isDark ? '0 2px 10px rgba(0,0,0,0.35)' : '0 2px 10px rgba(17,24,39,0.15)',
-              '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.94)' },
-            }}
-            aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-          >
-            {isDark ? <LightModeRounded fontSize="small" /> : <DarkModeRounded fontSize="small" />}
-          </Button>
-          <LanguageSelector
-            size="small"
-            sx={{
-              px: 2, py: 0.6, fontSize: '0.82rem', fontWeight: 700, borderRadius: 50,
-              bgcolor: '#F5A800', color: '#0A0808', textTransform: 'none',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.35)',
-              '&:hover': { bgcolor: '#d99000' },
-            }}
-          />
+      {/* ── Floating Preferences FAB ── */}
+      <Tooltip title={`View Preferences${isActive ? ' (1 active)' : ''}`} placement="left" arrow>
+        <Box
+          onClick={() => navigate('/preferences')}
+          sx={{
+            position: 'fixed',
+            bottom: 32,
+            right: 28,
+            zIndex: 1200,
+            width: 52,
+            height: 52,
+            borderRadius: '14px',
+            background: isDark
+              ? 'linear-gradient(135deg, #1A1D22, #161920)'
+              : 'linear-gradient(135deg, #FFFFFF, #F8FAFC)',
+            border: isActive ? `1.5px solid ${BRAND.red}` : (isDark ? '1px solid rgba(255,255,255,0.10)' : '1px solid rgba(0,0,0,0.10)'),
+            boxShadow: isActive
+              ? `0 8px 28px ${BRAND.red}30, 0 2px 8px rgba(0,0,0,0.3)`
+              : '0 4px 20px rgba(0,0,0,0.25)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.25s ease',
+            '&:hover': {
+              transform: 'translateY(-3px) scale(1.06)',
+              borderColor: BRAND.red,
+              boxShadow: `0 12px 36px ${BRAND.red}40`,
+            },
+          }}
+        >
+          {/* Tune SVG icon */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16M4 12h10M4 18h13" stroke={isActive ? BRAND.red : (isDark ? '#E2E2E3' : '#374151')} strokeWidth="2" strokeLinecap="round" />
+            <circle cx="17" cy="6" r="2.5" stroke={isActive ? BRAND.red : (isDark ? '#E2E2E3' : '#374151')} strokeWidth="1.8" fill={isDark ? '#161920' : '#fff'} />
+            <circle cx="15" cy="12" r="2.5" stroke={BRAND.yellow} strokeWidth="1.8" fill={isDark ? '#161920' : '#fff'} />
+            <circle cx="18" cy="18" r="2.5" stroke={isActive ? BRAND.red : (isDark ? '#E2E2E3' : '#374151')} strokeWidth="1.8" fill={isDark ? '#161920' : '#fff'} />
+          </svg>
+          {isActive && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                width: 18,
+                height: 18,
+                borderRadius: '50%',
+                background: BRAND.red,
+                border: `2px solid ${isDark ? '#0D0F12' : '#F8FAFC'}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '10px',
+                fontWeight: 800,
+                color: '#fff',
+                fontFamily: "'Heming', 'Geist Variable', 'Geist', sans-serif",
+              }}
+            >
+              1
+            </Box>
+          )}
         </Box>
-      </Box>
+      </Tooltip>
 
-      <div style={S.root}>
+      {/* ── Left/Right accent strip when those layouts are active ── */}
+      {(isLeft || isRight) && (
+        <Box sx={{
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          [isLeft ? 'left' : 'right']: 0,
+          width: 4,
+          zIndex: 1100,
+          background: isLeft
+            ? `linear-gradient(180deg, ${BRAND.red}, ${BRAND.red}55, transparent)`
+            : `linear-gradient(180deg, ${BRAND.yellow}, ${BRAND.yellow}55, transparent)`,
+        }} />
+      )}
 
-        {/* ═══ NO ENTRY CARD ═══ */}
-        <section className={`anim-up ${step >= 1 ? 'on' : ''}`} style={{ transitionDelay: '0s' }}>
-          <div style={noEntryCardStyle}>
-            {/* <div className="stripe-red" /> */}
+      {/* No Entry / Welcome Owner Sections */}
+      <Container id="appraisal" maxWidth="xl" sx={{ pt: { xs: 4, md: 6 }, pb: 8 }}>
+        <Box sx={{
+          textAlign: isRight ? 'right' : isLeft ? 'left' : 'center',
+          mb: 6,
+          pl: isLeft ? 3 : 0,
+          pr: isRight ? 3 : 0,
+          borderLeft: isLeft ? `4px solid ${BRAND.red}` : 'none',
+          borderRight: isRight ? `4px solid ${BRAND.yellow}` : 'none',
+          transition: 'all 0.4s ease',
+        }}>
+          <Typography variant="overline" sx={{ fontFamily: "'Heming', 'Geist Variable', 'Geist', sans-serif", fontWeight: 700, letterSpacing: 3, color: '#C8180A' }}>
+            {t('pages.landing.homePage.title')}
+          </Typography>
+          <Typography variant="h3" sx={{ fontFamily: "'Heming', 'Geist Variable', 'Geist', sans-serif", fontWeight: 800, mt: 1, fontSize: { xs: '1.75rem', md: '2.5rem' } }}>
+            {(() => {
+              const text = t('pages.landing.animatedSubtitle', { defaultValue: 'Every citizen shapes our future.' });
+              if (text.includes("citizen")) {
+                const parts = text.split("citizen");
+                return (
+                  <>
+                    {parts[0]}
+                    <span style={{ color: '#F5A800' }}>citizen</span>
+                    {parts[1]}
+                  </>
+                );
+              } else if (text.includes("ನಾಗರಿಕನು")) {
+                const parts = text.split("ನಾಗರಿಕನು");
+                return (
+                  <>
+                    {parts[0]}
+                    <span style={{ color: '#F5A800' }}>ನಾಗರಿಕನು</span>
+                    {parts[1]}
+                  </>
+                );
+              }
+              return text;
+            })()}
+          </Typography>
+        </Box>
 
-            <div style={S.noEntryHeader}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" fill="#DC2626" stroke="#FF6B6B" strokeWidth="1.5" />
-                <rect x="5.5" y="10.5" width="13" height="3" rx="1.5" fill="#fff" />
-              </svg>
-              <span style={S.noEntryBadge}>{t('pages.landing.homePage.noEntryBadge')}</span>
-              <div style={{ position: 'absolute', right: 0 }}><LockIcon isDark={isDark} /></div>
-            </div>
+        {/* ── Image grid — layout controlled by activeLayout ── */}
+        <Grid
+          container
+          spacing={isStraight ? 3 : 4}
+          sx={{
+            justifyContent: isLeft ? 'flex-start' : isRight ? 'flex-end' : 'center',
+            flexDirection: isStraight ? 'column' : isReverse ? 'row-reverse' : 'row',
+            transition: 'all 0.4s ease',
+          }}
+        >
+          {/* Image 1: Intro Perceptive */}
+          <Grid size={{ xs: 12, md: isStraight ? 12 : 6 }}>
+            <Box
+              component="img"
+              src={introPerceptiveImg}
+              alt="Intro Perceptive"
+              sx={{
+                width: '100%',
+                borderRadius: '12px',
+                border: `1.5px solid ${isDark ? '#5B403D' : 'rgba(239, 68, 68, 0.2)'}`,
+                boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 24px rgba(17, 24, 39, 0.05)',
+                transition: 'transform 0.3s ease, border-color 0.3s ease',
+                '&:hover': { transform: 'scale(1.02)', borderColor: '#C8180A' },
+              }}
+            />
+          </Grid>
 
-            {/* The Hopeless */}
-            <div style={S.personRow}>
-              <div style={S.personText}>
-            <h3 style={S.redTitle}>{t('pages.landing.homePage.hopelessQuote')}</h3>
-            <p style={{...S.quote, textTransform: 'uppercase', fontWeight: 700}}>{t('pages.landing.homePage.hopelessLabel')}</p>
-                {/* <div style={S.tagRow}>
-                     <span style={redTagStyle}>{t('pages.landing.homePage.defeatedMindset')}</span>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.gaveUp')}</span>
-                </div> */}
-              </div>
-            </div>
+          {/* Image 2: People are Owner */}
+          <Grid size={{ xs: 12, md: isStraight ? 12 : 6 }}>
+            <Box
+              component="img"
+              src={peopleAreOwnerImg}
+              alt="People are Owner"
+              sx={{
+                width: '100%',
+                borderRadius: '12px',
+                border: `1.5px solid ${isDark ? '#F5A800' : 'rgba(245, 168, 0, 0.2)'}`,
+                boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 24px rgba(245, 168, 0, 0.05)',
+                transition: 'transform 0.3s ease, border-color 0.3s ease',
+                '&:hover': { transform: 'scale(1.02)', borderColor: '#F5A800' },
+              }}
+            />
+          </Grid>
 
-            <div style={S.innerSep} />
-
-            {/* Possessed People */}
-            <div style={S.personRow}>
-              <div style={S.personText}>
-                 <h3 style={S.redTitle} >{t('pages.landing.homePage.dreamerQuote')}</h3>
-                <p style={{...S.quote, fontWeight: 700}}>{t('pages.landing.homePage.dreamerLabel')}</p>
-                {/* <div style={S.tagRow}>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.blindFollower')}</span>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.noSelfWill')}</span>
-                </div> */}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ WELCOME — THE OWNER ═══ */}
-        <section className={`anim-up ${step >= 3 ? 'on' : ''}`} style={{ paddingTop: 24 }}>
-          <div className={`anim-up ${step >= 4 ? 'on' : ''}`}>
-            <div style={welcomeCardStyle}>
-              <div className={`anim-left ${step >= 2 ? 'on' : ''}`} style={{ ...S.sectionLabel, justifyContent: 'center', marginBottom: 12 }}>
-                {/* <div style={S.greenLineLeft} /> */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 3l7.5 3.5v5c0 5-3.5 8.5-7.5 10.5-4-2-7.5-5.5-7.5-10.5v-5L12 3z" fill="#166534" stroke="#22C55E" strokeWidth="1.5" />
-                  <path d="M9 12.5l2 2 4-4" stroke="#BBF7D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span style={S.greenLabel}>{t('pages.landing.homePage.welcomeLabel')}</span>
-                {/* <div style={S.greenLine} /> */}
-              </div>
-              <div className="shimmer" />
-              <div style={{ position: 'absolute', top: 16, right: 16, opacity: .55 }}><img src={unlockImg} alt="unlock" style={{ width: 22, height: 22, objectFit: 'contain' }} /></div>
-
-              <div style={S.crownCenter}>
-                <AnimatedCrown />
-              </div>
-
-              <h3 style={S.greenTitle}>{t('pages.landing.homePage.ownerLabel')}</h3>
-
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 14px', position: 'relative', zIndex: 1 }}>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 4, fontSize: 17, color: isDark ? '#FFFFFF' : '#166534', lineHeight: 1.55 }}>
-                  <span style={{ color: '#F5A800', fontWeight: 900, fontSize: 18, lineHeight: 1.55 }}>•</span>
-                  {t('pages.landing.homePage.ownerQuote1')}
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 4, fontSize: 17, color: isDark ? '#FFFFFF' : '#166534', lineHeight: 1.55 }}>
-                  <span style={{ color: '#F5A800', fontWeight: 900, fontSize: 18, lineHeight: 1.55 }}>•</span>
-                  {t('pages.landing.homePage.ownerQuote2')}
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 0, fontSize: 15, color: isDark ? '#FFFFFF' : '#166534', fontWeight: 500, lineHeight: 1.6 }}>
-                  <span style={{ color: '#F5A800', fontWeight: 900, fontSize: 18, lineHeight: 1.6 }}>•</span>
-                  <span>{t('pages.landing.homePage.leaderDeclaration')} <span className="leader-word" style={{ color: isDark ? '#FFD700' : '#ff6400', letterSpacing: isEn ? 4 : 0 }}>{t('pages.landing.homePage.leader')}</span></span>
-                </li>
-              </ul>
-
-              <div style={{ marginBottom: 0, display: 'flex', justifyContent: 'center' }}>
-                <div style={awakeBadgeStyle}>
-                  <span className="pulse-dot" />
-                  {t('pages.landing.homePage.awakeLabel')}
-                </div>
-              </div>
-
-              <button className="enter-btn" onClick={() => navigate('/oath')}>
-                <span>{t('pages.landing.homePage.proceed')}</span>
-                <ArrowIcon />
+          {/* Action Row containing Consolidated Proceed Button */}
+          <Grid size={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+              <button
+                className="hero-btn-red"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                  width: '100%',
+                  maxWidth: '420px',
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  letterSpacing: '0.5px',
+                  borderRadius: '12px',
+                  textAlign: 'left'
+                }}
+                onClick={() => navigate('/oath')}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bgcolor: '#FFFFFF',
+                    borderRadius: '8px',
+                    p: '6px',
+                    height: 38,
+                    width: 38,
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                  }}
+                >
+                  <Box component="img" src={prajakeeyaLogo} alt="Prajaakeeya Logo" sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                  <Typography variant="caption" sx={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1.2px', color: 'rgba(255,255,255,0.75)', fontWeight: 800, fontFamily: "'Geist Variable', 'Geist', sans-serif", lineHeight: 1.1 }}>
+                    Prajaakeeya Governance
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontSize: '16px', fontWeight: 800, color: BRAND.green, fontFamily: "'Geist Variable', 'Geist', sans-serif", lineHeight: 1.2, mt: '2px' }}>
+                    {t('pages.landing.homePage.proceed')}
+                  </Typography>
+                </Box>
               </button>
-            </div>
-          </div>
-        </section>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
 
-        <div style={{ height: 40 }} />
-      </div>
-    </>
+
+
+      <AppFooter />
+      {mode === 'grey' && rainEnabled && <RainEffect />}
+    </Box>
   );
 };
 

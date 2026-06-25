@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+﻿import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -26,7 +26,9 @@ type ColorKey = keyof typeof C;
 const GOLD = 'rgba(245,168,0,0.75)';
 const GOLDD = 'rgba(245,168,0,0.45)';
 const GOLDB = 'rgba(245,168,0,0.82)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 const DARK = '#08060A';
 
 // ── Primitives ────────────────────────────────────────────────────────────────
@@ -50,7 +52,7 @@ const FNode = ({ label, ck, delay = 0, sx = {} }: {
       border: `1px solid ${C[ck].border}`,
       color: C[ck].text,
       textAlign: 'center',
-      fontFamily: FF,
+      fontFamily: FF_BODY,
       fontWeight: 600,
       fontSize: { xs: '11.5px', sm: '14px' },
       lineHeight: 1.45,
@@ -109,7 +111,7 @@ const VerdictDiamond = ({ label }: { label: string }) => (
     }}>
       <Typography sx={{
         transform: 'rotate(-45deg)',
-        fontFamily: FF, fontWeight: 800,
+        fontFamily: FF_HEADING, fontWeight: 800,
         fontSize: { xs: '11px', sm: '14px' },
         color: '#fff', textAlign: 'center', lineHeight: 1.2,
       }}>
@@ -240,7 +242,6 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
       border: isDark ? '1px solid rgba(245,168,0,0.16)' : '1px solid rgba(245,168,0,0.24)',
       boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 30px rgba(17,24,39,0.08)',
     }}>
-
       {/* Scan line */}
       <Box sx={{
         position: 'absolute', left: 0, right: 0, height: '2px', top: '-2px', zIndex: 100,
@@ -254,12 +255,10 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         },
         animation: 'scanDown 6s 1s linear infinite',
       }} />
-
       {/* Top colour bar */}
       <Box sx={{ display: 'flex', height: '5px' }}>
         {['#C8180A', '#F5A800', '#E02010'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
       {/* Legend */}
       <Box sx={{
         display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px',
@@ -273,13 +272,12 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         ].map(({ c, label }) => (
           <Box key={c} sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Box sx={{ width: 12, height: 12, bgcolor: c, borderRadius: '3px', flexShrink: 0 }} />
-            <Typography sx={{ fontFamily: FF, fontSize: '11px', fontWeight: 600, color: legendText }}>
+            <Typography sx={{ fontFamily: FF_BODY, fontSize: '11px', fontWeight: 600, color: legendText }}>
               {label}
             </Typography>
           </Box>
         ))}
       </Box>
-
       {/* ── Flow ── */}
       <Box sx={{
         maxWidth: 700, mx: 'auto',
@@ -295,7 +293,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
           <Box sx={{
             borderRadius: '10px', p: { xs: '12px', sm: '13px 16px' }, textAlign: 'center',
             fontSize: { xs: '11px', sm: '13px' }, fontWeight: 600, color: contentText,
-            lineHeight: 1.6, fontFamily: FF,
+            lineHeight: 1.6, fontFamily: FF_BODY,
             bgcolor: isDark ? 'rgba(200,24,10,.07)' : 'rgba(200,24,10,.10)',
             border: isDark ? '1.5px solid rgba(200,24,10,.4)' : '1.5px solid rgba(200,24,10,.48)',
           }}>
@@ -497,7 +495,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
               >
                 <Box sx={{
                   borderRadius: '7px', p: { xs: '8px 4px', sm: '10px 4px' }, textAlign: 'center',
-                  fontFamily: FF, fontSize: { xs: '12px', sm: '15px' }, fontWeight: 800,
+                  fontFamily: FF_HEADING, fontSize: { xs: '12px', sm: '15px' }, fontWeight: 800,
                   background: bg, border: `1px solid ${border}`, color,
                 }}>
                   {label}
@@ -539,7 +537,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         >
           <Box sx={{
             borderRadius: '10px', p: { xs: '12px', sm: '12px 16px' }, textAlign: 'center',
-            fontFamily: FF, fontWeight: 600, fontSize: { xs: '11.5px', sm: '14px' }, lineHeight: 1.45,
+            fontFamily: FF_BODY, fontWeight: 600, fontSize: { xs: '11.5px', sm: '14px' }, lineHeight: 1.45,
             background: isDark
               ? 'linear-gradient(135deg,rgba(245,168,0,.15),rgba(255,203,0,.1))'
               : 'linear-gradient(135deg,rgba(245,168,0,.18),rgba(255,203,0,.14))',
@@ -577,7 +575,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
             <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: 0.07 }} style={{ width: '100%' }}>
               <Box sx={{
                 borderRadius: '8px', p: { xs: '8px 6px', sm: '9px 10px' }, textAlign: 'center',
-                fontFamily: FF, fontWeight: 900, letterSpacing: '1.2px',
+                fontFamily: FF_HEADING, fontWeight: 900, letterSpacing: '1.2px',
                 fontSize: { xs: '12px', sm: '15px' },
                 bgcolor: isDark ? 'rgba(20,100,20,.3)' : 'rgba(34,197,94,.2)',
                 border: isDark ? '1.5px solid rgba(34,200,34,.55)' : '1.5px solid rgba(34,170,70,.55)',
@@ -591,7 +589,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
               <Box sx={{
                 borderRadius: '8px', p: { xs: '9px', sm: '10px' },
                 fontSize: { xs: '10.5px', sm: '12px' }, fontWeight: 400, lineHeight: 1.55,
-                color: mutedText, fontFamily: FF, textAlign: 'center',
+                color: mutedText, fontFamily: FF_BODY, textAlign: 'center',
                 bgcolor: cardSubtleBg, border: cardSubtleBorder,
               }}>
                 {fc('positiveAction')}
@@ -605,7 +603,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
             <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: 0.07 }} style={{ width: '100%' }}>
               <Box sx={{
                 borderRadius: '8px', p: { xs: '8px 6px', sm: '9px 10px' }, textAlign: 'center',
-                fontFamily: FF, fontWeight: 900, letterSpacing: '1.2px',
+                fontFamily: FF_HEADING, fontWeight: 900, letterSpacing: '1.2px',
                 fontSize: { xs: '12px', sm: '15px' },
                 bgcolor: isDark ? 'rgba(200,24,10,.22)' : 'rgba(224,32,16,.18)',
                 border: isDark ? '1.5px solid rgba(200,24,10,.65)' : '1.5px solid rgba(200,24,10,.55)',
@@ -619,7 +617,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
               <Box sx={{
                 borderRadius: '8px', p: { xs: '9px', sm: '10px' },
                 fontSize: { xs: '10.5px', sm: '12px' }, fontWeight: 400, lineHeight: 1.55,
-                color: mutedText, fontFamily: FF, textAlign: 'center',
+                color: mutedText, fontFamily: FF_BODY, textAlign: 'center',
                 bgcolor: cardSubtleBg, border: cardSubtleBorder,
               }}>
                 {fc('negativeAction')}
@@ -636,7 +634,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} style={{ width: '100%' }}>
           <Box sx={{
             borderRadius: '10px', p: { xs: '12px', sm: '13px 16px' }, textAlign: 'center',
-            fontSize: { xs: '11px', sm: '13px' }, lineHeight: 1.6, fontFamily: FF, fontWeight: 600,
+            fontSize: { xs: '11px', sm: '13px' }, lineHeight: 1.6, fontFamily: FF_BODY, fontWeight: 600,
             background: isDark
               ? 'linear-gradient(135deg,rgba(245,168,0,.1),rgba(200,24,10,.07))'
               : 'linear-gradient(135deg,rgba(245,168,0,.16),rgba(200,24,10,.09))',
@@ -651,14 +649,14 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }} style={{ width: '100%' }}>
           <Box sx={{
             borderRadius: '10px', p: { xs: '12px', sm: '14px 18px' }, mt: '20px', textAlign: 'center',
-            lineHeight: 1.65, fontFamily: FF,
+            lineHeight: 1.65, fontFamily: FF_BODY,
             background: isDark
               ? 'linear-gradient(135deg,rgba(200,24,10,.12),rgba(245,168,0,.08))'
               : 'linear-gradient(135deg,rgba(200,24,10,.10),rgba(245,168,0,.12))',
             border: isDark ? '1.5px solid rgba(200,24,10,.45)' : '1.5px solid rgba(200,24,10,.40)',
           }}>
             <Typography sx={{
-              fontFamily: FF, fontWeight: 700,
+              fontFamily: FF_HEADING, fontWeight: 700,
               fontSize: { xs: '11.5px', sm: '13.5px' },
               color: isDark ? '#FFCB00' : '#8a3a00',
               lineHeight: 1.65,
@@ -669,22 +667,21 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
         </motion.div>
 
       </Box>{/* end flow */}
-
       {/* Optional signature slot — renders inside the SOP container */}
       {signatureSlot && (
         <Box sx={{ px: { xs: 2, sm: 3 }, pb: 3, pt: 1 }}>
           {signatureSlot}
         </Box>
       )}
-
       {/* Bottom colour bar */}
       <Box sx={{ display: 'flex', height: '4px', opacity: 0.4 }}>
         {['#C8180A', '#F5A800', '#E02010'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
       {/* ── Agreement ── */}
       {!hideAgreement && <Box sx={{ px: { xs: 2, sm: 3 }, py: 3, bgcolor: isDark ? 'rgba(255,255,255,.02)' : 'rgba(17,24,39,.02)', borderTop: isDark ? '1px solid rgba(255,255,255,.06)' : '1px solid rgba(17,24,39,.08)' }}>
-        <Stack spacing={2} alignItems="center">
+        <Stack spacing={2} sx={{
+          alignItems: "center"
+        }}>
           <FormControlLabel
             control={
               <Checkbox checked={sopAgreed} onChange={e => setSopAgreed(e.target.checked)}
@@ -692,14 +689,16 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
             }
             label={
               <Typography sx={{
-                fontFamily: FF, fontSize: { xs: '0.82rem', sm: '0.9rem' }, fontWeight: 600,
+                fontFamily: FF_BODY, fontSize: { xs: '0.82rem', sm: '0.9rem' }, fontWeight: 600,
                 color: sopAgreed ? '#F5A800' : (isDark ? 'rgba(255,255,255,.6)' : 'rgba(15,23,42,.72)'), transition: 'color 0.3s',
               }}>
                 {t('forms.aspirant.sop.agreeCheckbox')}
               </Typography>
             }
           />
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          <Stack direction="row" spacing={1.5} sx={{
+            alignItems: "center"
+          }}>
             {onCancel && (
               <Button
                 variant="outlined"
@@ -707,7 +706,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
                 onClick={onCancel}
                 sx={{
                   px: 3, py: 1.5, borderRadius: 2, fontWeight: 700, fontSize: '0.9rem',
-                  fontFamily: FF, textTransform: 'none',
+                  fontFamily: FF_BODY, textTransform: 'none',
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.7)',
                   '&:hover': {
@@ -724,7 +723,7 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
                 variant="contained" size="large" disabled={!sopAgreed} onClick={onAgree}
                 sx={{
                   px: 5, py: 1.5, borderRadius: 2, fontWeight: 800, fontSize: '1rem',
-                  fontFamily: FF, textTransform: 'none',
+                  fontFamily: FF_BODY, textTransform: 'none',
                   background: sopAgreed ? 'linear-gradient(135deg,#C8180A,#F5A800)' : undefined,
                   boxShadow: sopAgreed ? '0 4px 22px rgba(200,24,10,.45)' : 'none',
                   '&:hover': sopAgreed ? {
@@ -745,7 +744,6 @@ const SopFlowChart = ({ sopAgreed, setSopAgreed, onAgree, onCancel, hideAgreemen
           </Stack>
         </Stack>
       </Box>}
-
     </Box>
   );
 };

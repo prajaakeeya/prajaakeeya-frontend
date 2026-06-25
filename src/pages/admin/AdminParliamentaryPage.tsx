@@ -172,7 +172,9 @@ const AdminParliamentaryPage: React.FC = () => {
                     {items.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                          <Typography color="text.secondary">No records</Typography>
+                          <Typography sx={{
+                            color: "text.secondary"
+                          }}>No records</Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -195,7 +197,6 @@ const AdminParliamentaryPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
       <Dialog open={formOpen} onClose={closeForm} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? 'Edit Parliament' : 'Add Parliament'}</DialogTitle>
         <DialogContent>
@@ -210,7 +211,6 @@ const AdminParliamentaryPage: React.FC = () => {
           <Button variant="contained" onClick={submitForm} disabled={formLoading} startIcon={formLoading ? <CircularProgress size={18} /> : undefined}>{editing ? 'Update' : 'Create'}</Button>
         </DialogActions>
       </Dialog>
-
       <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
         <DialogTitle>Delete Parliamentary constituency</DialogTitle>
         <DialogContent>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -23,7 +23,9 @@ import useAuthStore from '../store/useAuthStore';
 import { createIssue } from '../services/civicIssuesService';
 import { BRAND } from '../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 const DESC_MAX = 1000;
 
 const ISSUE_CATEGORIES = [
@@ -115,18 +117,20 @@ const ReportIssuePage: React.FC = () => {
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}>
                 <CheckCircleIcon sx={{ fontSize: 68, color: '#22c55e', mb: 2 }} />
               </motion.div>
-              <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '1.35rem', color: textPrimary, mb: 0.8 }}>
+              <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: '1.35rem', color: textPrimary, mb: 0.8 }}>
                 Issue Reported!
               </Typography>
-              <Typography sx={{ fontFamily: FF, color: textMid, mb: 3.5, lineHeight: 1.65 }}>
+              <Typography sx={{ fontFamily: FF_BODY, color: textMid, mb: 3.5, lineHeight: 1.65 }}>
                 Your civic issue has been recorded. Ward representatives will review and address it.
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center">
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{
+                justifyContent: "center"
+              }}>
                 <Button
                   variant="outlined"
                   onClick={() => { setDone(false); setSelectedCategories([]); setDescription(''); }}
                   sx={{
-                    fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 700, borderRadius: 2, textTransform: 'none',
                     borderColor: GOLDD, color: GOLD,
                     '&:hover': { bgcolor: 'rgba(245,168,0,0.06)', borderColor: GOLD },
                   }}
@@ -137,7 +141,7 @@ const ReportIssuePage: React.FC = () => {
                   variant="contained"
                   onClick={() => navigate('/user/civic-issues')}
                   sx={{
-                    fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 700, borderRadius: 2, textTransform: 'none',
                     background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
                     color: '#fff',
                     '&:hover': { background: `linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)` },
@@ -180,10 +184,10 @@ const ReportIssuePage: React.FC = () => {
               <ReportProblemIcon sx={{ color: GOLD, fontSize: 24 }} />
             </Box>
             <Box>
-              <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.12rem', sm: '1.3rem' }, color: textPrimary, lineHeight: 1.15 }}>
+              <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.12rem', sm: '1.3rem' }, color: textPrimary, lineHeight: 1.15 }}>
                 Report a Public Issue
               </Typography>
-              <Typography sx={{ fontFamily: FF, fontSize: '0.84rem', color: textMid, mt: 0.2 }}>
+              <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.84rem', color: textMid, mt: 0.2 }}>
                 Describe the problem clearly so ward representatives can act on it.
               </Typography>
             </Box>
@@ -192,7 +196,7 @@ const ReportIssuePage: React.FC = () => {
               startIcon={<ArrowBackIcon />}
               onClick={() => navigate('/user/civic-issues')}
               sx={{
-                fontFamily: FF, fontWeight: 700, textTransform: 'none',
+                fontFamily: FF_HEADING, fontWeight: 700, textTransform: 'none',
                 color: textMid, '&:hover': { color: GOLD },
               }}
             >
@@ -208,14 +212,14 @@ const ReportIssuePage: React.FC = () => {
           >
             <Stack spacing={3}>
               {error && (
-                <Alert severity="error" onClose={() => setError('')} sx={{ fontFamily: FF }}>
+                <Alert severity="error" onClose={() => setError('')} sx={{ fontFamily: FF_BODY }}>
                   {error}
                 </Alert>
               )}
 
               {/* Issue Category */}
               <Box>
-                <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, mb: 1.2, fontSize: '0.92rem' }}>
+                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, color: textPrimary, mb: 1.2, fontSize: '0.92rem' }}>
                   Issue Category <Box component="span" sx={{ color: BRAND.red }}>*</Box>
                   <Box component="span" sx={{ fontWeight: 400, color: textDim, fontSize: '0.78rem', ml: 1 }}>(select all that apply)</Box>
                 </Typography>
@@ -228,7 +232,7 @@ const ReportIssuePage: React.FC = () => {
                         label={cat}
                         onClick={() => !submitting && toggleCategory(cat)}
                         sx={{
-                          fontFamily: FF, fontWeight: active ? 700 : 500,
+                          fontFamily: FF_BODY, fontWeight: active ? 700 : 500,
                           fontSize: '0.83rem',
                           cursor: submitting ? 'default' : 'pointer',
                           bgcolor: active
@@ -254,7 +258,7 @@ const ReportIssuePage: React.FC = () => {
                   })}
                 </Box>
                 {selectedCategories.length > 0 && (
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.74rem', color: textDim, mt: 0.8 }}>
+                  <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.74rem', color: textDim, mt: 0.8 }}>
                     Selected: {selectedCategories.join(', ')}
                   </Typography>
                 )}
@@ -262,7 +266,7 @@ const ReportIssuePage: React.FC = () => {
 
               {/* Description */}
               <Box>
-                <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, mb: 0.8, fontSize: '0.92rem' }}>
+                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, color: textPrimary, mb: 0.8, fontSize: '0.92rem' }}>
                   Description <Box component="span" sx={{ color: BRAND.red }}>*</Box>
                 </Typography>
                 <TextField
@@ -273,19 +277,21 @@ const ReportIssuePage: React.FC = () => {
                   value={description}
                   onChange={e => setDescription(e.target.value.slice(0, DESC_MAX))}
                   disabled={submitting}
-                  inputProps={{ maxLength: DESC_MAX }}
                   sx={{
                     '& .MuiOutlinedInput-root': {
-                      fontFamily: FF, borderRadius: 2,
+                      fontFamily: FF_BODY, borderRadius: 2,
                       '& fieldset': { borderColor: borderSubtle },
                       '&:hover fieldset': { borderColor: GOLDD },
                       '&.Mui-focused fieldset': { borderColor: GOLD },
                     },
-                    '& .MuiInputBase-input': { fontFamily: FF },
+                    '& .MuiInputBase-input': { fontFamily: FF_BODY },
+                  }}
+                  slotProps={{
+                    htmlInput: { maxLength: DESC_MAX }
                   }}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0.4 }}>
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.72rem', color: description.length >= DESC_MAX ? BRAND.red : textDim }}>
+                  <Typography sx={{ fontFamily: FF_HEADING, fontSize: '0.72rem', color: description.length >= DESC_MAX ? BRAND.red : textDim }}>
                     {description.length}/{DESC_MAX}
                   </Typography>
                 </Box>
@@ -303,13 +309,15 @@ const ReportIssuePage: React.FC = () => {
               )}
 
               {/* Buttons */}
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="flex-end">
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{
+                justifyContent: "flex-end"
+              }}>
                 <Button
                   variant="outlined"
                   onClick={() => navigate('/user/civic-issues')}
                   disabled={submitting}
                   sx={{
-                    fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 700, borderRadius: 2, textTransform: 'none',
                     borderColor: borderSubtle, color: textMid,
                     '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.04)' },
                   }}
@@ -322,7 +330,7 @@ const ReportIssuePage: React.FC = () => {
                   endIcon={submitting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <SendIcon />}
                   disabled={submitting || selectedCategories.length === 0 || !description.trim()}
                   sx={{
-                    fontFamily: FF, fontWeight: 800, borderRadius: 2, textTransform: 'none',
+                    fontFamily: FF_HEADING, fontWeight: 800, borderRadius: 2, textTransform: 'none',
                     px: 3, py: 1.1,
                     background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
                     color: '#fff',

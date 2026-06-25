@@ -31,8 +31,14 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- C-PERF-2: single consolidated font request. All families the UI actually
+       renders are loaded here in ONE round-trip. Merriweather + Source Sans 3
+       were dropped (referenced nowhere in the app). Inter, Playfair Display,
+       Bebas Neue and DM Sans were moved here from the render-blocking @import in
+       src/index.css and the runtime @import in HomePage.tsx (which fired after
+       React mounted — the worst case for LCP). -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&family=Baloo+2:wght@700;800;900&family=Tiro+Kannada&family=Mukta:wght@300;400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Mukta:wght@300;400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&family=Tiro+Kannada&display=swap"
     rel="stylesheet" />
 
   <!-- ═══ Preloader styles — inline so they load before React ═══ -->

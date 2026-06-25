@@ -61,10 +61,11 @@ const AdminUsersListPage: React.FC = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box>
                     <Typography variant="h4" sx={{ fontWeight: 700 }}>User List</Typography>
-                    <Typography variant="body2" color="text.secondary">{total} user{total !== 1 ? 's' : ''} total</Typography>
+                    <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                    }}>{total} user{total !== 1 ? 's' : ''} total</Typography>
                 </Box>
             </Box>
-
             <Card>
                 <CardContent>
                     <Box sx={{ mb: 2 }}>
@@ -73,13 +74,13 @@ const AdminUsersListPage: React.FC = () => {
                             placeholder="Search by name..."
                             value={search}
                             onChange={handleSearchChange}
-                            InputProps={{
+                            slotProps={{ input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <SearchIcon fontSize="small" />
                                     </InputAdornment>
                                 ),
-                            }}
+                            } }}
                             sx={{ width: 280 }}
                         />
                     </Box>
@@ -92,11 +93,17 @@ const AdminUsersListPage: React.FC = () => {
                                 users={users}
                                 onView={(id) => navigate(`/admin/users/${id}`)}
                             />
-                            <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
-                                <Grid item>
+                            <Grid
+                                container
+                                sx={{
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    mt: 2
+                                }}>
+                                <Grid>
                                     <Typography variant="body2">Total: {total}</Typography>
                                 </Grid>
-                                <Grid item>
+                                <Grid>
                                     <Pagination count={Math.max(1, totalPages)} page={page} onChange={handlePageChange} />
                                 </Grid>
                             </Grid>

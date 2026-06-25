@@ -1,0 +1,22 @@
+/* M-SEC-4: keyframes moved here from a runtime `<style dangerouslySetInnerHTML>`
+   in ComingSoonPage.tsx. The animations are static and referenced by name via
+   MUI `sx={{ animation: '...' }}`, so a plain imported stylesheet is equivalent
+   and removes the dangerouslySetInnerHTML sink entirely. */
+
+@keyframes logoSpinZoom {
+  0%   { transform: scale(0.02) rotate(-2160deg); opacity: 0; }
+  5%   { opacity: 1; }
+  60%  { transform: scale(2) rotate(15deg); opacity: 1; }
+  80%  { transform: scale(0.9) rotate(-5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes fadeSlideUp {
+  0%   { transform: translateY(40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes expandDivider {
+  0%   { width: 0; opacity: 0; }
+  100% { width: 200px; opacity: 1; }
+}

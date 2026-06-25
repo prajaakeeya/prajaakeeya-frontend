@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState } from 'react';
 import {
@@ -22,12 +22,15 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import apiClient from '../../services/apiClient';
 import LivePhotoCaptureStep from './LivePhotoCaptureStep';
+import { safeUrl } from '../../utils/safeUrl';
 
 const GOLD = '#F5A800';
 const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
+const DARK = '#0D0F12';
 const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const containerVariants = {
   hidden: {},
@@ -69,8 +72,8 @@ interface Props {
   cameraActive?: boolean;
   capturedPhoto?: string | null;
   loading?: boolean;
-  videoRef?: React.RefObject<HTMLVideoElement>;
-  canvasRef?: React.RefObject<HTMLCanvasElement>;
+  videoRef?: React.RefObject<HTMLVideoElement | null>;
+  canvasRef?: React.RefObject<HTMLCanvasElement | null>;
   startCamera?: () => void;
   stopCamera?: () => void;
   capturePhoto?: () => void;
@@ -135,7 +138,10 @@ const DocumentsUploadStep = ({
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  const downloadPdf = async (url: string, filename: string) => {
+  const downloadPdf = async (rawUrl: string, filename: string) => {
+    // C-SEC-4: bail on script-capable schemes before fetch / window.open.
+    const url = safeUrl(rawUrl);
+    if (!url) { return; }
     setDownloading(true);
 
     // iOS Safari ignores the download attribute entirely — open in new tab
@@ -246,19 +252,21 @@ const DocumentsUploadStep = ({
             </motion.div>
           </Box>
         )}
-
       <Box sx={{ display: 'flex', height: '5px' }}>
         {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>
-
-
       <Box sx={{ px: { xs: 2, sm: 4 }, py: 2.5 }}>
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
           <Grid container spacing={2.2}>
             {DOC_CONFIG.map((doc) => {
               const current = documents[doc.key];
               return (
-                <Grid key={doc.key} item xs={12} md={6}>
+                <Grid
+                  key={doc.key}
+                  size={{
+                    xs: 12,
+                    md: 6
+                  }}>
                   <motion.div variants={itemVariants}>
                     <Box sx={{
                       borderRadius: '11px',
@@ -272,26 +280,26 @@ const DocumentsUploadStep = ({
                       <Box sx={{ p: 2 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <UploadFileIcon sx={{ color: doc.accent }} />
-                          <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, fontSize: '0.9rem' }}>
+                          <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, color: textPrimary, fontSize: '0.9rem' }}>
                             {t(doc.titleKey)}
                           </Typography>
                           {current?.uploaded && <CheckCircleIcon sx={{ ml: 'auto', color: '#2fbf71' }} />}
                           {current?.error && <ErrorIcon sx={{ ml: 'auto', color: '#ff6d6d' }} />}
                         </Box>
 
-                        <Typography sx={{ mt: 0.8, fontFamily: FF, fontSize: '0.78rem', color: textSecondary }}>
+                        <Typography sx={{ mt: 0.8, fontFamily: FF_BODY, fontSize: '0.78rem', color: textSecondary }}>
                           {t(doc.formatKey)}
                         </Typography>
 
                         {current?.error && (
                           <Alert severity="error" sx={{ mt: 1.2, py: 0.3, bgcolor: isDark ? 'rgba(255,65,65,0.08)' : 'rgba(255,65,65,0.12)', color: isDark ? '#ffd3d3' : '#8b1111' }}>
-                            <Typography sx={{ fontFamily: FF, fontSize: '0.76rem' }}>{current.errorKey ? t(current.errorKey, { defaultValue: current.errorKey }) : current.errorMessage}</Typography>
+                            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.76rem' }}>{current.errorKey ? t(current.errorKey, { defaultValue: current.errorKey }) : current.errorMessage}</Typography>
                           </Alert>
                         )}
 
                         {current && !current.uploaded && !current.error && (
                           <Box sx={{ mt: 1.2 }}>
-                            <Typography sx={{ fontFamily: FF, fontSize: '0.76rem', color: isDark ? 'rgba(255,255,255,0.62)' : 'rgba(15,23,42,0.72)' }}>
+                            <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.76rem', color: isDark ? 'rgba(255,255,255,0.62)' : 'rgba(15,23,42,0.72)' }}>
                               {current.name}
                             </Typography>
                             <LinearProgress
@@ -313,7 +321,7 @@ const DocumentsUploadStep = ({
                             size="small"
                             sx={{
                               mt: 1.2,
-                              fontFamily: FF,
+                              fontFamily: FF_BODY,
                               color: isDark ? '#d8ffe9' : '#0f5132',
                               bgcolor: isDark ? 'rgba(43,180,104,0.2)' : 'rgba(43,180,104,0.22)',
                               border: '1px solid rgba(43,180,104,0.38)',
@@ -333,7 +341,7 @@ const DocumentsUploadStep = ({
                           }}
                           sx={{
                             mt: 1.6,
-                            fontFamily: FF,
+                            fontFamily: FF_BODY,
                             fontWeight: 700,
                             color: isDark ? 'rgba(255,255,255,0.76)' : 'rgba(15,23,42,0.8)',
                             borderColor: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,23,42,0.2)',
@@ -357,7 +365,6 @@ const DocumentsUploadStep = ({
 
         </motion.div>
       </Box>
-
       <Box sx={{
         px: { xs: 2, sm: 4 },
         py: 2.4,
@@ -373,7 +380,7 @@ const DocumentsUploadStep = ({
                 variant="outlined"
                 onClick={onCancel}
                 sx={{
-                  fontFamily: FF,
+                  fontFamily: FF_BODY,
                   fontWeight: 700,
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
@@ -390,7 +397,7 @@ const DocumentsUploadStep = ({
               onClick={onBack}
               sx={{
                 width: { xs: '100%', sm: 'auto' },
-                fontFamily: FF,
+                fontFamily: FF_BODY,
                 fontWeight: 700,
                 color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
                 borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
@@ -408,7 +415,7 @@ const DocumentsUploadStep = ({
             sx={{
               flex: { xs: 1, sm: 'none' },
               width: { xs: '100%', sm: 'auto' },
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontWeight: 800,
               px: { xs: 2.8, sm: 3.5 },
               background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
@@ -429,7 +436,6 @@ const DocumentsUploadStep = ({
           </Button>
         </Stack>
       </Box>
-
       <Box sx={{ display: 'flex', height: '3px' }}>
         {['#6B3A00', '#253A9A', '#C8180A'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box>

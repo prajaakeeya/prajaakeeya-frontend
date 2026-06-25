@@ -24,8 +24,11 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { BRAND } from '../theme';
+import { safeUrl } from '../utils/safeUrl';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const StarRating: React.FC<{ value: number; total?: number }> = ({ value, total = 5 }) => {
     const stars = [];
@@ -34,7 +37,11 @@ const StarRating: React.FC<{ value: number; total?: number }> = ({ value, total 
         else if (value >= i - 0.5) stars.push(<StarHalfIcon key={i} sx={{ fontSize: '1.1rem', color: '#F5A800' }} />);
         else stars.push(<StarBorderIcon key={i} sx={{ fontSize: '1.1rem', color: '#F5A800' }} />);
     }
-    return <Stack direction="row" alignItems="center" spacing={0.2}>{stars}</Stack>;
+    return (
+        <Stack direction="row" spacing={0.2} sx={{
+            alignItems: "center"
+        }}>{stars}</Stack>
+    );
 };
 
 const InfoTile: React.FC<{ icon: React.ReactNode; label: string; value: string | number }> = ({ icon, label, value }) => {
@@ -49,11 +56,13 @@ const InfoTile: React.FC<{ icon: React.ReactNode; label: string; value: string |
             border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.09)'}`,
             borderLeft: `3px solid ${isDark ? BRAND.yellow : BRAND.saffron}`,
         }}>
-            <Stack direction="row" spacing={1.2} alignItems="center">
+            <Stack direction="row" spacing={1.2} sx={{
+                alignItems: "center"
+            }}>
                 <Box sx={{ color: isDark ? BRAND.yellow : BRAND.saffron, display: 'flex' }}>{icon}</Box>
                 <Box>
-                    <Typography sx={{ fontSize: '0.7rem', fontFamily: FF, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</Typography>
-                    <Typography sx={{ fontSize: '0.95rem', fontFamily: FF, fontWeight: 700, color: 'text.primary', lineHeight: 1.2, mt: 0.2 }}>{value}</Typography>
+                    <Typography sx={{ fontSize: '0.7rem', fontFamily: FF_HEADING, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</Typography>
+                    <Typography sx={{ fontSize: '0.95rem', fontFamily: FF_HEADING, fontWeight: 700, color: 'text.primary', lineHeight: 1.2, mt: 0.2 }}>{value}</Typography>
                 </Box>
             </Stack>
         </Box>
@@ -64,13 +73,19 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string }> = ({ ico
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
     return (
-        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.8 }}>
+        <Stack
+            direction="row"
+            spacing={1.2}
+            sx={{
+                alignItems: "center",
+                mb: 1.8
+            }}>
             <Box sx={{
                 width: 36, height: 36, borderRadius: 1.8, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: `linear-gradient(135deg, ${BRAND.saffron} 0%, ${BRAND.yellow} 100%)`,
                 color: '#fff', boxShadow: '0 4px 12px rgba(200,24,10,0.25)'
             }}>{icon}</Box>
-            <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: FF, letterSpacing: '-0.01em', color: isDark ? '#FFD27A' : '#B45309' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: FF_HEADING, letterSpacing: '-0.01em', color: isDark ? '#FFD27A' : '#B45309' }}>
                 {title}
             </Typography>
         </Stack>
@@ -78,14 +93,16 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string }> = ({ ico
 };
 
 const RatingBar: React.FC<{ label: string; count: number; total: number; color: string }> = ({ label, count, total, color }) => (
-    <Stack direction="row" spacing={1} alignItems="center">
-        <Typography sx={{ fontSize: '0.78rem', fontFamily: FF, fontWeight: 600, minWidth: 14, color: 'text.secondary' }}>{label}</Typography>
+    <Stack direction="row" spacing={1} sx={{
+        alignItems: "center"
+    }}>
+        <Typography sx={{ fontSize: '0.78rem', fontFamily: FF_BODY, fontWeight: 600, minWidth: 14, color: 'text.secondary' }}>{label}</Typography>
         <LinearProgress
             variant="determinate"
             value={total > 0 ? (count / total) * 100 : 0}
             sx={{ flex: 1, height: 6, borderRadius: 3, bgcolor: 'rgba(0,0,0,0.08)', '& .MuiLinearProgress-bar': { bgcolor: color, borderRadius: 3 } }}
         />
-        <Typography sx={{ fontSize: '0.78rem', fontFamily: FF, minWidth: 18, color: 'text.secondary', textAlign: 'right' }}>{count}</Typography>
+        <Typography sx={{ fontSize: '0.78rem', fontFamily: FF_BODY, minWidth: 18, color: 'text.secondary', textAlign: 'right' }}>{count}</Typography>
     </Stack>
 );
 
@@ -199,20 +216,18 @@ const DemoAspirantViewPage: React.FC = () => {
 
     return (
         <Box sx={{ p: { xs: 1.25, sm: 2.5 }, maxWidth: 900, mx: 'auto' }}>
-
             {/* DEMO banner */}
             <Box sx={{
                 mb: 2, p: 1.5, borderRadius: 2, textAlign: 'center',
                 background: isDark ? 'rgba(200,24,10,0.15)' : 'rgba(200,24,10,0.08)',
                 border: `1px solid ${BRAND.red}`,
             }}>
-                <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.85rem', color: BRAND.red }}>
+                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.85rem', color: BRAND.red }}>
                     {isKannada
                         ? 'ಇದು ಡೆಮೊ ಆಕಾಂಕ್ಷಿ ಪ್ರೊಫೈಲ್ — ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಹೇಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ ಎಂಬುದನ್ನು ತೋರಿಸಲು ಮಾತ್ರ'
                         : 'This is a demo aspirant profile — for demonstration purposes only'}
                 </Typography>
             </Box>
-
             {/* ── HERO CARD ─────────────────────────────────── */}
             <Card sx={{
                 mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, overflow: 'hidden',
@@ -238,12 +253,18 @@ const DemoAspirantViewPage: React.FC = () => {
                         position: 'absolute', top: -7, right: 18, zIndex: 1,
                     }}>
                         <StarIcon sx={{ fontSize: '1rem', color: '#F5A800' }} />
-                        <Typography sx={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#F5A800' }}>
+                        <Typography sx={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: FF_HEADING, lineHeight: 1, color: '#F5A800' }}>
                             {avgRating.toFixed(1)}
                         </Typography>
                     </Box>
 
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 0.8, sm: 2 }} alignItems={{ xs: 'center', sm: 'stretch' }} sx={{ mt: { xs: -3.5, sm: -4.5 } }}>
+                    <Stack
+                        direction={{ xs: 'column', sm: 'row' }}
+                        spacing={{ xs: 0.8, sm: 2 }}
+                        sx={{
+                            alignItems: { xs: 'center', sm: 'stretch' },
+                            mt: { xs: -3.5, sm: -4.5 }
+                        }}>
                         <Avatar
                             alt={aspirant.name}
                             sx={{
@@ -259,8 +280,15 @@ const DemoAspirantViewPage: React.FC = () => {
                         </Avatar>
 
                         <Box sx={{ flex: 1, pb: { sm: 0.5 }, textAlign: { xs: 'center', sm: 'left' } }}>
-                            <Stack direction="row" alignItems="center" spacing={0.8} flexWrap="wrap" justifyContent={{ xs: 'center', sm: 'flex-start' }}>
-                                <Typography variant="h6" sx={{ fontWeight: 900, fontFamily: FF, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+                            <Stack
+                                direction="row"
+                                spacing={0.8}
+                                sx={{
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    justifyContent: { xs: 'center', sm: 'flex-start' }
+                                }}>
+                                <Typography variant="h6" sx={{ fontWeight: 900, fontFamily: FF_HEADING, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
                                     {aspirant.name}
                                 </Typography>
                                 <Tooltip title="Verified Aspirant">
@@ -269,21 +297,39 @@ const DemoAspirantViewPage: React.FC = () => {
                                 <Chip
                                     label={aspirant.party}
                                     size="small"
-                                    sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.68rem', height: 20, bgcolor: isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.14)', color: isDark ? '#F5A800' : '#92400e', border: `1px solid ${isDark ? 'rgba(245,168,0,0.4)' : 'rgba(245,168,0,0.3)'}` }}
+                                    sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.68rem', height: 20, bgcolor: isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.14)', color: isDark ? '#F5A800' : '#92400e', border: `1px solid ${isDark ? 'rgba(245,168,0,0.4)' : 'rgba(245,168,0,0.3)'}` }}
                                 />
-                                <Chip label="DEMO" size="small" sx={{ fontFamily: FF, fontWeight: 800, fontSize: '0.6rem', height: 20, bgcolor: 'rgba(200,24,10,0.15)', color: BRAND.red, border: `1px solid ${BRAND.red}` }} />
+                                <Chip label="DEMO" size="small" sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: '0.6rem', height: 20, bgcolor: 'rgba(200,24,10,0.15)', color: BRAND.red, border: `1px solid ${BRAND.red}` }} />
                             </Stack>
-                            <Stack direction="row" justifyContent={{ xs: 'center', sm: 'flex-start' }} sx={{ mt: { xs: 0.5, sm: 3 } }}>
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    justifyContent: { xs: 'center', sm: 'flex-start' },
+                                    mt: { xs: 0.5, sm: 3 }
+                                }}>
                                 <Chip
                                     icon={<HowToVoteIcon sx={{ fontSize: '0.85rem !important' }} />}
                                     label={aspirant.electionName}
                                     size="small"
-                                    sx={{ fontFamily: FF, fontWeight: 600, fontSize: '0.66rem', height: 20, bgcolor: isDark ? 'rgba(37,58,154,0.25)' : 'rgba(37,58,154,0.08)', color: isDark ? '#93c5fd' : '#1e3a8a' }}
+                                    sx={{ fontFamily: FF_BODY, fontWeight: 600, fontSize: '0.66rem', height: 20, bgcolor: isDark ? 'rgba(37,58,154,0.25)' : 'rgba(37,58,154,0.08)', color: isDark ? '#93c5fd' : '#1e3a8a' }}
                                 />
                             </Stack>
-                            <Stack direction="row" spacing={0.4} alignItems="center" justifyContent={{ xs: 'center', sm: 'flex-start' }} sx={{ mt: 0.4 }}>
+                            <Stack
+                                direction="row"
+                                spacing={0.4}
+                                sx={{
+                                    alignItems: "center",
+                                    justifyContent: { xs: 'center', sm: 'flex-start' },
+                                    mt: 0.4
+                                }}>
                                 <LocationOnIcon sx={{ fontSize: '0.8rem', color: 'text.secondary' }} />
-                                <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF, fontWeight: 600 }}>{aspirant.constituencyName}</Typography>
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "text.secondary",
+                                        fontFamily: FF_BODY,
+                                        fontWeight: 600
+                                    }}>{aspirant.constituencyName}</Typography>
                             </Stack>
                         </Box>
 
@@ -293,7 +339,7 @@ const DemoAspirantViewPage: React.FC = () => {
                             flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
                             flexShrink: 0, minWidth: 90, alignSelf: 'flex-end', pb: 1,
                         }}>
-                            <Typography sx={{ fontSize: '2rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#F5A800' }}>
+                            <Typography sx={{ fontSize: '2rem', fontWeight: 900, fontFamily: FF_HEADING, lineHeight: 1, color: '#F5A800' }}>
                                 {avgRating.toFixed(1)}
                             </Typography>
                             <StarRating value={avgRating} />
@@ -301,76 +347,125 @@ const DemoAspirantViewPage: React.FC = () => {
                     </Stack>
                 </CardContent>
             </Card>
-
             {/* ── PERSONAL INFO ─────────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 }, '&:last-child': { pb: '16px !important' } }}>
                     <SectionHeader icon={<PersonIcon fontSize="small" />} title={isKannada ? 'ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ' : 'Personal Information'} />
                     <Grid container spacing={1.5}>
-                        <Grid item xs={6} sm={4} md={3}><InfoTile icon={<PersonIcon fontSize="small" />} label={isKannada ? 'ವಯಸ್ಸು' : 'Age'} value={`${aspirant.age} yrs`} /></Grid>
-                        <Grid item xs={6} sm={4} md={3}><InfoTile icon={<PersonIcon fontSize="small" />} label={isKannada ? 'ಲಿಂಗ' : 'Gender'} value={aspirant.gender} /></Grid>
-                        <Grid item xs={6} sm={4} md={3}><InfoTile icon={<SchoolIcon fontSize="small" />} label={isKannada ? 'ಶಿಕ್ಷಣ' : 'Education'} value={aspirant.education} /></Grid>
-                        <Grid item xs={6} sm={4} md={3}><InfoTile icon={<WorkIcon fontSize="small" />} label={isKannada ? 'ವೃತ್ತಿ' : 'Occupation'} value={aspirant.occupation} /></Grid>
-                        <Grid item xs={12} sm={8}><InfoTile icon={<LocationOnIcon fontSize="small" />} label={isKannada ? 'ವಿಳಾಸ' : 'Address'} value={aspirant.address} /></Grid>
-                        <Grid item xs={6} sm={4}><InfoTile icon={<PhoneIcon fontSize="small" />} label={isKannada ? 'ಫೋನ್' : 'Phone'} value={aspirant.phone} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 4,
+                                md: 3
+                            }}><InfoTile icon={<PersonIcon fontSize="small" />} label={isKannada ? 'ವಯಸ್ಸು' : 'Age'} value={`${aspirant.age} yrs`} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 4,
+                                md: 3
+                            }}><InfoTile icon={<PersonIcon fontSize="small" />} label={isKannada ? 'ಲಿಂಗ' : 'Gender'} value={aspirant.gender} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 4,
+                                md: 3
+                            }}><InfoTile icon={<SchoolIcon fontSize="small" />} label={isKannada ? 'ಶಿಕ್ಷಣ' : 'Education'} value={aspirant.education} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 4,
+                                md: 3
+                            }}><InfoTile icon={<WorkIcon fontSize="small" />} label={isKannada ? 'ವೃತ್ತಿ' : 'Occupation'} value={aspirant.occupation} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 8
+                            }}><InfoTile icon={<LocationOnIcon fontSize="small" />} label={isKannada ? 'ವಿಳಾಸ' : 'Address'} value={aspirant.address} /></Grid>
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 4
+                            }}><InfoTile icon={<PhoneIcon fontSize="small" />} label={isKannada ? 'ಫೋನ್' : 'Phone'} value={aspirant.phone} /></Grid>
                     </Grid>
                 </CardContent>
             </Card>
-
             {/* ── MANIFESTO ─────────────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                     <SectionHeader icon={<DescriptionIcon fontSize="small" />} title={isKannada ? 'ನನ್ನ ಬಗ್ಗೆ' : 'Manifesto'} />
                     <Box sx={{ p: 2, borderRadius: 2, bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.03)', border: `1px solid ${border}`, borderLeft: `4px solid ${isDark ? BRAND.yellow : BRAND.saffron}` }}>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', lineHeight: 1.75, color: 'text.primary', whiteSpace: 'pre-line' }}>
+                        <Typography sx={{ fontFamily: FF_BODY, fontSize: '0.95rem', lineHeight: 1.75, color: 'text.primary', whiteSpace: 'pre-line' }}>
                             {aspirant.manifesto}
                         </Typography>
                     </Box>
                 </CardContent>
             </Card>
-
             {/* ── SOCIAL PLATFORMS ─────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                     <SectionHeader icon={<ShareIcon fontSize="small" />} title={isKannada ? 'ಸಾಮಾಜಿಕ ವೇದಿಕೆಗಳು' : 'Social Platforms'} />
                     <Grid container spacing={1.2} sx={{ mt: 0.5 }}>
-                        <Grid item xs={6} sm={3}>
-                            <Box component="a" href={aspirant.instagramLink} target="_blank" rel="noopener noreferrer"
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 3
+                            }}>
+                            <Box component="a" href={safeUrl(aspirant.instagramLink) ?? undefined} target="_blank" rel="noopener noreferrer"
                                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.7, textDecoration: 'none', px: 1.2, py: 0.7, borderRadius: '10px', border: '1px solid rgba(225,48,108,0.6)', background: 'rgba(225,48,108,0.08)', '&:hover': { background: 'rgba(225,48,108,0.16)' } }}>
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><defs><radialGradient id="ig-demo" cx="30%" cy="107%" r="150%"><stop offset="0%" stopColor="#fdf497" /><stop offset="5%" stopColor="#fdf497" /><stop offset="45%" stopColor="#fd5949" /><stop offset="60%" stopColor="#d6249f" /><stop offset="90%" stopColor="#285AEB" /></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" ry="6" fill="url(#ig-demo)" /><circle cx="12" cy="12" r="4.5" stroke="white" strokeWidth="2" fill="none" /><circle cx="17.5" cy="6.5" r="1.2" fill="white" /></svg>
-                                <Typography variant="body2" sx={{ fontFamily: FF, color: '#E1306C', fontWeight: 600 }}>Instagram</Typography>
+                                <Typography variant="body2" sx={{ fontFamily: FF_BODY, color: '#E1306C', fontWeight: 600 }}>Instagram</Typography>
                             </Box>
                         </Grid>
-                        <Grid item xs={6} sm={3}>
-                            <Box component="a" href={aspirant.facebookLink} target="_blank" rel="noopener noreferrer"
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 3
+                            }}>
+                            <Box component="a" href={safeUrl(aspirant.facebookLink) ?? undefined} target="_blank" rel="noopener noreferrer"
                                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.7, textDecoration: 'none', px: 1.2, py: 0.7, borderRadius: '10px', border: '1px solid rgba(24,119,242,0.6)', background: 'rgba(24,119,242,0.08)', '&:hover': { background: 'rgba(24,119,242,0.16)' } }}>
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#1877F2" /><path d="M15.5 8H13.5C13.2 8 13 8.2 13 8.5V10H15.5L15.2 12.5H13V19H10.5V12.5H9V10H10.5V8.5C10.5 6.6 11.6 5.5 13.5 5.5H15.5V8Z" fill="white" /></svg>
-                                <Typography variant="body2" sx={{ fontFamily: FF, color: '#1877F2', fontWeight: 600 }}>Facebook</Typography>
+                                <Typography variant="body2" sx={{ fontFamily: FF_BODY, color: '#1877F2', fontWeight: 600 }}>Facebook</Typography>
                             </Box>
                         </Grid>
-                        <Grid item xs={6} sm={3}>
-                            <Box component="a" href={aspirant.twitterLink} target="_blank" rel="noopener noreferrer"
+                        <Grid
+                            size={{
+                                xs: 6,
+                                sm: 3
+                            }}>
+                            <Box component="a" href={safeUrl(aspirant.twitterLink) ?? undefined} target="_blank" rel="noopener noreferrer"
                                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.7, textDecoration: 'none', px: 1.2, py: 0.7, borderRadius: '10px', border: `1px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`, background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)', '&:hover': { background: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(0,0,0,0.1)' } }}>
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill={isDark ? '#ffffff' : '#000000'} /><path d="M13.6 10.8L17.7 6H16.7L13.2 10.2L10.4 6H7L11.3 12.7L7 17.8H8L11.7 13.4L14.6 17.8H18L13.6 10.8ZM12.2 12.8L11.8 12.2L8.4 6.8H10L12.5 10.5L12.9 11.1L16.7 17.1H15L12.2 12.8Z" fill={isDark ? '#000000' : '#ffffff'} /></svg>
-                                <Typography variant="body2" sx={{ fontFamily: FF, color: isDark ? '#ffffff' : '#000000', fontWeight: 600 }}>Twitter</Typography>
+                                <Typography variant="body2" sx={{ fontFamily: FF_BODY, color: isDark ? '#ffffff' : '#000000', fontWeight: 600 }}>Twitter</Typography>
                             </Box>
                         </Grid>
                     </Grid>
                 </CardContent>
             </Card>
-
             {/* ── OVERALL RATING ────────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                     <SectionHeader icon={<StarIcon fontSize="small" />} title={isKannada ? 'ಒಟ್ಟಾರೆ ರೇಟಿಂಗ್' : 'Overall Rating'} />
-                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems={{ sm: 'center' }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{
+                        alignItems: { sm: 'center' }
+                    }}>
                         <Box sx={{ textAlign: 'center' }}>
-                            <Typography sx={{ fontSize: '3.5rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: isDark ? '#F5A800' : '#92400e' }}>
+                            <Typography sx={{ fontSize: '3.5rem', fontWeight: 900, fontFamily: FF_HEADING, lineHeight: 1, color: isDark ? '#F5A800' : '#92400e' }}>
                                 {avgRating.toFixed(1)}
                             </Typography>
-                            <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                sx={{
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}>
                                 <StarRating value={avgRating} />
-                                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: FF }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: "text.secondary",
+                                        fontFamily: FF_BODY
+                                    }}>
                                     {totalRatings} {isKannada ? 'ರೇಟಿಂಗ್' : 'ratings'}
                                 </Typography>
                             </Stack>
@@ -389,7 +484,6 @@ const DemoAspirantViewPage: React.FC = () => {
                     </Stack>
                 </CardContent>
             </Card>
-
             {/* ── MEETINGS ──────────────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
@@ -408,21 +502,49 @@ const DemoAspirantViewPage: React.FC = () => {
                                     bgcolor: isDark ? 'rgba(37,58,154,0.1)' : 'rgba(37,58,154,0.04)',
                                 }}>
                                     <Box sx={{ flex: 1 }}>
-                                        {m.title && <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>{m.title}</Typography>}
+                                        {m.title && <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>{m.title}</Typography>}
                                         {start && (
-                                            <Stack direction="row" spacing={0.6} alignItems="center" sx={{ mb: 0.4 }}>
+                                            <Stack
+                                                direction="row"
+                                                spacing={0.6}
+                                                sx={{
+                                                    alignItems: "center",
+                                                    mb: 0.4
+                                                }}>
                                                 <EventIcon sx={{ fontSize: '0.85rem', color: 'text.secondary' }} />
-                                                <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF }}>{start}{end ? ` — ${end}` : ''}</Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    sx={{
+                                                        color: "text.secondary",
+                                                        fontFamily: FF_BODY
+                                                    }}>{start}{end ? ` — ${end}` : ''}</Typography>
                                             </Stack>
                                         )}
-                                        {m.description && <Typography variant="body2" color="text.secondary" sx={{ fontFamily: FF, mt: 0.4 }}>{m.description}</Typography>}
+                                        {m.description && <Typography
+                                            variant="body2"
+                                            sx={{
+                                                color: "text.secondary",
+                                                fontFamily: FF_BODY,
+                                                mt: 0.4
+                                            }}>{m.description}</Typography>}
                                         <Stack direction="row" spacing={1.5} sx={{ mt: 0.6 }}>
-                                            <Chip label={m.platform || 'Online'} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF }} />
-                                            <Chip icon={<GroupsIcon sx={{ fontSize: '0.8rem !important' }} />} label={`${m.attendingCount || 0} attending`} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF, bgcolor: 'success.50', color: 'success.700' }} />
+                                            <Chip label={m.platform || 'Online'} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF_HEADING }} />
+                                            <Chip icon={<GroupsIcon sx={{ fontSize: '0.8rem !important' }} />} label={`${m.attendingCount || 0} attending`} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF_HEADING, bgcolor: 'success.50', color: 'success.700' }} />
                                         </Stack>
-                                        <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.8 }}>
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.5}
+                                            sx={{
+                                                alignItems: "center",
+                                                mt: 0.8
+                                            }}>
                                             <StarRating value={mRating} />
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF }}>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    color: "text.secondary",
+                                                    fontFamily: FF_BODY
+                                                }}>
                                                 {mTotal > 0 ? `(${mTotal})` : (isKannada ? 'ರೇಟಿಂಗ್ ಇಲ್ಲ' : 'No ratings yet')}
                                             </Typography>
                                         </Stack>
@@ -433,7 +555,6 @@ const DemoAspirantViewPage: React.FC = () => {
                     </Stack>
                 </CardContent>
             </Card>
-
             {/* ── VISITS ────────────────────────────────────── */}
             <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
@@ -450,26 +571,60 @@ const DemoAspirantViewPage: React.FC = () => {
                                     borderLeft: `4px solid ${isDark ? BRAND.yellow : BRAND.saffron}`,
                                     bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.04)',
                                 }}>
-                                    {v.title && <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>{v.title}</Typography>}
+                                    {v.title && <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>{v.title}</Typography>}
                                     {v.location && (
-                                        <Stack direction="row" spacing={0.6} alignItems="center" sx={{ mb: 0.4 }}>
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.6}
+                                            sx={{
+                                                alignItems: "center",
+                                                mb: 0.4
+                                            }}>
                                             <PlaceIcon sx={{ fontSize: '0.85rem', color: isDark ? BRAND.yellow : BRAND.saffron }} />
-                                            <Typography variant="body2" sx={{ fontFamily: FF, fontWeight: 600 }}>{v.location}</Typography>
+                                            <Typography variant="body2" sx={{ fontFamily: FF_BODY, fontWeight: 600 }}>{v.location}</Typography>
                                         </Stack>
                                     )}
                                     {start && (
-                                        <Stack direction="row" spacing={0.6} alignItems="center" sx={{ mb: 0.4 }}>
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.6}
+                                            sx={{
+                                                alignItems: "center",
+                                                mb: 0.4
+                                            }}>
                                             <EventIcon sx={{ fontSize: '0.85rem', color: 'text.secondary' }} />
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF }}>{start}</Typography>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    color: "text.secondary",
+                                                    fontFamily: FF_BODY
+                                                }}>{start}</Typography>
                                         </Stack>
                                     )}
-                                    {v.description && <Typography variant="body2" color="text.secondary" sx={{ fontFamily: FF, mt: 0.4 }}>{v.description}</Typography>}
+                                    {v.description && <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: "text.secondary",
+                                            fontFamily: FF_BODY,
+                                            mt: 0.4
+                                        }}>{v.description}</Typography>}
                                     <Stack direction="row" spacing={1.5} sx={{ mt: 0.6 }}>
-                                        <Chip icon={<GroupsIcon sx={{ fontSize: '0.8rem !important' }} />} label={`${v.attendingCount || 0} attending`} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF }} />
+                                        <Chip icon={<GroupsIcon sx={{ fontSize: '0.8rem !important' }} />} label={`${v.attendingCount || 0} attending`} size="small" sx={{ fontSize: '0.7rem', height: 20, fontFamily: FF_HEADING }} />
                                     </Stack>
-                                    <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.8 }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={0.5}
+                                        sx={{
+                                            alignItems: "center",
+                                            mt: 0.8
+                                        }}>
                                         <StarRating value={vRating} />
-                                        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF }}>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                color: "text.secondary",
+                                                fontFamily: FF_BODY
+                                            }}>
                                             {vTotal > 0 ? `(${vTotal})` : (isKannada ? 'ರೇಟಿಂಗ್ ಇಲ್ಲ' : 'No ratings yet')}
                                         </Typography>
                                     </Stack>

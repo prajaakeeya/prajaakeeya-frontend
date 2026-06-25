@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import {
     Box, Typography, CircularProgress, Table, TableHead, TableBody, TableRow, TableCell,
     TextField, Avatar, Card, CardContent, Stack, useTheme, useMediaQuery, Pagination, Chip, InputAdornment
@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { getAllAspirants } from '../../services/aspirantService';
 import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 const GuestRegisteredAspirantsPage = () => {
     const { t, i18n } = useTranslation();
@@ -19,6 +21,8 @@ const GuestRegisteredAspirantsPage = () => {
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+
 
     const [aspirants, setAspirants] = useState<any[]>([]);
     const [allAspirants, setAllAspirants] = useState<any[]>([]);
@@ -63,15 +67,27 @@ const GuestRegisteredAspirantsPage = () => {
     }, [allAspirants, query]);
 
     return (
-        <Stack spacing={3} sx={{ fontFamily: FF }}>
+        <Stack spacing={3} sx={{ fontFamily: FF_BODY }}>
             {/* Header */}
             <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={1.5}>
+                <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={1.5}
+                    sx={{
+                        justifyContent: "space-between",
+                        alignItems: { sm: 'center' }
+                    }}>
                     <Box>
-                        <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: textPrimary }}>
+                        <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, fontSize: { xs: '1.4rem', md: '1.8rem' }, color: textPrimary }}>
                             {isKannada ? 'ನೋಂದಾಯಿತ ಆಕಾಂಕ್ಷಿಗಳು' : 'Registered Aspirants'}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontFamily: FF, mt: 0.3 }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                fontFamily: FF_BODY,
+                                mt: 0.3
+                            }}>
                             {isKannada ? 'ಒಟ್ಟು' : 'Total'} — {total || aspirants.length}
                         </Typography>
                     </Box>
@@ -80,24 +96,23 @@ const GuestRegisteredAspirantsPage = () => {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder={isKannada ? 'ಹೆಸರು, ಪಕ್ಷ ಹುಡುಕಿ...' : 'Search by name, party, election...'}
-                        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
+                        slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> } }}
                         sx={{ minWidth: { xs: '100%', sm: 280 }, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                     />
                 </Stack>
             </motion.div>
-
             {/* Content */}
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress /></Box>
             ) : error ? (
                 <Typography color="error" sx={{ textAlign: 'center', py: 4 }}>{error}</Typography>
             ) : aspirants.length === 0 ? (
-                <Typography sx={{ textAlign: 'center', py: 6, color: 'text.secondary', fontFamily: FF }}>
+                <Typography sx={{ textAlign: 'center', py: 6, color: 'text.secondary', fontFamily: FF_BODY }}>
                     {isKannada ? 'ಆಕಾಂಕ್ಷಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ' : 'No aspirants found'}
                 </Typography>
             ) : isMobile ? (
                 /* ── Mobile card list ── */
-                <Stack spacing={1.5}>
+                (<Stack spacing={1.5}>
                     {aspirants.map((a: any, idx: number) => (
                         <motion.div key={a.id ?? idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.03 }}>
                             <Card
@@ -120,7 +135,9 @@ const GuestRegisteredAspirantsPage = () => {
                                 }}
                             >
                                 <CardContent sx={{ p: 1.5, pl: 2.5 }}>
-                                    <Stack direction="row" spacing={1.5} alignItems="center">
+                                    <Stack direction="row" spacing={1.5} sx={{
+                                        alignItems: "center"
+                                    }}>
                                         <Box sx={{
                                             p: '2px', borderRadius: '50%', flexShrink: 0,
                                             background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red} 180deg 270deg, ${BRAND.yellow} 270deg 360deg)`,
@@ -134,13 +151,27 @@ const GuestRegisteredAspirantsPage = () => {
                                             </Avatar>
                                         </Box>
                                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                                            <Typography sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.95rem', color: textPrimary }}>
+                                            <Typography sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.95rem', color: textPrimary }}>
                                                 {a.name || ''}
                                             </Typography>
-                                            <Stack direction="row" spacing={0.6} flexWrap="wrap" sx={{ mt: 0.4 }}>
-                                                <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 18, fontFamily: FF, bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgba(245,168,0,0.25)' }} />
+                                            <Stack
+                                                direction="row"
+                                                spacing={0.6}
+                                                sx={{
+                                                    flexWrap: "wrap",
+                                                    mt: 0.4
+                                                }}>
+                                                <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 18, fontFamily: FF_HEADING, bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgba(245,168,0,0.25)' }} />
                                             </Stack>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF, display: 'block', mt: 0.3, lineHeight: 1.3 }}>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    color: "text.secondary",
+                                                    fontFamily: FF_BODY,
+                                                    display: 'block',
+                                                    mt: 0.3,
+                                                    lineHeight: 1.3
+                                                }}>
                                                 {a.electionName || ''}{a.constituencyName ? ` · ${a.constituencyName}` : ''}
                                             </Typography>
                                         </Box>
@@ -150,18 +181,18 @@ const GuestRegisteredAspirantsPage = () => {
                             </Card>
                         </motion.div>
                     ))}
-                </Stack>
+                </Stack>)
             ) : (
                 /* ── Desktop table ── */
-                <Card sx={{ borderRadius: '14px', border: `1px solid ${border}`, background: cardBg, overflow: 'hidden', boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.45)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
+                (<Card sx={{ borderRadius: '14px', border: `1px solid ${border}`, background: cardBg, overflow: 'hidden', boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.45)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ bgcolor: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.04)' }}>
-                                <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>#</TableCell>
-                                <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಹೆಸರು' : 'Name'}</TableCell>
-                                <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಪಕ್ಷ' : 'Party'}</TableCell>
-                                <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಚುನಾವಣೆ' : 'Election'}</TableCell>
-                                <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಕ್ಷೇತ್ರ' : 'Constituency'}</TableCell>
+                                <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>#</TableCell>
+                                <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಹೆಸರು' : 'Name'}</TableCell>
+                                <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಪಕ್ಷ' : 'Party'}</TableCell>
+                                <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಚುನಾವಣೆ' : 'Election'}</TableCell>
+                                <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಕ್ಷೇತ್ರ' : 'Constituency'}</TableCell>
                                 <TableCell sx={{ borderBottom: `1px solid ${border}` }} />
                             </TableRow>
                         </TableHead>
@@ -177,11 +208,13 @@ const GuestRegisteredAspirantsPage = () => {
                                         '&:last-child td': { border: 0 },
                                     }}
                                 >
-                                    <TableCell sx={{ color: 'text.secondary', fontFamily: FF, fontSize: '0.82rem' }}>
+                                    <TableCell sx={{ color: 'text.secondary', fontFamily: FF_HEADING, fontSize: '0.82rem' }}>
                                         {(page - 1) * 50 + idx + 1}
                                     </TableCell>
                                     <TableCell>
-                                        <Stack direction="row" alignItems="center" spacing={1.5}>
+                                        <Stack direction="row" spacing={1.5} sx={{
+                                            alignItems: "center"
+                                        }}>
                                             <Box sx={{
                                                 p: '2px', borderRadius: '50%',
                                                 background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red} 180deg 270deg, ${BRAND.yellow} 270deg 360deg)`,
@@ -194,22 +227,21 @@ const GuestRegisteredAspirantsPage = () => {
                                                     {!a.selfieUrl && (a.name ? a.name.charAt(0).toUpperCase() : <PersonIcon sx={{ fontSize: '1rem' }} />)}
                                                 </Avatar>
                                             </Box>
-                                            <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.9rem', color: textPrimary }}>{a.name || ''}</Typography>
+                                            <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.9rem', color: textPrimary }}>{a.name || ''}</Typography>
                                         </Stack>
                                     </TableCell>
-                                    <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem' }}>
-                                        <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 20, fontFamily: FF, bgcolor: 'rgba(245,168,0,0.1)', color: GOLD, border: '1px solid rgba(245,168,0,0.22)' }} />
+                                    <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem' }}>
+                                        <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 20, fontFamily: FF_HEADING, bgcolor: 'rgba(245,168,0,0.1)', color: GOLD, border: '1px solid rgba(245,168,0,0.22)' }} />
                                     </TableCell>
-                                    <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary' }}>{a.electionName || ''}</TableCell>
-                                    <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary' }}>{a.constituencyName || ''}</TableCell>
+                                    <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem', color: 'text.secondary' }}>{a.electionName || ''}</TableCell>
+                                    <TableCell sx={{ fontFamily: FF_HEADING, fontSize: '0.88rem', color: 'text.secondary' }}>{a.constituencyName || ''}</TableCell>
                                     <TableCell sx={{ width: 32, p: 0.5 }}><ChevronRightIcon sx={{ color: 'text.disabled', fontSize: '1.1rem' }} /></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
-                </Card>
+                </Card>)
             )}
-
             {/* Pagination */}
             {!loading && totalPages > 1 && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>

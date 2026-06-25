@@ -176,7 +176,9 @@ const AdminElectionsPage: React.FC = () => {
                     {elections.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                          <Typography color="text.secondary">
+                          <Typography sx={{
+                            color: "text.secondary"
+                          }}>
                             {t('adminElections.noElections')}
                           </Typography>
                         </TableCell>
@@ -221,7 +223,6 @@ const AdminElectionsPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
       {/* Create / Edit Dialog */}
       <Dialog open={formOpen} onClose={handleFormClose} maxWidth="sm" fullWidth>
         <DialogTitle>
@@ -263,7 +264,6 @@ const AdminElectionsPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
         <DialogTitle>{t('adminElections.deleteConfirmTitle')}</DialogTitle>

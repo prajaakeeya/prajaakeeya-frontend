@@ -249,7 +249,13 @@ const AdminGramaPanchayatPage: React.FC = () => {
         {/* Filters */}
         <Card>
           <CardContent>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="flex-end" flexWrap="wrap">
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              sx={{
+                alignItems: "flex-end",
+                flexWrap: "wrap"
+              }}>
               <TextField
                 select size="small" label="State" value={filterState}
                 onChange={(e) => setFilterState(e.target.value)} sx={{ minWidth: 170 }}
@@ -316,7 +322,9 @@ const AdminGramaPanchayatPage: React.FC = () => {
                     {items.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
-                          <Typography color="text.secondary">No records found</Typography>
+                          <Typography sx={{
+                            color: "text.secondary"
+                          }}>No records found</Typography>
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -348,7 +356,6 @@ const AdminGramaPanchayatPage: React.FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
       {/* Create / Edit Dialog */}
       <Dialog open={formOpen} onClose={closeForm} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? 'Edit Grama Panchayat Entry' : 'Add Grama Panchayat Entry'}</DialogTitle>
@@ -356,12 +363,20 @@ const AdminGramaPanchayatPage: React.FC = () => {
           <Stack spacing={2} sx={{ mt: 1 }}>
             {formError && <Alert severity="error">{formError}</Alert>}
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}>
                 <TextField select label="State" value={formData.state} onChange={handleField('state')} fullWidth size="small">
                   {states.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}>
                 <Autocomplete
                   freeSolo
                   options={formDistricts}
@@ -374,7 +389,11 @@ const AdminGramaPanchayatPage: React.FC = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}>
                 <Autocomplete
                   freeSolo
                   options={formTaluks}
@@ -387,7 +406,11 @@ const AdminGramaPanchayatPage: React.FC = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}>
                 <Autocomplete
                   freeSolo
                   options={formGPs}
@@ -400,7 +423,7 @@ const AdminGramaPanchayatPage: React.FC = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField label="Village Name" value={formData.villageName} onChange={handleField('villageName')} fullWidth size="small" />
               </Grid>
             </Grid>
@@ -414,7 +437,6 @@ const AdminGramaPanchayatPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* Delete Confirmation */}
       <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
         <DialogTitle>Delete Entry</DialogTitle>

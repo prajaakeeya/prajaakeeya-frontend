@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
     Box, Typography, Stack, Dialog, IconButton as MuiIconButton,
     useTheme, useMediaQuery,
@@ -12,7 +12,9 @@ import {
 import SopFlowChart from './SopFlowChart';
 import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 interface Props {
     sopAgreed: boolean;
@@ -69,13 +71,13 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                     }}
                 >
                     <Typography sx={{
-                        fontFamily: FF, fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.15,
+                        fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.15,
                         color: '#2fbf71',
                     }}>
                         {isKannada ? 'SOP ಒಪ್ಪಿಗೆ ಪಡೆಯಲಾಗಿದೆ' : 'SOP Agreed'}
                     </Typography>
                     <Typography sx={{
-                        fontFamily: FF, fontSize: '0.75rem', mt: '2px',
+                        fontFamily: FF_BODY, fontSize: '0.75rem', mt: '2px',
                         color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.6)',
                     }}>
                         {isKannada ? 'ಪರಿಶೀಲಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ' : 'Tap to review the SOP'}
@@ -101,7 +103,6 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                 </Box>
             </Box>
             )}
-
             {/* SOP Agreement Dialog */}
             <Dialog
                 open={open}
@@ -109,10 +110,10 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                 maxWidth="md"
                 fullWidth
                 fullScreen={isMobile}
-                PaperProps={{ sx: { borderRadius: isMobile ? 0 : 3, overflow: 'hidden' } }}
+                slotProps={{ paper: { sx: { borderRadius: isMobile ? 0 : 3, overflow: 'hidden' } } }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1, borderBottom: `1px solid ${border}` }}>
-                    <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.95rem' }}>
+                    <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.95rem' }}>
                         {isKannada ? 'SOP' : 'Standard Operating Procedure'}
                     </Typography>
                     <MuiIconButton onClick={() => setOpen(false)} size="small"><CloseIcon /></MuiIconButton>
@@ -125,10 +126,16 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                         hideAgreement
                         signatureSlot={
                             <Box>
-                                <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.5 }}>
+                                <Stack
+                                    direction="row"
+                                    spacing={1.2}
+                                    sx={{
+                                        alignItems: "center",
+                                        mb: 1.5
+                                    }}>
                                     <DrawIcon sx={{ color: isDark ? BRAND.yellow : BRAND.saffron, fontSize: 18 }} />
                                     <Typography sx={{
-                                        fontFamily: FF, fontWeight: 700, fontSize: '0.72rem',
+                                        fontFamily: FF_HEADING, fontWeight: 700, fontSize: '0.72rem',
                                         textTransform: 'uppercase', letterSpacing: '0.1em',
                                         color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.6)',
                                     }}>
@@ -155,20 +162,21 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                                 <Stack
                                     direction="row"
                                     spacing={2}
-                                    alignItems="flex-end"
-                                    justifyContent="space-between"
-                                >
+                                    sx={{
+                                        alignItems: "flex-end",
+                                        justifyContent: "space-between"
+                                    }}>
                                     {/* Left: Name */}
                                     <Box sx={{ minWidth: 0 }}>
                                         <Typography sx={{
-                                            fontFamily: FF, fontSize: { xs: '0.6rem', sm: '0.7rem' }, fontWeight: 600,
+                                            fontFamily: FF_BODY, fontSize: { xs: '0.6rem', sm: '0.7rem' }, fontWeight: 600,
                                             color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.55)',
                                             textTransform: 'uppercase', letterSpacing: '0.08em',
                                         }}>
                                             {isKannada ? 'ಹೆಸರು' : 'Name'}
                                         </Typography>
                                         <Typography sx={{
-                                            fontFamily: FF, fontSize: { xs: '0.75rem', sm: '0.88rem' }, fontWeight: 700,
+                                            fontFamily: FF_HEADING, fontSize: { xs: '0.75rem', sm: '0.88rem' }, fontWeight: 700,
                                             color: isDark ? '#fff' : 'rgba(15,23,42,0.92)',
                                         }}>
                                             {name}
@@ -179,14 +187,14 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                                     {sopAgreedAt && (
                                         <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
                                             <Typography sx={{
-                                                fontFamily: FF, fontSize: { xs: '0.6rem', sm: '0.7rem' }, fontWeight: 600,
+                                                fontFamily: FF_BODY, fontSize: { xs: '0.6rem', sm: '0.7rem' }, fontWeight: 600,
                                                 color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.55)',
                                                 textTransform: 'uppercase', letterSpacing: '0.08em',
                                             }}>
                                                 {isKannada ? 'ಸಹಿ ಮಾಡಿದ ದಿನಾಂಕ' : 'Signed On'}
                                             </Typography>
                                             <Typography sx={{
-                                                fontFamily: FF, fontSize: { xs: '0.75rem', sm: '0.88rem' }, fontWeight: 700,
+                                                fontFamily: FF_HEADING, fontSize: { xs: '0.75rem', sm: '0.88rem' }, fontWeight: 700,
                                                 color: isDark ? '#fff' : 'rgba(15,23,42,0.92)',
                                             }}>
                                                 {new Date(sopAgreedAt).toLocaleDateString('en-IN', {

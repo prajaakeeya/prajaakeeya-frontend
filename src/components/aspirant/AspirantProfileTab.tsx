@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -40,7 +40,9 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
     const [continuing, setContinuing] = useState(false);
     const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
 
-    const FF = "'Baloo 2', sans-serif";
+    const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+    const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+    const FF = FF_BODY;
     const isDark = theme.palette.mode === 'dark';
     const cardBg = theme.palette.background.paper;
     const insetBg = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(17,24,39,0.04)';
@@ -65,7 +67,7 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
     if (!aspirantProfile) {
         return (
             <Box sx={{ p: 4, textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ color: textSec, fontFamily: FF }}>
+                <Typography variant="h6" sx={{ color: textSec, fontFamily: FF_HEADING }}>
                     Profile data not available
                 </Typography>
             </Box>
@@ -125,15 +127,14 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
         <Box>
             {isPending && (
                 <Alert severity="info" sx={{ mb: 3, borderRadius: 2, '& .MuiAlert-message': { width: '100%' } }}>
-                    <Typography variant="body1" sx={{ fontFamily: FF, fontWeight: 700, mb: 0.5 }}>
+                    <Typography variant="body1" sx={{ fontFamily: FF_HEADING, fontWeight: 700, mb: 0.5 }}>
                         Application is pending
                     </Typography>
-                    <Typography variant="body2" sx={{ fontFamily: FF }}>
+                    <Typography variant="body2" sx={{ fontFamily: FF_BODY }}>
                         Your aspirant registration is pending. Please continue to complete document uploads.
                     </Typography>
                 </Alert>
             )}
-
             {isPending && (
                 <Box sx={{ display: 'flex', justifyContent: { xs: 'stretch', sm: 'flex-start' }, mb: 3 }}>
                     <Button
@@ -142,7 +143,7 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                         disabled={continuing}
                         startIcon={continuing ? <CircularProgress size={18} color="inherit" /> : undefined}
                         sx={{
-                            minWidth: 170, fontWeight: 800, fontFamily: FF, borderRadius: 2.2, textTransform: 'none',
+                            minWidth: 170, fontWeight: 800, fontFamily: FF_HEADING, borderRadius: 2.2, textTransform: 'none',
                             color: '#fff',
                             background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
                             boxShadow: '0 10px 28px rgba(200,24,10,0.35)',
@@ -153,19 +154,18 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                     </Button>
                 </Box>
             )}
-
             {/* Withdraw confirm dialog */}
             <Dialog open={withdrawDialogOpen} onClose={() => setWithdrawDialogOpen(false)} maxWidth="xs" fullWidth>
-                <DialogTitle sx={{ fontFamily: FF, fontWeight: 800 }}>
+                <DialogTitle sx={{ fontFamily: FF_HEADING, fontWeight: 800 }}>
                     {t('userDashboard.aspirant.withdrawConfirmTitle') || 'Withdraw Registration'}
                 </DialogTitle>
                 <DialogContent>
-                    <Typography sx={{ fontFamily: FF }}>
+                    <Typography sx={{ fontFamily: FF_BODY }}>
                         {t('userDashboard.aspirant.withdrawConfirmText') || 'Are you sure you want to withdraw your aspirant registration? This action cannot be undone.'}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setWithdrawDialogOpen(false)} sx={{ textTransform: 'none', fontFamily: FF }}>
+                    <Button onClick={() => setWithdrawDialogOpen(false)} sx={{ textTransform: 'none', fontFamily: FF_HEADING }}>
                         {t('common.cancel') || 'Cancel'}
                     </Button>
                     <Button
@@ -173,32 +173,37 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                         variant="contained"
                         disabled={withdrawBusy}
                         onClick={() => { setWithdrawDialogOpen(false); onWithdraw?.(); }}
-                        sx={{ textTransform: 'none', fontFamily: FF }}
+                        sx={{ textTransform: 'none', fontFamily: FF_BODY }}
                     >
                         {t('userDashboard.aspirant.withdraw') || 'Withdraw'}
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }} alignItems="stretch">
+            <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }} sx={{
+                alignItems: "stretch"
+            }}>
                 {/* ── Profile card ── */}
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <Card sx={{ borderRadius: 3, bgcolor: cardBg, boxShadow: cardShadow, border: `1px solid ${border}`, overflow: 'hidden' }}>
                         <Box sx={{ display: 'flex', height: '3px' }}>
                             {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
                         </Box>
                         <CardContent sx={{ p: { xs: 2, md: 4 } }}>
-                            <Typography variant="h6" sx={{ fontFamily: FF, fontWeight: 800, mb: 2.4, color: textPri }}>
+                            <Typography variant="h6" sx={{ fontFamily: FF_HEADING, fontWeight: 800, mb: 2.4, color: textPri }}>
                                 {t('userDashboard.aspirant.profileTitle') || 'Aspirant Profile'}
                             </Typography>
 
                             {showWardFields && (
                                 <Box sx={{ mb: 1.5 }}>
-                                    <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: FF, color: textDim }}>
+                                    <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', fontFamily: FF_HEADING, color: textDim }}>
                                         {t('userDashboard.aspirant.fieldLabels.wardNumber') || 'Ward Number'}
                                     </Typography>
                                     <Box sx={{ mt: 0.5 }}>
-                                        <Typography variant="subtitle2" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                        <Typography variant="subtitle2" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                             {aspirantProfile.wardNumber ?? aspirantProfile.wardId ?? '—'}
                                         </Typography>
                                     </Box>
@@ -208,10 +213,10 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                             <Box sx={{ mt: 2.2, display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: '1fr 1fr' }, gap: 1.2 }}>
                                 {showWardFields ? (
                                     <Box sx={{ gridColumn: '1 / -1', p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                        <Typography variant="caption" sx={{ fontFamily: FF, color: textSec }}>
+                                        <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec }}>
                                             {t('forms.ward.name') || 'Ward Name'}
                                         </Typography>
-                                        <Typography variant="subtitle1" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                        <Typography variant="subtitle1" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                             {aspirantProfile.ward?.name ?? aspirantProfile.wardName ?? aspirantProfile.assembly ?? '—'}
                                         </Typography>
                                     </Box>
@@ -219,20 +224,20 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                     <>
                                         {aspirantProfile.electionName && (
                                             <Box sx={{ p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                                <Typography variant="caption" sx={{ fontFamily: FF, color: textSec, display: 'block', mb: 0.4 }}>
+                                                <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec, display: 'block', mb: 0.4 }}>
                                                     Election
                                                 </Typography>
-                                                <Typography sx={{ fontFamily: FF, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
+                                                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
                                                     {aspirantProfile.electionName}
                                                 </Typography>
                                             </Box>
                                         )}
                                         {aspirantProfile.constituencyName && (
                                             <Box sx={{ p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                                <Typography variant="caption" sx={{ fontFamily: FF, color: textSec, display: 'block', mb: 0.4 }}>
+                                                <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec, display: 'block', mb: 0.4 }}>
                                                     Constituency
                                                 </Typography>
-                                                <Typography sx={{ fontFamily: FF, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
+                                                <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
                                                     {aspirantProfile.constituencyName}
                                                 </Typography>
                                             </Box>
@@ -240,10 +245,10 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                     </>
                                 )}
                                 <Box sx={{ gridColumn: !showWardFields && (!aspirantProfile.electionName || !aspirantProfile.constituencyName) ? 'auto' : '1 / -1', p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                    <Typography variant="caption" sx={{ fontFamily: FF, color: textSec, display: 'block', mb: 0.4 }}>
+                                    <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec, display: 'block', mb: 0.4 }}>
                                         {t('userDashboard.aspirant.fieldLabels.applicationDate') || 'Application Date'}
                                     </Typography>
-                                    <Typography sx={{ fontFamily: FF, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
+                                    <Typography sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri, fontSize: '0.82rem', lineHeight: 1.3 }}>
                                         {formatDate(aspirantProfile.applicationDate ?? aspirantProfile.createdAt)}
                                     </Typography>
                                 </Box>
@@ -253,27 +258,27 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                 <>
                                     <Box sx={{ mt: 2.2, display: 'flex', gap: 1.2, flexDirection: 'row', flexWrap: 'wrap' }}>
                                         <Box sx={{ flex: 1, minWidth: '45%', p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                            <Typography variant="caption" sx={{ fontFamily: FF, color: textSec }}>
+                                            <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec }}>
                                                 {t('forms.ward.zone') || 'Zone'}
                                             </Typography>
-                                            <Typography variant="subtitle1" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                            <Typography variant="subtitle1" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                                 {aspirantProfile.ward?.zone ?? '—'}
                                             </Typography>
                                         </Box>
                                         <Box sx={{ flex: 1, minWidth: '45%', p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                            <Typography variant="caption" sx={{ fontFamily: FF, color: textSec }}>
+                                            <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec }}>
                                                 {t('forms.ward.category') || 'Category'}
                                             </Typography>
-                                            <Typography variant="subtitle1" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                            <Typography variant="subtitle1" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                                 {aspirantProfile.ward?.category ?? '—'}
                                             </Typography>
                                         </Box>
                                     </Box>
                                     <Box sx={{ mt: 1.2, p: 1.2, borderRadius: 2, bgcolor: insetBg, border: `1px solid ${border}` }}>
-                                        <Typography variant="caption" sx={{ fontFamily: FF, color: textSec }}>
+                                        <Typography variant="caption" sx={{ fontFamily: FF_BODY, color: textSec }}>
                                             {t('forms.ward.municipality') || 'Municipality'}
                                         </Typography>
-                                        <Typography variant="subtitle1" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                        <Typography variant="subtitle1" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                             {aspirantProfile.ward?.municipality ?? '—'}
                                         </Typography>
                                     </Box>
@@ -290,8 +295,8 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                     } catch (e) {
                                         return (
                                             <Box sx={{ mt: 2 }}>
-                                                <Typography variant="caption" color="error" sx={{ fontFamily: FF, fontWeight: 700 }}>Rejection Notes</Typography>
-                                                <Typography variant="body2" sx={{ color: textSec, fontFamily: FF }}>{String(aspirantProfile.rejectionReasons)}</Typography>
+                                                <Typography variant="caption" color="error" sx={{ fontFamily: FF_HEADING, fontWeight: 700 }}>Rejection Notes</Typography>
+                                                <Typography variant="body2" sx={{ color: textSec, fontFamily: FF_BODY }}>{String(aspirantProfile.rejectionReasons)}</Typography>
                                             </Box>
                                         );
                                     }
@@ -304,12 +309,12 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                     if (entries.length === 0) return null;
                                     return (
                                         <Box sx={{ mt: 2 }}>
-                                            <Typography variant="caption" color="error" sx={{ fontWeight: 700, fontFamily: FF }}>Rejection Reasons</Typography>
+                                            <Typography variant="caption" color="error" sx={{ fontWeight: 700, fontFamily: FF_HEADING }}>Rejection Reasons</Typography>
                                             <Box sx={{ mt: 1 }}>
                                                 {entries.map(([k, v]) => (
                                                     <Box key={k} sx={{ mt: 0.75 }}>
-                                                        <Typography variant="body2" sx={{ fontWeight: 700, fontFamily: FF, color: textPri }}>{keyToLabel[k] ?? k}</Typography>
-                                                        <Typography variant="body2" sx={{ color: textSec, fontFamily: FF }}>{String(v)}</Typography>
+                                                        <Typography variant="body2" sx={{ fontWeight: 700, fontFamily: FF_HEADING, color: textPri }}>{keyToLabel[k] ?? k}</Typography>
+                                                        <Typography variant="body2" sx={{ color: textSec, fontFamily: FF_BODY }}>{String(v)}</Typography>
                                                     </Box>
                                                 ))}
                                             </Box>
@@ -322,15 +327,25 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                 </Grid>
 
                 {/* ── SOP Agreement card ── */}
-                <Grid item xs={12} md={8}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 8
+                    }}>
                     <Card sx={{ borderRadius: 3, bgcolor: cardBg, boxShadow: cardShadow, border: `1px solid ${border}`, overflow: 'hidden' }}>
                         <Box sx={{ display: 'flex', height: '3px' }}>
                             {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
                         </Box>
                         <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-                            <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 2 }}>
+                            <Stack
+                                direction="row"
+                                spacing={1.2}
+                                sx={{
+                                    alignItems: "center",
+                                    mb: 2
+                                }}>
                                 <VerifiedIcon sx={{ color: BRAND.yellow }} />
-                                <Typography variant="h6" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
+                                <Typography variant="h6" sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPri }}>
                                     {t('userDashboard.aspirant.sopAgreementTitle') || 'SOP Agreement'}
                                 </Typography>
                             </Stack>
@@ -343,7 +358,7 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                                 />
                             ) : (
                                 <Box sx={{ p: 3, textAlign: 'center', borderRadius: 2, bgcolor: insetBg, border: `1px dashed ${border}` }}>
-                                    <Typography variant="body2" sx={{ color: textSec, fontFamily: FF }}>
+                                    <Typography variant="body2" sx={{ color: textSec, fontFamily: FF_BODY }}>
                                         {t('userDashboard.aspirant.sopNotAgreed') || 'SOP not agreed yet.'}
                                     </Typography>
                                 </Box>
@@ -352,7 +367,6 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                     </Card>
                 </Grid>
             </Grid>
-
             {/* Withdraw button — below Documents Uploaded, full width */}
             {onWithdraw && (
                 <Box id="withdraw-application" sx={{ mt: 3, scrollMarginTop: 80 }}>
@@ -362,13 +376,12 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                         color="error"
                         disabled={withdrawBusy}
                         onClick={() => setWithdrawDialogOpen(true)}
-                        sx={{ fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none', py: 1.2 }}
+                        sx={{ fontFamily: FF_HEADING, fontWeight: 700, borderRadius: 2, textTransform: 'none', py: 1.2 }}
                     >
                         {withdrawBusy ? 'Withdrawing…' : (t('userDashboard.aspirant.withdraw') || 'Withdraw')}
                     </Button>
                 </Box>
             )}
-            
         </Box>
     );
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
+﻿import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -21,10 +21,10 @@ import {
   Campaign as CampaignIcon,
   ReportProblem as IssueIcon,
   PersonAddAlt as AspirantIcon,
-  ChatBubbleOutline as ChatIcon,
+  ChatBubbleOutlined as ChatIcon,
   EventAvailable as MeetingIcon,
   DoneAll as DoneAllIcon,
-  DeleteOutline as DeleteIcon,
+  DeleteOutlined as DeleteIcon,
   DeleteSweepOutlined as ClearAllIcon,
   ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
@@ -42,7 +42,9 @@ import {
   ApiNotification,
 } from '../services/notificationService';
 
-const FF = "'Baloo 2', sans-serif";
+const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+const FF = FF_BODY;
 
 type Kind = 'vote' | 'issue' | 'aspirant' | 'announcement' | 'chat' | 'meeting';
 type Bucket = 'today' | 'yesterday' | 'earlier';
@@ -326,7 +328,7 @@ export default function NotificationsPage() {
             <Box>
               <Typography
                 variant="h4"
-                sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
+                sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
               >
                 {t('notifications.title') || 'Notifications'}
               </Typography>
@@ -360,7 +362,7 @@ export default function NotificationsPage() {
               mx: 0,
             },
             '& .MuiToggleButton-root': {
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontWeight: 700,
               fontSize: '0.82rem',
               textTransform: 'none',
@@ -399,7 +401,7 @@ export default function NotificationsPage() {
             startIcon={<DoneAllIcon sx={{ fontSize: 18 }} />}
             onClick={handleMarkAll}
             sx={{
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontWeight: 700,
               fontSize: '0.82rem',
               textTransform: 'none',
@@ -430,7 +432,7 @@ export default function NotificationsPage() {
             startIcon={<ClearAllIcon sx={{ fontSize: 18 }} />}
             onClick={handleClearAll}
             sx={{
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontWeight: 700,
               fontSize: '0.82rem',
               textTransform: 'none',
@@ -460,7 +462,7 @@ export default function NotificationsPage() {
 
       {/* Error */}
       {error && (
-        <Alert severity="error" sx={{ fontFamily: FF }}>
+        <Alert severity="error" sx={{ fontFamily: FF_BODY }}>
           {error}
         </Alert>
       )}
@@ -504,13 +506,13 @@ export default function NotificationsPage() {
             <BellIcon />
           </Avatar>
           <Typography
-            sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, fontSize: '1.05rem' }}
+            sx={{ fontFamily: FF_HEADING, fontWeight: 800, color: textPrimary, fontSize: '1.05rem' }}
           >
             {filter === 'unread'
               ? t('notifications.emptyUnreadTitle') || 'No unread notifications'
               : t('notifications.emptyTitle') || "You're all caught up"}
           </Typography>
-          <Typography sx={{ fontFamily: FF, color: subText, mt: 0.5 }}>
+          <Typography sx={{ fontFamily: FF_BODY, color: subText, mt: 0.5 }}>
             {t('notifications.emptyBody') || 'New activity will show up here.'}
           </Typography>
         </Box>
@@ -526,7 +528,7 @@ export default function NotificationsPage() {
             <Box key={bucket}>
               <Typography
                 sx={{
-                  fontFamily: FF,
+                  fontFamily: FF_BODY,
                   fontSize: '0.7rem',
                   fontWeight: 800,
                   letterSpacing: '.08em',
@@ -634,7 +636,7 @@ export default function NotificationsPage() {
                               label={meta.label}
                               sx={{
                                 height: 18,
-                                fontFamily: FF,
+                                fontFamily: FF_BODY,
                                 fontWeight: 700,
                                 fontSize: '0.62rem',
                                 letterSpacing: '.04em',
@@ -646,7 +648,7 @@ export default function NotificationsPage() {
                             />
                             <Typography
                               sx={{
-                                fontFamily: FF,
+                                fontFamily: FF_BODY,
                                 fontSize: '0.72rem',
                                 fontWeight: 600,
                                 color: subText,
@@ -657,7 +659,7 @@ export default function NotificationsPage() {
                           </Box>
                           <Typography
                             sx={{
-                              fontFamily: FF,
+                              fontFamily: FF_BODY,
                               fontWeight: n.read ? 600 : 800,
                               fontSize: '0.95rem',
                               lineHeight: 1.3,
@@ -669,7 +671,7 @@ export default function NotificationsPage() {
                           {n.body && (
                             <Typography
                               sx={{
-                                fontFamily: FF,
+                                fontFamily: FF_BODY,
                                 fontSize: '0.84rem',
                                 color: subText,
                                 mt: 0.4,
@@ -693,7 +695,7 @@ export default function NotificationsPage() {
         <Divider sx={{ borderColor: borderFaint, opacity: 0.6 }}>
           <Typography
             sx={{
-              fontFamily: FF,
+              fontFamily: FF_BODY,
               fontSize: '0.72rem',
               fontWeight: 700,
               letterSpacing: '.08em',

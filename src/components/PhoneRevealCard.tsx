@@ -51,7 +51,9 @@ const PhoneRevealCard: React.FC<PhoneRevealCardProps> = ({ phone, aspirantId, on
 
     if (inline) {
         return (
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack direction="row" spacing={1} sx={{
+                alignItems: "center"
+            }}>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
                     {showFull ? (phone ?? '—') : (masked || '—')}
                 </Typography>
@@ -70,17 +72,35 @@ const PhoneRevealCard: React.FC<PhoneRevealCardProps> = ({ phone, aspirantId, on
     return (
         <Card variant="outlined" sx={{ borderRadius: 1 }}>
             <CardContent sx={{ p: 1.25 }}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{
+                        alignItems: "center",
+                        justifyContent: "space-between"
+                    }}>
                     <Box sx={{ minWidth: 0, pr: 1 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Phone Number</Typography>
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            sx={{
+                                alignItems: "center",
+                                mt: 0.5
+                            }}>
                             <Typography variant="body1" sx={{ fontWeight: 600, wordBreak: 'break-all' }}>
                                 {showFull ? (phone ?? '—') : (masked || '—')}
                             </Typography>
                         </Stack>
                     </Box>
 
-                    <Stack direction="row" alignItems="center" spacing={0.5} sx={{ ml: 'auto' }}>
+                    <Stack
+                        direction="row"
+                        spacing={0.5}
+                        sx={{
+                            alignItems: "center",
+                            ml: 'auto'
+                        }}>
                         {onCall && (
                             <IconButton
                                 aria-label="Call"

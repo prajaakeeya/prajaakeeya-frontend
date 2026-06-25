@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+﻿import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Table, TableHead, TableBody, TableRow, TableCell, TextField, Button, Avatar, Dialog, DialogTitle, DialogContent, DialogActions, Stack, Card, CardContent, IconButton, Divider, useTheme, useMediaQuery, Snackbar, Alert } from '@mui/material';
 import { Apartment as ApartmentIcon, Report as ReportIcon, MoreVert as MoreVertIcon, Close as CloseIcon, AttachFile as AttachFileIcon, Delete as DeleteIcon, Person as PersonIcon, Warning as WarningIcon } from '@mui/icons-material';
@@ -10,7 +10,9 @@ import useSnackbar from '../hooks/useSnackbar';
 
 const WardVotersPage: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const FF = "'Baloo 2', sans-serif";
+    const FF_HEADING = "'Heming', 'Geist Variable', 'Geist', sans-serif";
+    const FF_BODY = "'Geist Variable', 'Geist', sans-serif";
+    const FF = FF_BODY;
     const isKannada = (i18n.language || '').startsWith('kn');
     const navigate = useNavigate();
     const { user } = useAuthStore();
@@ -217,7 +219,7 @@ const WardVotersPage: React.FC = () => {
                             <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: '1.6rem', sm: '2rem' }, color: textPrimary }}>
                                 {t('userDashboard.actions.voters') || 'Voters'}
                             </Typography>
-                            <Typography variant="body2" sx={{ mt: 0.4, color: textSecondary, fontFamily: FF }}>
+                            <Typography variant="body2" sx={{ mt: 0.4, color: textSecondary, fontFamily: FF_BODY }}>
                                 {descText} - {totalVoters || voters.length}
                             </Typography>
                         </Box>
@@ -235,7 +237,6 @@ const WardVotersPage: React.FC = () => {
                     </Stack>
                 </CardContent>
             </Card>
-
             {loading ? (
                 <Box sx={{ textAlign: 'center', py: 3 }}>
                     <CircularProgress />
@@ -262,8 +263,15 @@ const WardVotersPage: React.FC = () => {
                                             }}
                                         >
                                             <CardContent sx={{ p: isMobile ? 1.25 : 2 }}>
-                                                <Box display="flex" alignItems="flex-start" justifyContent="space-between">
-                                                    <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "flex-start",
+                                                        justifyContent: "space-between"
+                                                    }}>
+                                                    <Stack direction="row" spacing={1.5} sx={{
+                                                        alignItems: "center"
+                                                    }}>
                                                         <Avatar
                                                             src={v.photoUrl || v.photo || undefined}
                                                             alt={v.name || v.nameEn || ''}
@@ -280,12 +288,18 @@ const WardVotersPage: React.FC = () => {
                                                             {(!v.photo && (v.name || v.nameEn)) ? ((v.name || v.nameEn).split(' ').map((s: string) => s.charAt(0)).slice(0, 2).join('')) : null}
                                                         </Avatar>
                                                         <Box>
-                                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: FF, fontSize: isMobile ? '0.95rem' : undefined, color: reported ? 'common.white' : undefined }}>
+                                                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: FF_HEADING, fontSize: isMobile ? '0.95rem' : undefined, color: reported ? 'common.white' : undefined }}>
                                                                 {isKannada ? (v.nameKn || v.nameEn || v.name || '') : (v.nameEn || v.name || v.nameKn || '')}
                                                             </Typography>
-                                                            <Stack direction="row" spacing={1} alignItems="flex-start" sx={{ mt: 0.5 }}>
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={1}
+                                                                sx={{
+                                                                    alignItems: "flex-start",
+                                                                    mt: 0.5
+                                                                }}>
                                                                 <ApartmentIcon fontSize="small" color={reported ? 'inherit' : 'action'} sx={{ mt: '2px', color: reported ? 'common.white' : undefined }} />
-                                                                <Typography variant="caption" color={reported ? 'common.white' : 'text.secondary'} sx={{ fontFamily: FF, fontSize: isMobile ? '0.78rem' : undefined }}>
+                                                                <Typography variant="caption" color={reported ? 'common.white' : 'text.secondary'} sx={{ fontFamily: FF_BODY, fontSize: isMobile ? '0.78rem' : undefined }}>
                                                                     {v.psName || v.psNameL1 || ''}
                                                                 </Typography>
                                                             </Stack>
@@ -317,7 +331,7 @@ const WardVotersPage: React.FC = () => {
                             <Table>
                                 <TableHead>
                                     <TableRow sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : 'rgba(15,23,42,0.03)' }}>
-                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.9rem', letterSpacing: '.02em' }}>{t('voter.name') || 'Name'}</TableCell>
+                                        <TableCell sx={{ fontWeight: 800, fontFamily: FF_HEADING, fontSize: '0.9rem', letterSpacing: '.02em' }}>{t('voter.name') || 'Name'}</TableCell>
                                         <TableCell />
                                     </TableRow>
                                 </TableHead>
@@ -334,9 +348,9 @@ const WardVotersPage: React.FC = () => {
                                                         sx={{ bgcolor: reported ? 'rgba(255,255,255,0.16)' : undefined, color: reported ? 'common.white' : undefined, cursor: (v.photoUrl || v.photo) ? 'pointer' : 'default' }}
                                                         onClick={() => openPhotoPreview(v)}
                                                     />
-                                                    <span style={{ ...(reported ? { color: '#fff' } : {}), fontFamily: FF, fontWeight: 700 }}>{isKannada ? (v.nameKn || v.nameEn || v.name || '') : (v.nameEn || v.name || v.nameKn || '')}</span>
+                                                    <span style={{ ...(reported ? { color: '#fff' } : {}), fontFamily: FF_HEADING, fontWeight: 700 }}>{isKannada ? (v.nameKn || v.nameEn || v.name || '') : (v.nameEn || v.name || v.nameKn || '')}</span>
                                                 </TableCell>
-                                                <TableCell sx={{ ...(reported ? { color: 'common.white' } : {}), fontFamily: FF, fontWeight: 600 }}>{isKannada ? (v.psNameL1 || v.psName || '') : (v.psName || v.psNameL1 || '')}</TableCell>
+                                                <TableCell sx={{ ...(reported ? { color: 'common.white' } : {}), fontFamily: FF_HEADING, fontWeight: 600 }}>{isKannada ? (v.psNameL1 || v.psName || '') : (v.psName || v.psNameL1 || '')}</TableCell>
                                                 <TableCell align="right">
                                                     <IconButton size="small" onClick={() => { setReportTarget(v); setReportReason(''); setReportFile(null); setReportOpen(true); }} disabled={reported} aria-label={t('report') || 'Report'}>
                                                         <MoreVertIcon />
@@ -357,13 +371,12 @@ const WardVotersPage: React.FC = () => {
                         </Box>
                     )}
                     {!hasMore && voters.length > 0 && (
-                        <Typography variant="body2" sx={{ textAlign: 'center', py: 2, mb: isMobile ? 8 : 2, color: textSecondary, fontFamily: FF }}>
+                        <Typography variant="body2" sx={{ textAlign: 'center', py: 2, mb: isMobile ? 8 : 2, color: textSecondary, fontFamily: FF_BODY }}>
                             {t('noMoreResults', { defaultValue: 'No more voters to load' })}
                         </Typography>
                     )}
                 </>
             )}
-
             {isMobile ? (
                 <Box sx={{ position: 'fixed', left: 16, right: 16, bottom: 16, zIndex: 1400 }}>
                     <Button
@@ -374,7 +387,7 @@ const WardVotersPage: React.FC = () => {
                             borderRadius: 3,
                             textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
+                            fontFamily: FF_BODY,
                             py: 1.25,
                             fontSize: '0.95rem',
                             color: '#fff',
@@ -391,7 +404,7 @@ const WardVotersPage: React.FC = () => {
                 </Box>
             ) : (
                 // Desktop: floating button bottom-right
-                <Box sx={{ position: 'fixed', right: 12, bottom: 24, zIndex: 1400 }}>
+                (<Box sx={{ position: 'fixed', right: 12, bottom: 24, zIndex: 1400 }}>
                     <Button
                         variant="contained"
                         onClick={() => navigate('/user/civic-issues')}
@@ -399,7 +412,7 @@ const WardVotersPage: React.FC = () => {
                             borderRadius: 999,
                             textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
+                            fontFamily: FF_BODY,
                             py: 0.8,
                             px: 2,
                             fontSize: '0.95rem',
@@ -415,9 +428,8 @@ const WardVotersPage: React.FC = () => {
                     >
                         {t('userDashboard.actions.civicIssues', { defaultValue: 'Public Issues' })}
                     </Button>
-                </Box>
+                </Box>)
             )}
-
             {/* <Box sx={{ mt: 1.5 }}>
                 <Button
                     fullWidth
@@ -427,7 +439,7 @@ const WardVotersPage: React.FC = () => {
                         borderRadius: 3,
                         textTransform: 'none',
                         fontWeight: 700,
-                        fontFamily: FF,
+                        fontFamily: FF_BODY,
                         py: 1.5,
                         fontSize: '0.95rem',
                         borderColor: '#F5A800',
@@ -441,19 +453,18 @@ const WardVotersPage: React.FC = () => {
                     {t('userDashboard.actions.civicIssues', { defaultValue: 'Public Issues' })}
                 </Button>
             </Box> */}
-
             {/* Report dialog */}
             <Dialog
                 open={reportOpen}
                 onClose={() => setReportOpen(false)}
                 fullWidth
                 maxWidth="sm"
-                PaperProps={{
+                slotProps={{ paper: {
                     sx: {
                         borderRadius: 3,
                         boxShadow: '0 8px 32px rgba(0,0,0,0.12)'
                     }
-                }}
+                } }}
             >
                 <DialogTitle sx={{
                     display: 'flex',
@@ -463,7 +474,9 @@ const WardVotersPage: React.FC = () => {
                     borderBottom: '1px solid',
                     borderColor: 'divider'
                 }}>
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack direction="row" spacing={1} sx={{
+                        alignItems: "center"
+                    }}>
                         <WarningIcon color="error" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
                             {t('report') || 'Report Voter'}
@@ -493,7 +506,9 @@ const WardVotersPage: React.FC = () => {
                         }}
                     >
                         <CardContent sx={{ py: 1.5, px: 2, '&:last-child': { pb: 1.5 } }}>
-                            <Stack direction="row" spacing={2} alignItems="center">
+                            <Stack direction="row" spacing={2} sx={{
+                                alignItems: "center"
+                            }}>
                                 <Avatar
                                     src={reportTarget?.photoUrl || reportTarget?.photo || undefined}
                                     sx={{
@@ -505,7 +520,13 @@ const WardVotersPage: React.FC = () => {
                                     <PersonIcon />
                                 </Avatar>
                                 <Box>
-                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.25 }}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: "text.secondary",
+                                            fontSize: '0.75rem',
+                                            mb: 0.25
+                                        }}>
                                         Reporting
                                     </Typography>
                                     <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
@@ -579,8 +600,21 @@ const WardVotersPage: React.FC = () => {
                                 }}
                             >
                                 <CardContent sx={{ py: 1.5, px: 2, '&:last-child': { pb: 1.5 } }}>
-                                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                                        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
+                                    <Stack
+                                        direction="row"
+                                        spacing={2}
+                                        sx={{
+                                            alignItems: "center",
+                                            justifyContent: "space-between"
+                                        }}>
+                                        <Stack
+                                            direction="row"
+                                            spacing={1.5}
+                                            sx={{
+                                                alignItems: "center",
+                                                flex: 1,
+                                                minWidth: 0
+                                            }}>
                                             <AttachFileIcon color="success" sx={{ fontSize: 20 }} />
                                             <Typography
                                                 variant="body2"
@@ -648,9 +682,9 @@ const WardVotersPage: React.FC = () => {
                 onClose={() => setPhotoDialogOpen(false)}
                 maxWidth="xs"
                 fullWidth
-                PaperProps={{ sx: { borderRadius: 2.5, overflow: 'hidden' } }}
+                slotProps={{ paper: { sx: { borderRadius: 2.5, overflow: 'hidden' } } }}
             >
-                <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: FF, fontWeight: 700 }}>
+                <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: FF_HEADING, fontWeight: 700 }}>
                     {photoDialogName || (t('menu.myProfile') || 'Profile')}
                     <IconButton size="small" onClick={() => setPhotoDialogOpen(false)}>
                         <CloseIcon />

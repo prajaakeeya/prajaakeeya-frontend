@@ -15,7 +15,11 @@ const AuthLayout = ({ title }: PropsWithChildren<AuthLayoutProps>) => {
   // This prevents the white card from ever being painted.
   if (isAuthenticated) {
     return (
-      <Box minHeight="100vh" bgcolor="background.default">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          bgcolor: "background.default"
+        }}>
         {/* Hidden Outlet so RedirectIfAuth can trigger the navigate */}
         <Box sx={{ display: 'none' }}><Outlet /></Box>
       </Box>
@@ -24,13 +28,14 @@ const AuthLayout = ({ title }: PropsWithChildren<AuthLayoutProps>) => {
 
   return (
     <Box
-      minHeight="100vh"
-      width="100vw"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      bgcolor="background.default"
-    >
+      sx={{
+        minHeight: "100vh",
+        width: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "background.default"
+      }}>
       <Outlet />
     </Box>
   );

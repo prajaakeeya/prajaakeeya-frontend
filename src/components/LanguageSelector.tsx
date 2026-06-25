@@ -67,7 +67,7 @@ export default function LanguageSelector({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        PaperProps={{ sx: { maxHeight: 320, minWidth: 140 } }}
+        slotProps={{ paper: { sx: { maxHeight: 320, minWidth: 140 } } }}
       >
         {LANGUAGES.map((lang) => (
           <MenuItem

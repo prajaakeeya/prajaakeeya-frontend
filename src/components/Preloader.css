@@ -128,7 +128,7 @@
   position: relative;
   width: 94px; height: 94px;
   border-radius: 20px;
-  background: #0A0808;
+  background: #0D0F12;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 10px 24px rgba(0,0,0,0.45);
 }

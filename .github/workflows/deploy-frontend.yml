@@ -53,6 +53,11 @@ jobs:
   deploy:
     needs: test                 # ← deploy ONLY runs if the `test` job succeeded
     runs-on: ubuntu-latest
+    # Bind the job to a GitHub Environment so environment-scoped Variables
+    # resolve per branch: main → 'production', staging → 'staging'. This lets
+    # VITE_COOKIE_AUTH (below) be true on staging while staying unset/false on
+    # production until cookie auth is explicitly enabled there.
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -77,6 +82,11 @@ jobs:
         env:
           VITE_APP_MODE: ${{ vars.VITE_APP_MODE }}
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          # Cookie-based auth flag (httpOnly session cookie + Google code-exchange).
+          # Resolved from the environment-scoped Variable above: set it to "true"
+          # in the 'staging' GitHub Environment to enable; leave unset/false in
+          # 'production'. Missing → "false" (fail closed; legacy token flow).
+          VITE_COOKIE_AUTH: ${{ vars.VITE_COOKIE_AUTH }}
           # Firebase web-push config — baked into the bundle at build time. These
           # are public (shipped to the browser), so repo Variables are fine. Without
           # them isConfigured=false and FCM is silently disabled (no token, no API call).

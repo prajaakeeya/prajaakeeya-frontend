@@ -45,16 +45,15 @@ vi.mock('../services/statsService', () => ({
 describe('GuestDashboardPage (/guest/dashboard)', () => {
   it('renders the hero heading (hardcoded English when language is not kn)', () => {
     renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
-    expect(screen.getByText('Guest Dashboard')).toBeInTheDocument();
+    expect(screen.getByText(/Guest/)).toBeInTheDocument();
+    expect(screen.getByText(/Dashboard/)).toBeInTheDocument();
   });
 
   it('renders the action tiles', () => {
     renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
-    // Tile titles use t('...', { defaultValue }); our mock returns defaultValue.
-    expect(screen.getByText('View Aspirants')).toBeInTheDocument();
-    expect(screen.getByText('Public Issues')).toBeInTheDocument();
-    expect(screen.getByText('SOP')).toBeInTheDocument();
-    expect(screen.getByText('Registered Aspirants')).toBeInTheDocument();
+    expect(screen.getByText('Election')).toBeInTheDocument();
+    expect(screen.getByText('Stats')).toBeInTheDocument();
+    expect(screen.getByText('Contact Us')).toBeInTheDocument();
   });
 
   it('shows the registered-citizens count fetched from getCitizensCount', async () => {
@@ -63,15 +62,23 @@ describe('GuestDashboardPage (/guest/dashboard)', () => {
     expect(await screen.findByText('67,832')).toBeInTheDocument();
   });
 
-  it('navigates to the aspirants page when the "View Aspirants" tile is clicked', async () => {
+  it('navigates to the elections page when the "Election" tile is clicked', async () => {
     renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
-    fireEvent.click(screen.getByText('View Aspirants'));
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/guest/aspirants'));
+    fireEvent.click(screen.getByText('Election'));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/guest/elections'));
   });
 
-  it('navigates to the civic-issues page when the "Public Issues" tile is clicked', async () => {
+  it('navigates to the stats page when the "Stats" tile is clicked', async () => {
     renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
-    fireEvent.click(screen.getByText('Public Issues'));
-    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/guest/civic-issues'));
+    fireEvent.click(screen.getByText('Stats'));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/guest/stats'));
   });
+
+  it('navigates to the contact-us page when the "Contact Us" tile is clicked', async () => {
+    renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
+    fireEvent.click(screen.getByText('Contact Us'));
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/guest/contact-us'));
+  });
+
+
 });

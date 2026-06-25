@@ -193,7 +193,13 @@ const AspirantMeetingLinksPage: React.FC = () => {
     if (loading) {
         return (
             <Container maxWidth="lg" sx={{ py: 4, px: 0 }}>
-                <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        minHeight: "400px"
+                    }}>
                     <CircularProgress />
                 </Box>
             </Container>

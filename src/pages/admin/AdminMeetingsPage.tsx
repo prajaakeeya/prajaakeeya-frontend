@@ -31,6 +31,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import meetingsService, { Meeting } from '../../services/meetingsService';
 import { getWards } from '../../services/wardService';
 import { Autocomplete } from '@mui/material';
+import { safeUrl } from '../../utils/safeUrl';
 
 const AdminMeetingsPage: React.FC = () => {
     const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -112,7 +113,10 @@ const AdminMeetingsPage: React.FC = () => {
     };
 
     const openMeetingLink = (url: string) => {
-        window.open(url, '_blank');
+        // C-SEC-4: meetingLink is user-supplied — block script-capable schemes.
+        const safe = safeUrl(url);
+        if (!safe) return;
+        window.open(safe, '_blank');
     };
 
     return (
@@ -132,8 +136,14 @@ const AdminMeetingsPage: React.FC = () => {
                         <Stack spacing={2}>
                             <Typography variant="h6">Filters</Typography>
 
-                            <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={12} md={4}>
+                            <Grid container spacing={2} sx={{
+                                alignItems: "center"
+                            }}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        md: 4
+                                    }}>
                                     <Autocomplete
                                         options={wards}
                                         getOptionLabel={(option) => `${option.ward_number} - ${option.ward_name}`}
@@ -147,7 +157,11 @@ const AdminMeetingsPage: React.FC = () => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} md={3}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        md: 3
+                                    }}>
                                     <TextField
                                         select
                                         fullWidth
@@ -161,7 +175,11 @@ const AdminMeetingsPage: React.FC = () => {
                                     </TextField>
                                 </Grid>
 
-                                <Grid item xs={12} md={5}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        md: 5
+                                    }}>
                                     <Stack direction="row" spacing={1}>
                                         <Button variant="contained" onClick={handleFilter}>
                                             Apply Filters
@@ -199,7 +217,9 @@ const AdminMeetingsPage: React.FC = () => {
                                         {meetings.length === 0 ? (
                                             <TableRow>
                                                 <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                                                    <Typography color="text.secondary">No meetings found</Typography>
+                                                    <Typography sx={{
+                                                        color: "text.secondary"
+                                                    }}>No meetings found</Typography>
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
@@ -211,7 +231,9 @@ const AdminMeetingsPage: React.FC = () => {
                                                                 {meeting.title}
                                                             </Typography>
                                                             {meeting.description && (
-                                                                <Typography variant="body2" color="text.secondary">
+                                                                <Typography variant="body2" sx={{
+                                                                    color: "text.secondary"
+                                                                }}>
                                                                     {meeting.description}
                                                                 </Typography>
                                                             )}
@@ -222,7 +244,9 @@ const AdminMeetingsPage: React.FC = () => {
                                                             <Typography sx={{ fontWeight: 600 }}>
                                                                 {meeting.ward.number}
                                                             </Typography>
-                                                            <Typography variant="body2" color="text.secondary">
+                                                            <Typography variant="body2" sx={{
+                                                                color: "text.secondary"
+                                                            }}>
                                                                 {meeting.ward.name}
                                                             </Typography>
                                                         </Box>
@@ -270,7 +294,6 @@ const AdminMeetingsPage: React.FC = () => {
                     </CardContent>
                 </Card>
             </Stack>
-
             <Dialog open={deleteConfirm.open} onClose={() => setDeleteConfirm({ open: false })}>
                 <DialogTitle>Delete Meeting</DialogTitle>
                 <DialogContent>

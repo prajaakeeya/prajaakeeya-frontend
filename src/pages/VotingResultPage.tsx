@@ -118,14 +118,20 @@ const VotingResultPage = () => {
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
             {t('pages.landing.results.title') || 'Karnataka Elections'}
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" sx={{
+            color: "text.secondary"
+          }}>
             {t('pages.landing.results.subtitle') || 'Overview of elections in Karnataka'}
           </Typography>
         </Box>
-
         <Grid container spacing={3}>
           {karnatakaElections.map((election) => (
-            <Grid item xs={12} md={6} key={election.id}>
+            <Grid
+              key={election.id}
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <Card
                 sx={{
                   height: '100%',
@@ -137,12 +143,20 @@ const VotingResultPage = () => {
                 }}
               >
                 <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      mb: 2
+                    }}>
                     <Box>
                       <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
                         {t(`pages.landing.elections.${electionKeys[election.id - 1]}.title`)}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {t(`pages.landing.elections.${electionKeys[election.id - 1]}.level`)}
                       </Typography>
                     </Box>
@@ -156,19 +170,25 @@ const VotingResultPage = () => {
                   <Stack spacing={1.5}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <CalendarIcon fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {t(`pages.landing.elections.${electionKeys[election.id - 1]}.date`)}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <LocationIcon fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {t(`pages.landing.elections.${electionKeys[election.id - 1]}.location`)}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <HowToVoteIcon fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                      }}>
                         {(() => {
                           const ek = electionKeys[election.id - 1];
                           const candidates = t(`pages.landing.elections.${ek}.candidates`, { defaultValue: '' });
@@ -195,11 +215,12 @@ const VotingResultPage = () => {
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {t('pages.landing.results.title')}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" sx={{
+          color: "text.secondary"
+        }}>
           {t('pages.landing.results.subtitle') || 'Voting results by ward'}
         </Typography>
       </Box>
-
       <Card>
         <CardContent>
           <TextField
@@ -237,7 +258,9 @@ const VotingResultPage = () => {
             </Table>
           ) : (
             <Box sx={{ textAlign: 'center', py: 4 }}>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1" sx={{
+                color: "text.secondary"
+              }}>
                 {t('pages.landing.results.noResults') || 'No results available for this ward'}
               </Typography>
             </Box>

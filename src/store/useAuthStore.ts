@@ -5,6 +5,7 @@ import apiClient from '../services/apiClient';
 import { fetchProfile } from '../services/authService';
 import { getWardById } from '../services/wardService';
 import { isMockMode } from '../config/appMode';
+import { COOKIE_AUTH } from '../config/authMode';
 import { setSentryUser } from '../config/sentry';
 
 interface AuthState {
@@ -26,7 +27,12 @@ const useAuthStore = create<AuthState>()(
       isAdmin: false,
       isAuthenticated: false,
       setAuth: (token, user) => {
-        apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+        // Cookie mode: the httpOnly `session` cookie authenticates requests, so
+        // there is no token to attach as a Bearer header (token is '' here).
+        // Legacy mode: pin the Bearer header for all subsequent calls.
+        if (!COOKIE_AUTH && token) {
+          apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+        }
         // Normalize user to ensure ward fields are available whether API returns nested `ward` or top-level wardName/wardNumber
         const normalizedUser: any = {
           ...user,
@@ -85,6 +91,34 @@ const useAuthStore = create<AuthState>()(
         } catch {
           /* best-effort — backend also self-prunes stale tokens */
         }
+        // Cookie mode: JavaScript cannot delete an httpOnly cookie, so we MUST
+        // ask the server to clear the `session` cookie. Fire it while the cookie
+        // is still valid, before wiping state and hard-reloading. Best-effort
+        // and capped so a slow/unreachable API can't block logout (the endpoint
+        // succeeds even with no active session). No-op in legacy header mode.
+        if (COOKIE_AUTH) {
+          try {
+            const { logoutSession } = await import('../services/authService');
+            await Promise.race([
+              logoutSession(),
+              new Promise((resolve) => setTimeout(resolve, 3000)),
+            ]);
+          } catch {
+            /* best-effort — the cookie also expires server-side on its own */
+          }
+        }
+        // H-SEC-3: Drop the service-worker cache of /api/* responses
+        // ('api-cache', configured in vite.config.js). It can hold the current
+        // user's profile / voter list / chat; without this, on a shared device
+        // the next user could be served the previous user's data from the SW
+        // cache during an offline blip. Best-effort — never block logout.
+        if (typeof window !== 'undefined' && 'caches' in window) {
+          try {
+            await caches.delete('api-cache');
+          } catch {
+            /* ignore — cache may not exist (no SW in dev / first load) */
+          }
+        }
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
         setSentryUser(null);
         delete apiClient.defaults.headers.common.Authorization;
@@ -107,7 +141,12 @@ const useAuthStore = create<AuthState>()(
       },
       fetchProfile: async () => {
         const state = get();
-        if (!state.token) return;
+        // Cookie mode: there is no token to gate on — the session lives in the
+        // httpOnly cookie, so /auth/me is the ONLY way to know whether we're
+        // authenticated. A 401 here means no/expired session and the apiClient
+        // interceptor will trigger refresh-or-logout. Legacy mode still requires
+        // a stored token before bothering to hit the API.
+        if (!COOKIE_AUTH && !state.token) return;
         if (isMockMode) {
           if (state.user) {
             set({ isAdmin: state.user.role === 'admin', isAuthenticated: true });
@@ -146,14 +185,39 @@ const useAuthStore = create<AuthState>()(
           setSentryUser({ id: normalizedUser.id, role: normalizedUser.role });
         } catch (err) {
           console.warn('[auth] fetchProfile failed', err);
+          // Cookie mode: /auth/me is the source of truth for "am I logged in".
+          // A 401 here simply means no/expired session, so reflect that as
+          // unauthenticated and let the UI route to login. /auth/me is a "soft"
+          // endpoint in the apiClient interceptor (no refresh, no logout/reload),
+          // so this catch is the ONLY place that reacts to it — no loop.
+          if (COOKIE_AUTH) {
+            set({ user: null, isAdmin: false, isAuthenticated: false });
+            setSentryUser(null);
+          }
         }
       }
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({ token: state.token, user: state.user }),
+      // Cookie mode: never persist a token (there isn't one — the session lives
+      // in the httpOnly cookie). Persist only the user so the UI can render
+      // optimistically on reload while /auth/me re-confirms. Legacy mode keeps
+      // persisting the token as before.
+      partialize: (state) =>
+        COOKIE_AUTH ? { user: state.user } : { token: state.token, user: state.user },
       onRehydrateStorage: () => (state) => {
-        // On page refresh, if we have a token and user, restore auth state
+        if (COOKIE_AUTH) {
+          // No token to pin as a Bearer header — the cookie authenticates. If a
+          // user was persisted, optimistically mark authenticated; App.tsx then
+          // calls fetchProfile() (/auth/me) which confirms or clears this.
+          if (state?.user) {
+            state.isAuthenticated = true;
+            state.isAdmin = state.user.role === 'admin';
+            setSentryUser({ id: (state.user as any).id, role: state.user.role });
+          }
+          return;
+        }
+        // Legacy: on page refresh, if we have a token and user, restore auth state
         if (state?.token && state?.user) {
           apiClient.defaults.headers.common.Authorization = `Bearer ${state.token}`;
           state.isAuthenticated = true;
