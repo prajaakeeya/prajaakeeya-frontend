@@ -6,7 +6,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import StatsCard from '../components/StatsCard';
-import apiClient from '../services/apiClient';
+import { apiClient } from '../services/apiClient';
 import { isMockMode } from '../config/appMode';
 
 interface DashboardResponse {

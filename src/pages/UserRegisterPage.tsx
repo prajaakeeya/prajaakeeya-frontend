@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getGoogleOAuthUrl } from "../services/authService";
 import { COOKIE_AUTH } from "../config/authMode";
-import useAuthStore from "../store/useAuthStore";
+import { useAuthStore } from "../store/useAuthStore";
 import * as yup from "yup";
 import SplitAuthLayout from "../components/SplitAuthLayout";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";

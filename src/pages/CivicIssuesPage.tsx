@@ -34,7 +34,7 @@ import {
 const MPIcon = BridgeIcon;
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import {
   getIssuesByElectionAndConstituency,
   raiseHandForCategoryByElectionConstituency,

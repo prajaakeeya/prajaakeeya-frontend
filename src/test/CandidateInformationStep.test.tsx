@@ -15,7 +15,7 @@
 
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import CandidateInformationStep from '../components/aspirant/CandidateInformationStep';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

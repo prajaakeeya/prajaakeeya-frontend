@@ -12,7 +12,7 @@ import {
   unregisterDeviceToken,
   emitNotificationsChanged,
 } from './notificationService';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,

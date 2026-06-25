@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import SopFlowChart from '../components/aspirant/SopFlowChart';
 import { BRAND } from '../theme';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { fetchVotingWindow } from '../services/voteService';
 const FF = "'Baloo 2', sans-serif";
 

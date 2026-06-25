@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AuthUser } from '../types/auth';
-import apiClient from '../services/apiClient';
 import { fetchProfile } from '../services/authService';
 import { getWardById } from '../services/wardService';
 import { isMockMode } from '../config/appMode';
@@ -27,12 +26,6 @@ const useAuthStore = create<AuthState>()(
       isAdmin: false,
       isAuthenticated: false,
       setAuth: (token, user) => {
-        // Cookie mode: the httpOnly `session` cookie authenticates requests, so
-        // there is no token to attach as a Bearer header (token is '' here).
-        // Legacy mode: pin the Bearer header for all subsequent calls.
-        if (!COOKIE_AUTH && token) {
-          apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
-        }
         // Normalize user to ensure ward fields are available whether API returns nested `ward` or top-level wardName/wardNumber
         const normalizedUser: any = {
           ...user,
@@ -62,7 +55,6 @@ const useAuthStore = create<AuthState>()(
       clearSession: () => {
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
         setSentryUser(null);
-        delete apiClient.defaults.headers.common.Authorization;
         const preserveKeys = ['theme-storage', 'i18nextLng'];
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
@@ -121,7 +113,6 @@ const useAuthStore = create<AuthState>()(
         }
         set({ token: null, user: null, isAdmin: false, isAuthenticated: false });
         setSentryUser(null);
-        delete apiClient.defaults.headers.common.Authorization;
         // Clear all localStorage except theme, language, and civic raised state
         const preserveKeys = ['theme-storage', 'i18nextLng'];
         // Preserve all civic_raised_* keys so hand-raise history survives logout
@@ -221,7 +212,6 @@ const useAuthStore = create<AuthState>()(
         }
         // Legacy: on page refresh, if we have a token and user, restore auth state
         if (state?.token && state?.user) {
-          apiClient.defaults.headers.common.Authorization = `Bearer ${state.token}`;
           state.isAuthenticated = true;
           state.isAdmin = state.user.role === 'admin';
           setSentryUser({ id: (state.user as any).id, role: state.user.role });
@@ -231,4 +221,4 @@ const useAuthStore = create<AuthState>()(
   )
 );
 
-export default useAuthStore;
+export { useAuthStore };

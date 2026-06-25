@@ -19,7 +19,7 @@
 
 import { renderWithProviders, screen, fireEvent } from './test-utils';
 import CivicIssuesPage from '../pages/CivicIssuesPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 // IMPORTANT: `t` and `i18n` must be STABLE references across renders. This page
 // has a `fetchData = useCallback(..., [..., t])` that runs in an effect keyed on

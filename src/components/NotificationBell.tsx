@@ -7,7 +7,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useThemeStore from '../store/useThemeStore';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { BRAND } from '../theme';
 import { getUnreadCount, NOTIFICATIONS_CHANGED_EVENT } from '../services/notificationService';
 

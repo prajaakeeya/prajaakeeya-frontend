@@ -31,10 +31,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
 import { BRAND } from '../theme';
-import apiClient from '../services/apiClient';
+import { apiClient } from '../services/apiClient';
 import { fetchAllWards } from '../services/wardService';
 import { getVoters } from '../services/voterService';
 // C-PERF-4: Lazy-load the candidate list instead of a static import. The

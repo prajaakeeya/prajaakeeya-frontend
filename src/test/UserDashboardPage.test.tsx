@@ -29,7 +29,7 @@
 
 import { renderWithProviders, screen } from './test-utils';
 import UserDashboardPage from '../pages/UserDashboardPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 // Stable refs avoid new t/i18n identities re-triggering the memoized tile arrays.
 const t = (k: string, o?: any) => (o && o.defaultValue ? o.defaultValue : k);
@@ -56,8 +56,8 @@ vi.mock('../services/voterService', () => ({
 }));
 
 // apiClient default export — imported directly for the photo-frame image path.
-vi.mock('../services/apiClient', () => ({
-  default: {
+vi.mock("../services/apiClient", () => ({
+  apiClient: {
     get: vi.fn(() => Promise.resolve({ data: {} })),
     post: vi.fn(() => Promise.resolve({ data: {} })),
     delete: vi.fn(() => Promise.resolve({ data: {} })),

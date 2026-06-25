@@ -3,7 +3,7 @@ import { Box, Container, Typography, Alert, CircularProgress, Snackbar } from '@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useTheme, useMediaQuery } from '@mui/material';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { getAspirantById, getAspirantBookings, updateBookingStatus, respondBooking } from '../../services/aspirantService';
 import AspirantRequestsTab from '../../components/aspirant/AspirantRequestsTab';
 

@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import { apiClient } from './apiClient';
 import { AuthUser } from '../types/auth';
 import { COOKIE_AUTH } from '../config/authMode';
 

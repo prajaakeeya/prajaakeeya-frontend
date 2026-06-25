@@ -38,7 +38,7 @@ import {
 } from "../services/electionService";
 import { updateUserConstituencies } from "../services/authService";
 import { COOKIE_AUTH } from "../config/authMode";
-import useAuthStore from "../store/useAuthStore";
+import { useAuthStore } from "../store/useAuthStore";
 import LanguageSelector from "../components/LanguageSelector";
 import { BRAND } from "../theme";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";

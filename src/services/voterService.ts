@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import { apiClient } from './apiClient';
 
 export const getVotersByWard = (wardNumber: string) =>
   apiClient.get(`/users/ward/${encodeURIComponent(wardNumber)}`);

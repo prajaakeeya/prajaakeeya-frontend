@@ -42,7 +42,7 @@ import {
   type GPVillage,
 } from '../../services/electionService';
 import { useSearchParams } from 'react-router-dom';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { fetchVotingWindow } from '../../services/voteService';
 import ConstituencyPickerDialog from '../ConstituencyPickerDialog';
 import capitolInactiveImg from '../../assets/images/capitol.png';

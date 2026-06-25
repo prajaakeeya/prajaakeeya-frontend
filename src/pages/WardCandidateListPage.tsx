@@ -72,8 +72,8 @@ import {
   type ConstituencyStats,
 } from '../services/electionService';
 import { fetchVotingWindow, submitVote, fetchMyVote } from '../services/voteService';
-import useAuthStore from '../store/useAuthStore';
-import apiClient from '../services/apiClient';
+import { useAuthStore } from '../store/useAuthStore';
+import { apiClient } from '../services/apiClient';
 import CloseIcon from '@mui/icons-material/Close';
 import capitolInactiveImg from '../assets/images/capitol.png';
 import capitolActiveImg from '../assets/images/capitol1.webp';

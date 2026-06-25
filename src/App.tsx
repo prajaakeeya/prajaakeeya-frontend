@@ -11,7 +11,7 @@ import UserLayout from "./layouts/UserLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import GuestLayout from "./layouts/GuestLayout";
-import useAuthStore from "./store/useAuthStore";
+import { useAuthStore } from "./store/useAuthStore";
 import { COOKIE_AUTH } from "./config/authMode";
 // C-PERF-4 follow-up: load the push-notification service lazily. A static import
 // pulls the whole Firebase SDK (firebase/app + firebase/messaging) into the main

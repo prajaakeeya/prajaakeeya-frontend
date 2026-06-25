@@ -6,7 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import ForumIcon from '@mui/icons-material/Forum';
 import CloseIcon from '@mui/icons-material/Close';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
 import { useTranslation } from 'react-i18next';
 import { getAspirantMessages, postUserChatMessage, subscribeToAspirantChat, AspirantChatMessageDto } from '../services/aspirantChatService';

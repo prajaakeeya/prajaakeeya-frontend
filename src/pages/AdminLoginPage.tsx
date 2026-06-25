@@ -9,7 +9,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
 import { adminLoginWithPassword } from '../services/authService';
 import { COOKIE_AUTH } from '../config/authMode';

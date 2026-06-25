@@ -21,7 +21,7 @@
 
 import { renderWithProviders, screen, waitFor } from './test-utils';
 import AspirantRegistrationPage from '../pages/AspirantRegistrationPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { fetchElections } from '../services/electionService';
 
 vi.mock('react-i18next', () => ({

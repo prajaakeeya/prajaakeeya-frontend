@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import UsersTable from '../../components/admin/UsersTable';
 import adminUsersService, { AdminUser } from '../../services/adminUsersService';
 

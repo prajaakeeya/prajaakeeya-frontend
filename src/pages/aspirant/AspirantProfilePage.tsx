@@ -3,7 +3,7 @@ import { Box, Typography, Alert, CircularProgress, Snackbar, Alert as MuiAlert, 
 import { Logout as LogoutIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { getAspirantById, withdrawMe } from '../../services/aspirantService';
 import AspirantProfileTab from '../../components/aspirant/AspirantProfileTab';
 import ProfileCompletionPage from '../ProfileCompletionPage';

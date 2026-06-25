@@ -2,7 +2,7 @@
 // We test the synchronous actions setAuth + clearSession (no network).
 // We avoid logout() here because it calls window.location.href = '/'
 // (a full navigation jsdom can't perform).
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 describe('useAuthStore', () => {
   beforeEach(() => {

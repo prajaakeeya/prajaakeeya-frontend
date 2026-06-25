@@ -19,7 +19,7 @@ import {
   HowToVote as HowToVoteIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { createAspirantSchema } from '../utils/validation';
 import { fetchElections as fetchElectionsList, type Election } from '../services/electionService';
 import { registerAspirant, type AspirantPayload, getAspirantById } from '../services/aspirantService';

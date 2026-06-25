@@ -25,7 +25,7 @@
 
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import UserChatPage from '../pages/UserChatPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getAspirantMessages, postUserChatMessage } from '../services/aspirantChatService';
 
 // Stable refs so re-renders never produce new t/i18n identities.

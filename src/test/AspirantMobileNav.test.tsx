@@ -6,7 +6,7 @@
 
 import { renderWithProviders, screen, fireEvent } from './test-utils';
 import AspirantMobileNav from '../components/aspirant/AspirantMobileNav';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 // --- Mock i18n: t() returns the key (or defaultValue). ---
 vi.mock('react-i18next', () => ({

@@ -24,9 +24,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { HowToVote as HowToVoteIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getAspirantById } from '../services/aspirantService';
-import apiClient from '../services/apiClient';
+import { apiClient } from '../services/apiClient';
 import { safeUrl } from '../utils/safeUrl';
 
 const GOLD = '#F5A800';
@@ -311,10 +311,6 @@ const SopUploadPage = () => {
                               form.append('file', file, file.name);
                               await apiClient.post(`/media/aspirant/${aspirantId}/document`, form, {
                                 headers: { 'Content-Type': 'multipart/form-data' },
-                                onUploadProgress: (ev) => {
-                                  const pct = ev.total ? Math.round((ev.loaded / ev.total) * 100) : 0;
-                                  setSopEn((prev) => prev ? { ...prev, progress: pct } : prev);
-                                },
                               });
                               setSopEn({ name: file.name, size: file.size, uploaded: true, progress: 100 });
                             } catch (err: any) {

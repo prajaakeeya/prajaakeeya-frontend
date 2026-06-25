@@ -7,7 +7,7 @@ import { Apartment as ApartmentIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { BRAND } from '../../theme';
-import apiClient from '../../services/apiClient';
+import { apiClient } from '../../services/apiClient';
 
 const FF = "'Baloo 2', sans-serif";
 const LIMIT = 50;

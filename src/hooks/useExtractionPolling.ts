@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import apiClient from '../services/apiClient';
+import { apiClient } from '../services/apiClient';
 
 // H-PERF-5: poll every 30s instead of 5s. The admin dashboard does not need
 // second-by-second freshness, and 5s amounted to ~17k requests/day per open

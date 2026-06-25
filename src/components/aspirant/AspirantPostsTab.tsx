@@ -21,7 +21,7 @@ import {
     Link as LinkIcon
 } from '@mui/icons-material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import apiClient from '../../services/apiClient';
+import { apiClient } from '../../services/apiClient';
 import { useTranslation } from 'react-i18next';
 import { safeUrl } from '../../utils/safeUrl';
 

@@ -1,6 +1,6 @@
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import NotificationBell from '../components/NotificationBell';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getUnreadCount } from '../services/notificationService';
 
 vi.mock('react-i18next', () => ({

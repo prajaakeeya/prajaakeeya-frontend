@@ -24,7 +24,7 @@ import {
     MoreHoriz as OthersIcon
 } from '@mui/icons-material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import apiClient from '../../services/apiClient';
+import { apiClient } from '../../services/apiClient';
 import { deleteAspirantsMeeting } from '../../services/aspirantService';
 import { useTranslation } from 'react-i18next';
 import { safeUrl } from '../../utils/safeUrl';

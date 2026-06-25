@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Box, CircularProgress, Alert, Stack, Typography } from '@mui/material';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { GOOGLE_OAUTH_STATE_KEY, exchangeGoogleCode } from '../services/authService';
 import { COOKIE_AUTH } from '../config/authMode';
 

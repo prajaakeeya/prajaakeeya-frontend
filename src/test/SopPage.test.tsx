@@ -21,7 +21,7 @@ vi.mock('../services/voteService', () => ({
 }));
 
 vi.mock('../store/useAuthStore', () => ({
-  default: () => ({ user: null }),
+  useAuthStore: () => ({ user: null }),
 }));
 
 describe('SopPage', () => {

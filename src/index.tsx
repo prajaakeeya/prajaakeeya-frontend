@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/react';
 import App from './App';
 import { getTheme } from './theme';
 import useThemeStore from './store/useThemeStore';
-import useAuthStore from './store/useAuthStore';
+import { useAuthStore } from './store/useAuthStore';
 import { initSentry } from './config/sentry';
 import './i18n';
 import './index.css';

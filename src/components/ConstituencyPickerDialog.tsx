@@ -29,7 +29,7 @@ import {
   type GPVillage,
 } from '../services/electionService';
 import { updateUserConstituencies } from '../services/authService';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
 import { BRAND } from '../theme';
 

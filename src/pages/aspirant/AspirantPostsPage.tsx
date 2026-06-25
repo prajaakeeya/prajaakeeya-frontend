@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material';
 import { Box, Container, Typography, Alert, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, Snackbar } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { getAspirantById, getAspirantVisits, postAspirantVisit } from '../../services/aspirantService';
 import AspirantPostsTab from '../../components/aspirant/AspirantPostsTab';
 

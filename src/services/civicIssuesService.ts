@@ -7,7 +7,7 @@
  *   GET  /api/issues/{wardNumber}/{id}       – get a single issue (if needed)
  */
 
-import apiClient from './apiClient';
+import { apiClient } from './apiClient';
 
 export interface CivicIssue {
   id: number;

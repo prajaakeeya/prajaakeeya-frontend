@@ -1,10 +1,10 @@
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import PhoneRevealCard from '../components/PhoneRevealCard';
-import useAuthStore from '../store/useAuthStore';
-import apiClient from '../services/apiClient';
+import { useAuthStore } from '../store/useAuthStore';
+import { apiClient } from '../services/apiClient';
 
 vi.mock('../services/apiClient', () => ({
-  default: {
+  apiClient: {
     post: vi.fn(() => Promise.resolve({ data: {} })),
   },
 }));

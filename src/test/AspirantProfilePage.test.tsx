@@ -30,7 +30,7 @@
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 // The empty UserProfilePage.tsx can't be rendered; test the real profile page.
 import AspirantProfilePage from '../pages/aspirant/AspirantProfilePage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getAspirantById } from '../services/aspirantService';
 
 // Stable refs so re-renders never produce new t/i18n identities.

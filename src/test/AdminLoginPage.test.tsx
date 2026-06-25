@@ -1,6 +1,6 @@
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import AdminLoginPage from '../pages/AdminLoginPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

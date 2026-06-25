@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, Alert, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../../store/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { getAspirantById, getAspirantMeetings, postAspirantMeetingComplete, setAspirantsMeeting } from '../../services/aspirantService';
 import AspirantMeetingLinksTab from '../../components/aspirant/AspirantMeetingLinksTab';
 

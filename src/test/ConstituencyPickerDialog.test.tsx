@@ -14,7 +14,7 @@
 
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import ConstituencyPickerDialog from '../components/ConstituencyPickerDialog';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 // i18n: t() echoes the key, or the provided defaultValue when present.
 vi.mock('react-i18next', () => ({

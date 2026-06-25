@@ -8,7 +8,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useThemeStore from '../store/useThemeStore';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
 import { BRAND } from '../theme';
 import LanguageSelector from '../components/LanguageSelector';

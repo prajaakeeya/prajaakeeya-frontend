@@ -28,7 +28,7 @@ import {
   PersonRounded as PersonRoundedIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
 import { BRAND } from '../theme';

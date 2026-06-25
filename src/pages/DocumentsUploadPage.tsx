@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { HowToVote as HowToVoteIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { isFileSizeValid } from '../utils/fileUtils';
 import { uploadAspirantDocument, uploadProfilePicture } from '../services/mediaService';
 import { getAspirantById } from '../services/aspirantService';

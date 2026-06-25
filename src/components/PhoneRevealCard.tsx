@@ -3,8 +3,8 @@ import { Card, CardContent, Typography, Box, IconButton, Stack } from '@mui/mate
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CallIcon from '@mui/icons-material/Call';
-import apiClient from '../services/apiClient';
-import useAuthStore from '../store/useAuthStore';
+import { apiClient } from '../services/apiClient';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface PhoneRevealCardProps {
     phone?: string | null;

@@ -10,7 +10,7 @@
 
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import AspirantPostsTab from '../components/aspirant/AspirantPostsTab';
-import apiClient from '../services/apiClient';
+import { apiClient } from '../services/apiClient';
 
 // --- Mock i18n: t() returns the key (or defaultValue). ---
 vi.mock('react-i18next', () => ({
@@ -24,7 +24,7 @@ vi.mock('react-i18next', () => ({
 
 // --- Mock the apiClient default export so delete() doesn't hit a real backend. ---
 vi.mock('../services/apiClient', () => ({
-  default: { delete: vi.fn(() => Promise.resolve({ data: {} })) },
+  apiClient: { delete: vi.fn(() => Promise.resolve({ data: {} })) },
 }));
 
 const samplePost = {

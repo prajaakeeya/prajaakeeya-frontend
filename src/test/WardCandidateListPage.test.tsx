@@ -22,7 +22,7 @@
 
 import { renderWithProviders, screen, fireEvent } from './test-utils';
 import WardCandidateListPage from '../pages/WardCandidateListPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -104,8 +104,8 @@ vi.mock('../services/aspirantChatService', () => ({
 }));
 
 // apiClient default export — used by trackInteraction; mock so it never posts.
-vi.mock('../services/apiClient', () => ({
-  default: {
+vi.mock("../services/apiClient", () => ({
+  apiClient: {
     get: vi.fn(() => Promise.resolve({ data: {} })),
     post: vi.fn(() => Promise.resolve({ data: {} })),
     delete: vi.fn(() => Promise.resolve({ data: {} })),

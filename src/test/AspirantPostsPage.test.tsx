@@ -13,7 +13,7 @@
 
 import { renderWithProviders, screen, fireEvent, waitFor } from './test-utils';
 import AspirantPostsPage from '../pages/aspirant/AspirantPostsPage';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { getAspirantById, getAspirantVisits, postAspirantVisit } from '../services/aspirantService';
 
 const t = (k: string, o?: any) => (o && o.defaultValue ? o.defaultValue : k);

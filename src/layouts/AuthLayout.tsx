@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import useAuthStore from '../store/useAuthStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface AuthLayoutProps {
   title: string;

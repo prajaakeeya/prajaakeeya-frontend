@@ -1,25 +1,197 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import * as Sentry from '@sentry/react';
-import useAuthStore from '../store/useAuthStore';
-import { COOKIE_AUTH } from '../config/authMode';
+import { useAuthStore } from '../store/useAuthStore';
+import { useInterceptorStore } from '../store/useInterceptorStore';
+import type { RequestConfig, ReqFn, ResSuccessFn, ResErrorFn } from '../store/useInterceptorStore';
 
 const apiHost = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
 const normalizedHost = apiHost ? String(apiHost).replace(/\/+$/g, '') : '';
 const baseURL = normalizedHost ? `${normalizedHost}/api` : '/api';
 
-const apiClient = axios.create({
+const GENERIC_ERROR_MESSAGE = 'Something went wrong, Please try after sometime';
+
+interface HttpError extends Error {
+  response?: Response;
+  status?: number;
+  data?: unknown;
+  config?: { method?: string; url?: string };
+}
+
+interface InterceptorApi {
+  interceptors: {
+    request: { use: (fn: ReqFn) => void };
+    response: { use: (fn: ResSuccessFn, errFn?: ResErrorFn) => void };
+  };
+}
+
+type ApiClient = ReturnType<typeof redaxios.create> & InterceptorApi;
+
+function getInterceptorState() {
+  return useInterceptorStore.getState();
+}
+
+// ── Custom fetch with interceptor chain ────────────────────────────────────
+
+async function customFetch(input: URL | RequestInfo, init?: RequestInit): Promise<Response> {
+  const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+  const opts = init ?? {};
+
+  let config: RequestConfig = {
+    url,
+    method: (opts.method as string) || 'GET',
+    headers: Object.fromEntries(new Headers(opts.headers).entries()),
+    body: opts.body as unknown,
+    credentials: opts.credentials,
+  };
+
+  // ── Request interceptor chain ────────────────────────────────────────────
+  const { reqFns } = getInterceptorState();
+  for (const { onFulfilled } of reqFns) {
+    config = await onFulfilled(config);
+  }
+
+  // ── Make the fetch call with timeout ─────────────────────────────────────
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+  let response: Response;
+  try {
+    response = await fetch(config.url, {
+      method: config.method,
+      headers: config.headers,
+      body: config.body as BodyInit | null | undefined,
+      credentials: config.credentials,
+      signal: controller.signal,
+    });
+  } catch (err: unknown) {
+    clearTimeout(timeoutId);
+
+    const error = err as HttpError;
+    const isNetworkOrTimeout =
+      error.name === 'AbortError' ||
+      error.message === 'Network Error' ||
+      (typeof error.message === 'string' &&
+        (error.message.toLowerCase().includes('timeout') ||
+          error.message.toLowerCase().includes('network')));
+
+    if (isNetworkOrTimeout) {
+      error.message = GENERIC_ERROR_MESSAGE;
+    }
+
+    if (isNetworkOrTimeout || !error.response) {
+      Sentry.captureException(error, {
+        tags: { kind: 'api', status: 'network' as const },
+        extra: { method: config.method, url: config.url },
+      });
+    }
+
+    // Run error interceptors (like axios interceptor.onRejected chain)
+    let e: unknown = error;
+    for (const { onRejected } of getInterceptorState().resFns) {
+      if (onRejected) {
+        try {
+          return await onRejected(e);
+        } catch (nextErr) {
+          e = nextErr;
+        }
+      }
+    }
+    throw e;
+  }
+  clearTimeout(timeoutId);
+
+  // ── 401 → logout (legacy token mode) ────────────────────────────────────
+  if (response.status === 401) {
+    useAuthStore.getState().logout();
+  }
+
+  // ── Non-2xx → throw so error interceptors can handle ────────────────────
+  if (!response.ok) {
+    const httpError = new Error(`Request failed with status ${response.status}`) as HttpError;
+    httpError.response = response;
+    httpError.status = response.status;
+
+    try {
+      httpError.data = await response.clone().json();
+    } catch {
+      try {
+        httpError.data = await response.clone().text();
+      } catch {
+        httpError.data = null;
+      }
+    }
+
+    // Sentry: report 5xx
+    if (response.status >= 500) {
+      Sentry.captureException(httpError, {
+        tags: { kind: 'api', status: response.status },
+        extra: { method: config.method, url: config.url },
+      });
+    }
+
+    // Run error interceptors
+    let e: unknown = httpError;
+    for (const { onRejected } of getInterceptorState().resFns) {
+      if (onRejected) {
+        try {
+          return await onRejected(e);
+        } catch (nextErr) {
+          e = nextErr;
+        }
+      }
+    }
+    throw e;
+  }
+
+  // ── Response success interceptor chain ───────────────────────────────────
+  for (const { onFulfilled } of getInterceptorState().resFns) {
+    try {
+      response = await onFulfilled(response);
+    } catch (err: unknown) {
+      let e: unknown = err;
+      for (const { onRejected } of getInterceptorState().resFns) {
+        if (onRejected) {
+          try {
+            return await onRejected(e);
+          } catch (nextErr) {
+            e = nextErr;
+          }
+        }
+      }
+      throw e;
+    }
+  }
+
+  return response;
+}
+
+// ── Create the redaxios client ────────────────────────────────────────────
+
+const baseClient = redaxios.create({
   baseURL,
-  timeout: 60000,
-  // COOKIE_AUTH: send the httpOnly `session` cookie on every request. Without
-  // this the cookie is never attached and all authenticated calls 401. Off in
-  // legacy mode (auth rides on the Authorization header instead).
-  withCredentials: COOKIE_AUTH,
+  fetch: customFetch,
 });
 
-apiClient.interceptors.request.use((config) => {
-  // In cookie mode the JWT lives in an httpOnly cookie the browser attaches
-  // automatically, so there is no token to read here. The store's token is
-  // null; this just no-ops and we rely on withCredentials above.
+// ── Build the extended api client with interceptors ────────────────────────
+
+const apiClient = baseClient as ApiClient;
+
+apiClient.interceptors = {
+  request: {
+    use(onFulfilled: ReqFn) {
+      useInterceptorStore.getState().addRequestInterceptor(onFulfilled);
+    },
+  },
+  response: {
+    use(onFulfilled: ResSuccessFn, onRejected?: ResErrorFn) {
+      useInterceptorStore.getState().addResponseInterceptor(onFulfilled, onRejected);
+    },
+  },
+};
+
+// ── Default request interceptor: attach Bearer token ───────────────────────
+
+apiClient.interceptors.request.use((config: RequestConfig) => {
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers = config.headers ?? {};
@@ -28,93 +200,21 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-const GENERIC_ERROR_MESSAGE = 'Something went wrong, Please try after sometime';
+// ── Support apiClient.delete(url, { data }) ────────────────────────────────
+// Redaxios does not pass a body in DELETE, so extract `data` from config and
+// call the client with method: 'delete' and the data as the request body.
 
-// COOKIE_AUTH refresh de-dupe: access tokens are short-lived (~15 min), so a
-// 401 normally just means "token expired" rather than "logged out". We attempt
-// a single /auth/refresh and retry the original request. This shared promise
-// ensures that if several requests 401 at once, only ONE refresh fires and the
-// rest await the same result — otherwise concurrent refreshes would race and
-// rotate each other's cookies. Reset to null once settled so the next genuine
-// expiry can refresh again. A separate bare axios instance avoids re-entering
-// this interceptor (and a circular import on authService).
-let refreshing: Promise<unknown> | null = null;
-const refreshClient = axios.create({ baseURL, timeout: 60000, withCredentials: true });
-
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (COOKIE_AUTH && error.response?.status === 401) {
-      const original = error.config;
-      // "Soft" auth endpoints: a 401 here is normal ("not logged in" / session
-      // gone) and is handled by the caller — it must NOT trigger refresh or the
-      // logout-with-reload machinery. /auth/me in particular is the session
-      // probe on every page load; treating its 401 as a hard logout caused an
-      // infinite loop (me → refresh → logout → reload → me …). The refresh and
-      // login endpoints are excluded too so we never try to refresh them.
-      const isAuthEndpoint =
-        typeof original?.url === 'string' &&
-        (original.url.includes('/auth/me') ||
-          original.url.includes('/auth/refresh') ||
-          original.url.includes('/auth/logout') ||
-          original.url.includes('/auth/google/exchange') ||
-          original.url.includes('/auth/admin/login'));
-      if (isAuthEndpoint) {
-        // Let the caller (e.g. fetchProfile's catch) handle it quietly.
-        return Promise.reject(error);
-      }
-      if (original && !original._retried) {
-        original._retried = true;
-        try {
-          refreshing ??= refreshClient.post('/auth/refresh');
-          await refreshing; // server rotates the session cookie on success
-          refreshing = null;
-          return apiClient(original); // replay the original request with the fresh cookie
-        } catch (refreshErr) {
-          refreshing = null;
-          // Refresh expired/revoked → clear the session. Use clearSession (NOT
-          // logout) so we don't hard-reload the page here; reloading on a failed
-          // refresh is what sustained the request loop. The app's auth guards
-          // react to isAuthenticated=false and route to login.
-          useAuthStore.getState().clearSession();
-          return Promise.reject(refreshErr);
-        }
-      }
-      // 401 again AFTER a successful refresh-and-retry → session genuinely gone.
-      if (original?._retried) {
-        useAuthStore.getState().clearSession();
-      }
-    } else if (!COOKIE_AUTH && error.response?.status === 401) {
-      // Legacy header-auth: a 401 means the stored token is no longer valid.
-      useAuthStore.getState().logout();
-    }
-    const isNetworkOrTimeout =
-      !error.response &&
-      (error.code === 'ECONNABORTED' ||
-        error.code === 'ERR_NETWORK' ||
-        error.message === 'Network Error' ||
-        (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout')));
-    if (isNetworkOrTimeout) {
-      error.message = GENERIC_ERROR_MESSAGE;
-    }
-    // Report API failures to Sentry for diagnostics. Skip 401 (expected auth
-    // expiry → handled above) and other 4xx client errors (validation, not
-    // found, etc.) to avoid noise; capture server errors (5xx) and network/
-    // timeout failures. Status/method/path are attached as context; request and
-    // response bodies are deliberately NOT sent to avoid leaking sensitive data.
-    const status = error.response?.status;
-    const shouldReport = isNetworkOrTimeout || (typeof status === 'number' && status >= 500);
-    if (shouldReport && status !== 401) {
-      Sentry.captureException(error, {
-        tags: { kind: 'api', status: status ?? 'network' },
-        extra: {
-          method: error.config?.method,
-          url: error.config?.url,
-        },
-      });
-    }
-    return Promise.reject(error);
+const origDelete = apiClient.delete.bind(apiClient);
+apiClient.delete = (url: string, config?: Record<string, unknown>) => {
+  const { data, ...rest } = config ?? {};
+  if (data !== undefined) {
+    return apiClient(url, {
+      ...rest,
+      method: 'delete' as const,
+      data,
+    });
   }
-);
+  return origDelete(url, config);
+};
 
-export default apiClient;
+export { apiClient };
