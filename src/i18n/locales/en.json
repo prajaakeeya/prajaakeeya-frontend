@@ -102,6 +102,12 @@
     "twitterLink": "Please enter a valid Twitter/X URL (e.g. https://twitter.com/yourprofile)",
     "whatsappNumber": "Please enter a valid 10-digit WhatsApp number"
   },
+  "share": {
+    "button_label": "Share App",
+    "app_title": "Prajaakeeya",
+    "app_text": "Your Voice, Your Rule, Your Vote. Join Prajaakeeya today!",
+    "copied": "Link copied to clipboard"
+  },
   "menu": {
     "dashboard": "Home",
     "profile": "Profile",

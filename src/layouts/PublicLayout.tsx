@@ -26,6 +26,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import ShareIcon from '@mui/icons-material/Share';
 
 const PublicLayout = () => {
   const { t } = useTranslation();
@@ -51,6 +52,26 @@ const PublicLayout = () => {
     navigate(path);
     if (isMobile) {
       setMobileOpen(false);
+    }
+  };
+
+  const handleShareApp = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: t('share.app_title'),
+          text: t('share.app_text'),
+          url: window.location.origin,
+        });
+      } catch (error) {
+        // ignore
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.origin);
+      } catch (err) {
+        // ignore
+      }
     }
   };
 
@@ -85,6 +106,24 @@ const PublicLayout = () => {
             />
           </ListItemButton>
         ))}
+        <ListItemButton
+          onClick={handleShareApp}
+          sx={{
+            py: 1.5,
+            px: 3,
+            '&:hover': {
+              bgcolor: 'action.hover'
+            }
+          }}
+        >
+          <Box sx={{ mr: 2, color: 'primary.main' }}><ShareIcon /></Box>
+          <ListItemText
+            primary={t('share.button_label')}
+            primaryTypographyProps={{
+              fontWeight: 500
+            }}
+          />
+        </ListItemButton>
       </List>
       <Divider sx={{ my: 2 }} />
           <Box sx={{ px: 3, pb: 2 }}>
@@ -164,6 +203,22 @@ const PublicLayout = () => {
                 </Button>
               );
             })}
+            <Button
+              onClick={handleShareApp}
+              sx={{
+                borderRadius: 20,
+                px: 3,
+                boxShadow: 'none',
+                color: 'text.primary',
+                bgcolor: 'transparent',
+                '&:hover': {
+                  bgcolor: 'action.hover'
+                }
+              }}
+              startIcon={<ShareIcon />}
+            >
+              {t('share.button_label')}
+            </Button>
           </Stack>
 
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
