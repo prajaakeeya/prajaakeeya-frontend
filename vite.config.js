@@ -29,6 +29,15 @@ export default defineConfig(({ command, mode }) => {
         '**/*.config.*', '**/*.d.ts', 'src/index.tsx', 'src/main.tsx',
         'src/vite-env.d.ts', '**/types/**', 'src/test/**', 'e2e/**',
       ],
+      // Ratchet: start just below measured baseline (2026-06-27: 53% lines,
+      // 50% stmts, 41% funcs, 34% branches). Raise these as more tests land —
+      // never lower them. Target: 80% lines / 75% functions / 65% branches.
+      thresholds: {
+        lines: 52,
+        statements: 49,
+        functions: 40,
+        branches: 33,
+      },
     },
   },
   plugins: [

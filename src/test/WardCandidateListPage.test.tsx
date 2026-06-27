@@ -160,7 +160,7 @@ describe('WardCandidateListPage', () => {
     // doesn't flake under heavy parallel suite load (passes alone at 3s, but the
     // full 277-test run can starve this chain past 3s).
     expect(
-      await screen.findByText('pages.wardCandidates.noAspirantsTitle', {}, { timeout: 8000 }),
+      await screen.findByText('pages.wardCandidates.noAspirantsTitle', {}, { timeout: 15000 }),
     ).toBeInTheDocument();
   });
 

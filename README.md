@@ -4,6 +4,9 @@
 
 > _Your Voice, Your Rule, Your Vote._
 
+[![CI](https://github.com/prajaakeeya/prajaakeeya-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/prajaakeeya/prajaakeeya-frontend/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/prajaakeeya/prajaakeeya-frontend/graph/badge.svg)](https://codecov.io/gh/prajaakeeya/prajaakeeya-frontend)
+
 ---
 
 ## Table of contents

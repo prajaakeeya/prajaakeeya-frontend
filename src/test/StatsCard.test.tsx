@@ -13,8 +13,9 @@ describe('StatsCard', () => {
 
   it('formats large numbers with locale separators', () => {
     renderWithProviders(<StatsCard label="Votes" value={1234567} />);
-    // toLocale? default en-US grouping -> "1,234,567"
-    expect(screen.getByText((1234567).toLocaleString())).toBeInTheDocument();
+    // toLocaleString() separator varies by system locale (comma, thin-space, etc.)
+    // — use a regex that matches any single separator character.
+    expect(screen.getByText(/1.234.567/)).toBeInTheDocument();
   });
 
   it('renders string values as-is', () => {

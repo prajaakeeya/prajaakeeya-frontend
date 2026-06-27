@@ -105,8 +105,9 @@ describe('UserDashboardPage', () => {
 
   it('shows the registered-voters count fetched from getVoters', async () => {
     renderWithProviders(<UserDashboardPage />, { route: '/user/dashboard' });
-    // 1234 -> "1,234" via toLocaleString.
-    expect(await screen.findByText('1,234')).toBeInTheDocument();
+    // 1234 formatted via toLocaleString — separator varies by locale (comma,
+    // thin-space U+00A0, etc.). Match any single separator character.
+    expect(await screen.findByText(/1.?234/)).toBeInTheDocument();
   });
 
   // NOTE: the action-tile navigation tests (Register-as-Aspirant, Public Issues,

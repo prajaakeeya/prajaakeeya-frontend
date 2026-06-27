@@ -59,8 +59,9 @@ describe('GuestDashboardPage (/guest/dashboard)', () => {
 
   it('shows the registered-citizens count fetched from getCitizensCount', async () => {
     renderWithProviders(<GuestDashboardPage />, { route: '/guest/dashboard' });
-    // 67832 -> "67,832" via toLocaleString once the on-mount fetch resolves.
-    expect(await screen.findByText('67,832')).toBeInTheDocument();
+    // 67832 formatted via toLocaleString — separator varies by locale (comma,
+    // thin-space U+00A0, etc.). Match any single separator character.
+    expect(await screen.findByText(/67.?832/)).toBeInTheDocument();
   });
 
   it('navigates to the aspirants page when the "View Aspirants" tile is clicked', async () => {
