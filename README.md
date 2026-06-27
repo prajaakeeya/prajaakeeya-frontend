@@ -1,217 +1,237 @@
 # Prajaakeeya — Frontend
 
-**Prajaakeeya** is a multi-election democratic platform that connects voters, aspirants, and candidates across ward, municipal, Gram Panchayat, Vidhan Sabha (State Assembly), and Lok Sabha elections. This repository contains the **frontend web app** — a React + TypeScript single-page application (also installable as a PWA).
+> **Your Voice. Your Rule. Your Vote.** A civic platform that puts Karnataka's voters in direct conversation with their election candidates — across ward, municipal, Gram Panchayat, Assembly, and Lok Sabha elections.
 
-> _Your Voice, Your Rule, Your Vote._
+[![Deploy](https://github.com/prajaakeeya/prajaakeeya-frontend/actions/workflows/deploy-frontend.yml/badge.svg)](https://github.com/prajaakeeya/prajaakeeya-frontend/actions/workflows/deploy-frontend.yml)
 
----
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![MUI](https://img.shields.io/badge/MUI-5-007FFF?logo=mui&logoColor=white)](https://mui.com/)
+[![i18n](https://img.shields.io/badge/i18n-English%20%2B%20Kannada-FF6B00)](https://www.i18next.com/)
+[![PWA](https://img.shields.io/badge/PWA-Workbox-5A0FC8?logo=googlechrome&logoColor=white)](https://vite-pwa-org.netlify.app/)
 
-## Table of contents
-
-- [Tech stack](#tech-stack)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Getting started](#getting-started)
-- [Environment variables](#environment-variables)
-- [Available scripts](#available-scripts)
-- [App modes (mock vs api)](#app-modes-mock-vs-api)
-- [Project structure](#project-structure)
-- [Routing overview](#routing-overview)
-- [Internationalization (i18n)](#internationalization-i18n)
-- [Testing](#testing)
-- [PWA / offline support](#pwa--offline-support)
-- [Build & deployment](#build--deployment)
-- [Contributing](#contributing)
+[![Amplify](https://img.shields.io/badge/Hosting-AWS%20Amplify-FF9900?logo=amazonaws&logoColor=white)](https://aws.amazon.com/amplify/)
+[![Firebase](https://img.shields.io/badge/Auth%20%2F%20Push-Firebase-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
 
 ---
 
-## Tech stack
+## What Is This?
 
-| Area | Technology |
-|------|-----------|
-| Framework | [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
-| Build tool | [Vite 5](https://vitejs.dev/) |
-| UI | [MUI 5](https://mui.com/) + [Emotion](https://emotion.sh/) |
-| Routing | [React Router 6](https://reactrouter.com/) |
-| State | [Zustand](https://github.com/pmndrs/zustand) (with `persist`) |
-| Forms & validation | [React Hook Form](https://react-hook-form.com/) + [Yup](https://github.com/jquense/yup) |
-| HTTP | [Axios](https://axios-http.com/) |
-| i18n | [i18next](https://www.i18next.com/) / react-i18next (English + Kannada) |
-| Animation | [Framer Motion](https://www.framer.com/motion/) |
-| PWA | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) (Workbox) |
-| Auth | Google OAuth (via backend) + Firebase config |
-| Testing | [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) |
+In most Indian elections, voters never speak directly to their candidates. Prajaakeeya fixes that. This repository is the **React web app** — a multi-role single-page application (also installable as a PWA) that connects voters, election candidates, and civic administrators in one platform.
 
----
+**Four distinct experiences, one codebase:**
 
-## Features
+| Role | What they do |
+|---|---|
+| **Voter** | Register via Google, complete a constituency profile, browse candidates, chat / meet / visit, raise civic issues, cast an interaction-gated vote |
+| **Aspirant** | Register as a candidate, upload documents, manage meetings and visits, engage with voter requests, track their ward standing |
+| **Guest** | Browse candidates, civic issues, voter rolls, and SOP — read-only, no account required |
+| **Admin** | Manage users, elections, wards, geography, voting windows, and reports from a dedicated dashboard |
 
-- **Voters** — register/sign in (Google OAuth), complete profile, browse wards & aspirants, view candidate details, raise civic issues, vote, and chat with aspirants.
-- **Aspirants** — register, upload documents, complete SOP agreement, manage profile, posts, meetings, and requests.
-- **Guests** — browse aspirants, wards, civic issues and SOP read-only without an account.
-- **Admins** — dashboards, user management, ward creation, booth PDF uploads, reports, and verification.
-- **Multilingual** — full English & Kannada support.
-- **Installable PWA** — offline banner, service worker caching, home-screen install.
+**What makes it different:**
+A voter cannot cast a vote until they have had a verified interaction with a candidate — chat, meeting, visit, or phone call. The vote represents informed choice, not name recognition.
 
 ---
 
-## Prerequisites
+## How It Works
 
-- **Node.js 20.x** (the CI/build pipeline uses Node 20)
-- **npm** (local development) — the project also commits a **`yarn.lock`** because the Amplify deploy pipeline uses **yarn**. Use whichever you prefer locally, but keep lockfiles in sync.
+```mermaid
+graph LR
+    classDef userNode   fill:#4A90E2,stroke:#2563EB,stroke-width:2px,color:#fff
+    classDef guestNode  fill:#6B7280,stroke:#4B5563,stroke-width:2px,color:#fff
+    classDef aspirant   fill:#7C3AED,stroke:#5B21B6,stroke-width:2px,color:#fff
+    classDef adminNode  fill:#DC2626,stroke:#B91C1C,stroke-width:2px,color:#fff
+    classDef gateNode   fill:#059669,stroke:#047857,stroke-width:2px,color:#fff
+    classDef voteNode   fill:#D97706,stroke:#B45309,stroke-width:2px,color:#fff
 
----
+    guest["👁️ Guest\n(no login)"]:::guestNode
+    voter["👤 Voter\n(Google login)"]:::userNode
+    asp["🏛️ Aspirant\n(Google login)"]:::aspirant
+    admin["🔑 Admin\n(password login)"]:::adminNode
 
-## Getting started
+    browse["Browse candidates\nby constituency"]:::guestNode
+    interact["Chat · Meetings\nVisits · Calls"]:::userNode
+    gate{{"✅ Interaction\nverified?"}}:::gateNode
+    vote["🗳️ Cast Vote\n(election window)"]:::voteNode
+    results["Ward Results\n& Rankings"]:::userNode
 
-```bash
-# 1. Clone
-git clone git@github.com:prajaakeeya/prajaakeeya-frontend.git
-cd prajaakeeya-frontend
+    manage["Manage profile\nMeetings · Visits\nDocument upload"]:::aspirant
+    dashboard["Admin Dashboard\nUsers · Elections\nVoting windows"]:::adminNode
 
-# 2. Install dependencies
-npm install          # or: yarn install
-
-# 3. Configure environment
-cp .env.example .env
-#   then edit .env (see Environment variables below)
-
-# 4. Start the dev server
-npm run dev          # or: yarn dev
+    guest --> browse
+    voter --> browse --> interact --> gate
+    gate -- yes --> vote --> results
+    gate -- no --> interact
+    asp --> manage
+    admin --> dashboard
 ```
 
-The app runs at **http://localhost:5173**. During development, requests to `/api` are proxied to `http://localhost:3000` (the backend) — see [`vite.config.js`](vite.config.js).
-
 ---
 
-## Environment variables
-
-Copy `.env.example` to `.env` and fill in the values. All variables are prefixed `VITE_` so Vite exposes them to the client.
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `VITE_APP_MODE` | yes | `api` to talk to the real backend, `mock` to run with built-in demo data. |
-| `VITE_API_URL` | yes (api mode) | Base URL of the backend API. `/api` is appended automatically. |
-| `VITE_API_BASE_URL` | optional | Fallback used if `VITE_API_URL` is not set. |
-| `VITE_FIREBASE_API_KEY` | for auth | Firebase Web API key (Firebase Console → Project Settings). |
-| `VITE_FIREBASE_AUTH_DOMAIN` | for auth | Firebase auth domain. |
-| `VITE_FIREBASE_PROJECT_ID` | for auth | Firebase project id. |
-| `VITE_FIREBASE_STORAGE_BUCKET` | for auth | Firebase storage bucket. |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | for auth | Firebase messaging sender id. |
-| `VITE_FIREBASE_APP_ID` | for auth | Firebase app id. |
-| `VITE_FIREBASE_MEASUREMENT_ID` | optional | Firebase Analytics measurement id. |
-| `VITE_AUDIO_BASE_URL` | optional | Base URL (S3/CDN) for audio assets. |
-
-> ⚠️ Never commit a real `.env`. Only `.env.example` (with placeholder values) belongs in git.
-
----
-
-## Available scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the Vite dev server (HMR) on port 5173. |
-| `npm run build` | Type-check (`tsc -b`) and build the production bundle to `dist/`. |
-| `npm run preview` | Serve the production build locally. |
-| `npm run lint` | Run ESLint over `src`. |
-| `npm test` | Run the test suite in **watch** mode. |
-| `npm run test:run` | Run the full test suite once (used in CI). |
-| `npm run test:coverage` | Run tests once and produce a coverage report (`/coverage`). |
-
----
-
-## App modes (mock vs api)
-
-The app supports two runtime modes via `VITE_APP_MODE` (see [`src/config/appMode.ts`](src/config/appMode.ts)):
-
-- **`api`** — talks to the real backend (`VITE_API_URL`).
-- **`mock`** (default if unset) — renders built-in demo data so you can run the UI without a backend. Useful for design/QA and for parts of the test suite.
-
----
-
-## Project structure
+## App Structure
 
 ```
 src/
-├─ App.tsx              # Root component + all route definitions
-├─ index.tsx            # App entry point
-├─ assets/              # Images, fonts, static media
-├─ components/          # Reusable UI components (admin/, aspirant/, shared)
-├─ config/              # App config (appMode)
-├─ hooks/               # Custom React hooks (useSnackbar, useExtractionPolling)
-├─ i18n/                # i18next setup + locale resources (en, kn)
-├─ layouts/             # Route layouts (User, Guest, Admin, Auth, Public)
-├─ pages/               # Page components (admin/, aspirant/, guest/, shared)
-├─ services/            # API clients (axios) — one file per backend domain
-├─ store/               # Zustand stores (useAuthStore, useThemeStore)
-├─ theme/               # MUI theme factory + brand tokens
-├─ types/               # Shared TypeScript types
-├─ utils/               # Pure helpers (validation, fileUtils, profileUtils)
-└─ test/                # All tests + test setup (see Testing)
+├── pages/
+│   ├── guest/          # GuestDashboard, GuestAspirants, GuestCivicIssues, GuestVoters
+│   ├── aspirant/       # AspirantProfile, AspirantChat, AspirantMeetingLinks, AspirantPosts, AspirantRequests
+│   ├── admin/          # AdminDashboard, AdminUsers, AdminElections, AdminVotingWindow, geography pages
+│   ├── UserDashboard   # Voter home — constituency overview + candidate list
+│   ├── UserChat        # 1:1 voter–candidate chat
+│   ├── WardCandidateList / VotingResult
+│   ├── CivicIssues / ReportIssue
+│   ├── Notifications
+│   └── Auth flows      # AuthCallback, UserRegister, ProfileCompletion, Onboarding
+├── components/         # Shared UI components
+├── store/              # Zustand state (with persist)
+├── api/                # Axios API client (all calls to /api/*)
+├── i18n/               # English + Kannada translation files
+└── locales/            # i18next locale bundles
 ```
 
 ---
 
-## Routing overview
+## Tech Stack
 
-Routes are defined in [`src/App.tsx`](src/App.tsx) and grouped by audience, each with its own layout:
-
-| Prefix | Layout | Audience | Examples |
-|--------|--------|----------|----------|
-| `/`, `/login`, `/register` | Public / Auth | Everyone | landing, login, registration |
-| `/onboarding/location` | — | New users | constituency onboarding |
-| `/user/*` | `UserLayout` | Authenticated voters/aspirants | dashboard, complete-profile, vote, civic-issues, chat, notifications |
-| `/guest/*` | `GuestLayout` | Guests (no account) | dashboard, aspirants, civic-issues, registered-aspirants, sop |
-| `/admin`, `/admin/*` | `AdminLayout` | Admins | dashboard, users, wards, reports |
+| Area | Technology |
+|---|---|
+| Framework | React 18 + TypeScript |
+| Build | Vite 5 |
+| UI | MUI 5 + Emotion |
+| Routing | React Router 6 |
+| State | Zustand (with `persist`) |
+| Forms | React Hook Form + Yup |
+| HTTP | Axios (→ `/api/*` on the NestJS backend) |
+| i18n | i18next + react-i18next (English + Kannada) |
+| Animation | Framer Motion |
+| PWA | vite-plugin-pwa (Workbox service worker) |
+| Auth | Google OAuth 2.0 (via backend redirect flow) + Firebase config |
+| Testing | Vitest + React Testing Library |
+| Hosting | AWS Amplify (CDN deployment on push to `main`) |
 
 ---
 
-## Internationalization (i18n)
+## Getting Started
 
-The app ships with **English** and **Kannada**. Translation keys live under [`src/i18n/`](src/i18n/) and are accessed via the `useTranslation()` hook (`t('some.key')`). Add new UI strings as keys in the locale resources rather than hard-coding text, so both languages stay in sync.
+**Prerequisites:** Node.js 20+, npm.
+
+```bash
+git clone https://github.com/prajaakeeya/prajaakeeya-frontend
+cd prajaakeeya-frontend
+npm install
+cp .env.example .env   # fill in VITE_API_BASE_URL + Firebase config
+npm run dev            # http://localhost:5173
+```
+
+### Mock mode (no backend required)
+
+The app has a built-in mock/API toggle for local UI development without a running backend:
+
+```bash
+VITE_APP_MODE=mock npm run dev
+```
+
+---
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Backend base URL (e.g. `http://localhost:3000` or `https://api.prajaakeeya.org`) |
+| `VITE_FIREBASE_API_KEY` | Firebase web app config |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain |
+| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | FCM sender ID (for push notification permission) |
+| `VITE_FIREBASE_APP_ID` | Firebase app ID |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth client ID (displayed in the login button) |
+
+> Firebase client keys are intentionally public — they are scoped by Firebase Security Rules, not kept secret.
+
+---
+
+## Roles & Routes
+
+| Role | Entry point | Key pages |
+|---|---|---|
+| **Guest** | `/` (no login) | `/guest`, `/guest/aspirants`, `/guest/civic-issues`, `/guest/voters` |
+| **Voter** | Google OAuth → `/dashboard` | `/dashboard`, `/chat`, `/vote`, `/results`, `/issues`, `/notifications` |
+| **Aspirant** | Google OAuth → aspirant profile | `/aspirant/profile`, `/aspirant/chat`, `/aspirant/meetings`, `/aspirant/requests` |
+| **Admin** | Password login → `/admin` | `/admin/dashboard`, `/admin/users`, `/admin/elections`, `/admin/voting-window`, geography management |
+
+---
+
+## Internationalisation
+
+Full English and **Kannada** support via i18next. The language switcher is available on every page. Translation files live in `src/locales/`.
+
+To add a new translatable string:
+
+```ts
+// in component
+const { t } = useTranslation();
+return <h1>{t('home.headline')}</h1>;
+
+// in src/locales/en.json
+{ "home": { "headline": "Your Voice, Your Vote" } }
+
+// in src/locales/kn.json
+{ "home": { "headline": "ನಿಮ್ಮ ಧ್ವನಿ, ನಿಮ್ಮ ಮತ" } }
+```
+
+---
+
+## PWA / Offline Support
+
+The app is installable as a Progressive Web App on Android (and desktop). The Workbox service worker:
+
+- Caches the app shell for offline loading
+- Shows an "update available" banner when a new version is deployed
+- Supports FCM push notifications for meeting reminders and voting window alerts (Android Chrome)
+
+> **iOS:** Push notifications via FCM are not supported in WKWebView. iOS users receive in-app notifications only.
 
 ---
 
 ## Testing
 
-The frontend has a **Vitest + React Testing Library** suite. All tests live in [`src/test/`](src/test/) as `*.test.ts(x)`.
-
 ```bash
-npm test                # watch mode while developing
-npm run test:run        # run once (CI)
-npm run test:coverage   # run once + coverage report
+npm test          # Vitest unit + component tests
+npm run test:ui   # Vitest browser UI (interactive)
 ```
 
-- **Unit tests** — pure logic (validation, file/profile utils, stores).
-- **UI tests** — components and pages rendered with mocked services & i18n; assertions on rendering and user interactions.
-
-> A detailed, shareable breakdown lives in [`TEST_REPORT.md`](TEST_REPORT.md). Conventions and the test "recipe" are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
 ---
 
-## PWA / offline support
-
-The app is a Progressive Web App via `vite-plugin-pwa` (Workbox). It precaches the build, caches fonts and API responses, shows an **offline banner** when the network drops, and can be installed to the home screen. PWA behavior is **disabled in dev** and active in production builds — see the `VitePWA(...)` config in [`vite.config.js`](vite.config.js).
-
----
-
-## Build & deployment
-
-Build the production bundle:
+## Build & Deployment
 
 ```bash
-npm run build     # tsc -b && vite build  →  outputs to dist/
+npm run build     # production build → dist/
+npm run preview   # preview the production build locally
 ```
 
-There are two deployment paths:
+Deployment is handled by **AWS Amplify**:
 
-1. **AWS Amplify** — auto-builds and deploys on push to `main` / `staging` (`yarn install` → `yarn build`). Build settings live in the Amplify Console (or an `amplify.yml` if present).
-2. **GitHub Actions** — [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs **lint + tests** and deploys the build to S3 + CloudFront only if they pass (`needs: test`).
+| Push to | Target |
+|---|---|
+| `staging` | Staging Amplify environment |
+| `main` | Production — `prajaakeeya.org` |
 
-> The `main` branch maps to **production** and `staging` to the **staging** environment.
+Amplify picks up the build automatically on push. No manual deploy step.
 
 ---
 
-## Contributing
+## Scripts
 
-Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request — it covers branch naming, commit conventions, code style, and how to add tests. In short: branch off `staging`, keep the suite green (`npm run test:run`) and lint clean (`npm run lint`), and open a PR against `staging`.
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Dev server at `http://localhost:5173` with HMR |
+| `npm run build` | Production build → `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm test` | Run Vitest test suite |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+
+---
+
+> **Backend API:** [prajaakeeya-backend](https://github.com/prajaakeeya/prajaakeeya-backend) — NestJS + PostgreSQL + Redis
+> **PWA / Mobile apps:** [prajaakeeya-pwa-apps](https://github.com/prajaakeeya/prajaakeeya-pwa-apps) — Android TWA + iOS config
