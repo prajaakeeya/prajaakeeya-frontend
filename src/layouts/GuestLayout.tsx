@@ -173,7 +173,7 @@ const GuestLayout = () => {
                     Logout
                   </Button>
 
-                  {/* Mobile: avatar only */}
+                  {/* Mobile: avatar + logout icon (the desktop text button above is hidden here) */}
                   <Avatar
                     src={user?.profilePicture || undefined}
                     alt={user?.name || 'User'}
@@ -188,6 +188,18 @@ const GuestLayout = () => {
                   >
                     {!user?.profilePicture && (user?.name?.charAt(0).toUpperCase() || 'U')}
                   </Avatar>
+                  <IconButton
+                    onClick={() => { logout(); navigate('/'); }}
+                    size="small"
+                    aria-label={t('common.logout')}
+                    sx={{
+                      display: { xs: 'flex', sm: 'none' },
+                      color: 'text.secondary',
+                      '&:hover': { color: BRAND.red, bgcolor: `${BRAND.red}0F` },
+                    }}
+                  >
+                    <LogoutIcon fontSize="small" />
+                  </IconButton>
                 </>
               )}
 

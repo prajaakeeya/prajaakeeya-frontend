@@ -266,6 +266,20 @@ const UserLayout = () => {
                 </Avatar>
               </Box>
 
+              {/* Logout (mobile) — the text button below is desktop-only (sm+) */}
+              <IconButton
+                onClick={handleLogout}
+                size="small"
+                aria-label={t('common.logout')}
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  color: 'text.secondary',
+                  '&:hover': { color: BRAND.red, bgcolor: `${BRAND.red}0F` },
+                }}
+              >
+                <LogoutIcon fontSize="small" />
+              </IconButton>
+
               {/* Logout (desktop) */}
               <Button size="small" startIcon={<LogoutIcon />} onClick={handleLogout}
                 sx={{
