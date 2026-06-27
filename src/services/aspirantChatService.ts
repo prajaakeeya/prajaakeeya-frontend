@@ -21,7 +21,7 @@ export const getAspirantMessages = (aspirantId: number, page = 1, limit = 50) =>
 
 // ── Live SSE stream for an aspirant chat room ─────────────────────────────
 const API_HOST = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
-const API_BASE = `${API_HOST ? String(API_HOST).replace(/\/+$/g, '') : ''}/api`;
+const API_BASE = `${API_HOST ? String(API_HOST).replace(/\/+$/g, '') : ''}/api/v1`;
 
 export interface ChatStreamHandlers {
   onCreated?: (msg: AspirantChatMessageDto) => void;

@@ -52,7 +52,7 @@ export const getGoogleOAuthUrl = (): string => {
   const raw = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL ?? '';
   const host = String(raw).replace(/\/+$/g, '');
   const state = createGoogleOAuthState();
-  return `${host}/api/auth/google?state=${encodeURIComponent(state)}`;
+  return `${host}/api/v1/auth/google?state=${encodeURIComponent(state)}`;
 };
 
 export const requestAdminOtp = (payload: AdminLoginPayload) => apiClient.post('/auth/admin/login', payload);

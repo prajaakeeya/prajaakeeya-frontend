@@ -5,7 +5,7 @@ import { COOKIE_AUTH } from '../config/authMode';
 
 const apiHost = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
 const normalizedHost = apiHost ? String(apiHost).replace(/\/+$/g, '') : '';
-const baseURL = normalizedHost ? `${normalizedHost}/api` : '/api';
+const baseURL = normalizedHost ? `${normalizedHost}/api/v1` : '/api/v1';
 
 const apiClient = axios.create({
   baseURL,
