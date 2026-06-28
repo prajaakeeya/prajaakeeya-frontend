@@ -32,23 +32,18 @@ jobs:
         with:
           node-version: 20
 
-      # The lockfile is generated with npm 11 (dev machines). node 20 ships
-      # npm 10, whose stricter reader rejects npm 11's nested-dependency
-      # lockfile format ("Missing esbuild@... from lock file"). Pin CI to
-      # npm 11 so `npm ci` reads the lockfile exactly as it was written.
-      # npm 11 also reads older lockfile formats, so this stays correct no
-      # matter which npm a teammate uses.
-      - name: Pin npm to match the lockfile
-        run: npm install -g npm@11
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
 
       - name: Install deps
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm run test:run
+        run: pnpm run test:run
 
   deploy:
     needs: test                 # ← deploy ONLY runs if the `test` job succeeded
@@ -65,20 +60,15 @@ jobs:
         with:
           node-version: 20
 
-      # The lockfile is generated with npm 11 (dev machines). node 20 ships
-      # npm 10, whose stricter reader rejects npm 11's nested-dependency
-      # lockfile format ("Missing esbuild@... from lock file"). Pin CI to
-      # npm 11 so `npm ci` reads the lockfile exactly as it was written.
-      # npm 11 also reads older lockfile formats, so this stays correct no
-      # matter which npm a teammate uses.
-      - name: Pin npm to match the lockfile
-        run: npm install -g npm@11
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
 
       - name: Install deps
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
         env:
           VITE_APP_MODE: ${{ vars.VITE_APP_MODE }}
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}

@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "pnpm": ">=11"
+  },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",

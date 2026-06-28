@@ -58,7 +58,7 @@
 ## Prerequisites
 
 - **Node.js 20.x** (the CI/build pipeline uses Node 20)
-- **npm** (local development) — the project also commits a **`yarn.lock`** because the Amplify deploy pipeline uses **yarn**. Use whichever you prefer locally, but keep lockfiles in sync.
+- **pnpm** (the project's sole package manager)
 
 ---
 
@@ -70,14 +70,14 @@ git clone git@github.com:prajaakeeya/prajaakeeya-frontend.git
 cd prajaakeeya-frontend
 
 # 2. Install dependencies
-npm install          # or: yarn install
+pnpm install
 
 # 3. Configure environment
 cp .env.example .env
 #   then edit .env (see Environment variables below)
 
 # 4. Start the dev server
-npm run dev          # or: yarn dev
+pnpm run dev
 ```
 
 The app runs at **http://localhost:5173**. During development, requests to `/api` are proxied to `http://localhost:3000` (the backend) — see [`vite.config.js`](vite.config.js).
@@ -110,13 +110,13 @@ Copy `.env.example` to `.env` and fill in the values. All variables are prefixed
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start the Vite dev server (HMR) on port 5173. |
-| `npm run build` | Type-check (`tsc -b`) and build the production bundle to `dist/`. |
-| `npm run preview` | Serve the production build locally. |
-| `npm run lint` | Run ESLint over `src`. |
-| `npm test` | Run the test suite in **watch** mode. |
-| `npm run test:run` | Run the full test suite once (used in CI). |
-| `npm run test:coverage` | Run tests once and produce a coverage report (`/coverage`). |
+| `pnpm run dev` | Start the Vite dev server (HMR) on port 5173. |
+| `pnpm run build` | Type-check (`tsc -b`) and build the production bundle to `dist/`. |
+| `pnpm run preview` | Serve the production build locally. |
+| `pnpm run lint` | Run ESLint over `src`. |
+| `pnpm test` | Run the test suite in **watch** mode. |
+| `pnpm run test:run` | Run the full test suite once (used in CI). |
+| `pnpm run test:coverage` | Run tests once and produce a coverage report (`/coverage`). |
 
 ---
 
@@ -177,9 +177,9 @@ The app ships with **English** and **Kannada**. Translation keys live under [`sr
 The frontend has a **Vitest + React Testing Library** suite. All tests live in [`src/test/`](src/test/) as `*.test.ts(x)`.
 
 ```bash
-npm test                # watch mode while developing
-npm run test:run        # run once (CI)
-npm run test:coverage   # run once + coverage report
+pnpm test                # watch mode while developing
+pnpm run test:run        # run once (CI)
+pnpm run test:coverage   # run once + coverage report
 ```
 
 - **Unit tests** — pure logic (validation, file/profile utils, stores).
@@ -200,12 +200,12 @@ The app is a Progressive Web App via `vite-plugin-pwa` (Workbox). It precaches t
 Build the production bundle:
 
 ```bash
-npm run build     # tsc -b && vite build  →  outputs to dist/
+pnpm run build     # tsc -b && vite build  →  outputs to dist/
 ```
 
 There are two deployment paths:
 
-1. **AWS Amplify** — auto-builds and deploys on push to `main` / `staging` (`yarn install` → `yarn build`). Build settings live in the Amplify Console (or an `amplify.yml` if present).
+1. **AWS Amplify** — auto-builds and deploys on push to `main` / `staging` (`pnpm install` → `pnpm run build`). Build settings live in the Amplify Console (or an `amplify.yml` if present).
 2. **GitHub Actions** — [`.github/workflows/deploy-frontend.yml`](.github/workflows/deploy-frontend.yml) runs **lint + tests** and deploys the build to S3 + CloudFront only if they pass (`needs: test`).
 
 > The `main` branch maps to **production** and `staging` to the **staging** environment.
@@ -214,4 +214,4 @@ There are two deployment paths:
 
 ## Contributing
 
-Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request — it covers branch naming, commit conventions, code style, and how to add tests. In short: branch off `staging`, keep the suite green (`npm run test:run`) and lint clean (`npm run lint`), and open a PR against `staging`.
+Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request — it covers branch naming, commit conventions, code style, and how to add tests. In short: branch off `staging`, keep the suite green (`pnpm run test:run`) and lint clean (`pnpm run lint`), and open a PR against `staging`.
