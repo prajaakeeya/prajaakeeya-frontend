@@ -71,7 +71,7 @@ import {
   type GPVillage,
   type ConstituencyStats,
 } from '../services/electionService';
-import { fetchVotingWindow, submitVote, fetchMyVote } from '../services/voteService';
+import { fetchVotingWindow, fetchMyVote } from '../services/voteService';
 import useAuthStore from '../store/useAuthStore';
 import apiClient from '../services/apiClient';
 import CloseIcon from '@mui/icons-material/Close';
@@ -1653,7 +1653,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                         ? {}
                         : {
                             borderColor: 'rgba(245,168,0,0.45)',
-                            background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
+                            background: 'rgba(245,168,0,0.06)',
                           },
                     }}
                   >
@@ -2177,7 +2177,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     py: 0.5,
                     borderRadius: 999,
                     background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
-                    border: `1px solid ${isDark ? 'rgba(224,32,16,0.3)' : 'rgba(224,32,16,0.3)'}`,
+                    border: `1px solid rgba(224,32,16,0.3)`,
                   }}
                 >
                   <HowToVoteIcon sx={{ fontSize: '1rem', color: '#e02010' }} />
@@ -3657,9 +3657,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 px: 2.5,
                 py: 1,
                 borderRadius: 50,
-                background: theme.palette.mode === 'dark'
-                  ? 'rgba(34,197,94,0.08)'
-                  : 'rgba(34,197,94,0.08)',
+                background: 'rgba(34,197,94,0.08)',
                 border: `1.5px solid`,
                 borderColor: 'rgba(34,197,94,0.35)',
               }}>

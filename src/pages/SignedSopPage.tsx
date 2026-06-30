@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, useTheme, Card, CardContent, CircularProgress, Stack } from '@mui/material';
-import { motion } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
 import { BRAND } from '../theme';
 import { useParams } from 'react-router-dom';

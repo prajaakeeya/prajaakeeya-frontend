@@ -19,7 +19,7 @@ import {
     Email as EmailIcon,
     ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
-import { HowToVote as HowToVoteIcon, People as PeopleIcon, Forum as ForumIcon, PersonAdd as PersonAddIcon } from '@mui/icons-material';
+import { HowToVote as HowToVoteIcon, People as PeopleIcon, Forum as ForumIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/useAuthStore';

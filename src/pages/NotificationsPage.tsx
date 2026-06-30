@@ -369,7 +369,7 @@ export default function NotificationsPage() {
               py: 0.6,
               transition: 'all 0.2s ease',
               '&:hover': {
-                bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.08)',
+                bgcolor: 'rgba(245,168,0,0.08)',
                 color: accent,
               },
               '&.Mui-selected': {

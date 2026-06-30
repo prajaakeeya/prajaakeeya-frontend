@@ -658,7 +658,7 @@ const CivicIssuesPage: React.FC = () => {
                         ? {}
                         : {
                             borderColor: 'rgba(245,168,0,0.45)',
-                            background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
+                            background: 'rgba(245,168,0,0.06)',
                           },
                     }}
                   >

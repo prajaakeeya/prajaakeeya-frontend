@@ -22,8 +22,6 @@ import {
   LocationOn as LocationIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { fetchWardResults } from '../services/voteService';
-import { getWards } from '../services/wardService';
 
 interface Ward {
   id: number;

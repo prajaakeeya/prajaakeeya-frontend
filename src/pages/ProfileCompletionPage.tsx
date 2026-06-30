@@ -94,7 +94,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import useAuthStore from '../store/useAuthStore';
 import apiClient from '../services/apiClient';
 import { uploadProfilePicture } from '../services/mediaService';
-import { isProfileComplete } from '../utils/profileUtils';
 import useSnackbar from '../hooks/useSnackbar';
 import SelfieLivenessCapture from '../components/SelfieLivenessCapture';
 

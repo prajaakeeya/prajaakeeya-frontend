@@ -1,11 +1,9 @@
 import React from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Box, Stack, Typography, Card, CardContent, Avatar, TextField, Button, Divider, IconButton, Snackbar, Alert, Chip } from '@mui/material';
+import { Box, Stack, Typography, Card, CardContent, Avatar, TextField, Button, IconButton, Snackbar, Alert, Chip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import SendIcon from '@mui/icons-material/Send';
-import ForumIcon from '@mui/icons-material/Forum';
 import CloseIcon from '@mui/icons-material/Close';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import useAuthStore from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
 import { useTranslation } from 'react-i18next';

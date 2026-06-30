@@ -15,10 +15,6 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import {
-  Close as CloseIcon,
-  InfoOutlined as InfoIcon,
-} from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getGoogleOAuthUrl } from "../services/authService";
@@ -306,9 +302,7 @@ const UserRegisterPage = () => {
                   border: `1px solid ${isDark ? "rgba(245,168,0,0.25)" : "rgba(245,168,0,0.4)"}`,
                   borderRadius: 2,
                   p: 2,
-                  background: isDark
-                    ? "rgba(245,168,0,0.04)"
-                    : "rgba(245,168,0,0.04)",
+                  background: "rgba(245,168,0,0.04)",
                 }}
               >
 

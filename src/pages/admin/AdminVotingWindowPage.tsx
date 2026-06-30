@@ -20,7 +20,6 @@ import {
     Paper,
     Chip
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import adminService from '../../services/adminService';
 import { fetchElections, type Election } from '../../services/electionService';

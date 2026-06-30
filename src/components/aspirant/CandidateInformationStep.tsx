@@ -16,7 +16,6 @@ import {
   Alert,
   Tooltip,
 } from '@mui/material';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -866,7 +865,7 @@ const CandidateInformationStep = ({
                           ? {}
                           : {
                               borderColor: 'rgba(245,168,0,0.45)',
-                              background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
+                              background: 'rgba(245,168,0,0.06)',
                             },
                     }}
                   >

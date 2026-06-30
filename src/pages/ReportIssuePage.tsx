@@ -244,7 +244,7 @@ const ReportIssuePage: React.FC = () => {
                           '&:hover': {
                             background: active
                               ? `linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)`
-                              : isDark ? 'rgba(245,168,0,0.10)' : 'rgba(245,168,0,0.10)',
+                              : 'rgba(245,168,0,0.10)',
                             borderColor: active ? 'transparent' : GOLDD,
                           },
                           '& .MuiChip-label': { px: 1.4 },

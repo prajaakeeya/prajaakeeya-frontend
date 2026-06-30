@@ -19,7 +19,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import apiClient from '../../services/apiClient';
 import LivePhotoCaptureStep from './LivePhotoCaptureStep';
 import { safeUrl } from '../../utils/safeUrl';

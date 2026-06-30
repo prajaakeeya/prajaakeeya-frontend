@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Avatar, CircularProgress, Stack, useTheme,
   TextField, Chip, Autocomplete, MenuItem,
