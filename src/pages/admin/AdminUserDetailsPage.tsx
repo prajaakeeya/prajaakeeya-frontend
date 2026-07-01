@@ -18,12 +18,14 @@ import {
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { getAspirantById, approveAspirant } from '../../services/aspirantService';
+import useSnackbar from '../../hooks/useSnackbar';
 
 const AdminUserDetailsPage: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [aspirant, setAspirant] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
+    const { showMessage } = useSnackbar();
 
     useEffect(() => {
         if (!id) return;
@@ -33,7 +35,10 @@ const AdminUserDetailsPage: React.FC = () => {
                 const data = resp?.data ?? resp;
                 setAspirant(data);
             })
-            .catch((e) => console.error('Failed to load aspirant', e))
+            .catch((e) => {
+                console.error('Failed to load aspirant', e);
+                showMessage('Failed to load aspirant details', 'error');
+            })
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -110,8 +115,10 @@ const AdminUserDetailsPage: React.FC = () => {
                                         await approveAspirant(aspirant.id);
                                         const refreshed = await getAspirantById(aspirant.id);
                                         setAspirant((refreshed?.data) ?? refreshed);
+                                        showMessage('Aspirant approved successfully', 'success');
                                     } catch (e) {
                                         console.error('Failed to approve aspirant', e);
+                                        showMessage('Failed to approve aspirant', 'error');
                                     }
                                 }}
                             >

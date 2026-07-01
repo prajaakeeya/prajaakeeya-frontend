@@ -2,7 +2,9 @@
 // We test the synchronous actions setAuth + clearSession (no network).
 // We avoid logout() here because it calls window.location.href = '/'
 // (a full navigation jsdom can't perform).
+import { beforeEach, describe, it, expect } from 'vitest';
 import useAuthStore from '../store/useAuthStore';
+import { AuthUser } from '../types/auth';
 
 describe('useAuthStore', () => {
   beforeEach(() => {
@@ -19,7 +21,7 @@ describe('useAuthStore', () => {
   });
 
   it('setAuth stores the token and marks the session authenticated', () => {
-    useAuthStore.getState().setAuth('jwt-token', { name: 'Asha', role: 'voter' } as any);
+    useAuthStore.getState().setAuth('jwt-token', { id: 1, name: 'Asha', role: 'voter' } as AuthUser);
     const s = useAuthStore.getState();
     expect(s.token).toBe('jwt-token');
     expect(s.isAuthenticated).toBe(true);
@@ -28,7 +30,7 @@ describe('useAuthStore', () => {
   });
 
   it('setAuth sets isAdmin when role is admin', () => {
-    useAuthStore.getState().setAuth('jwt', { name: 'Boss', role: 'admin' } as any);
+    useAuthStore.getState().setAuth('jwt', { id: 2, name: 'Boss', role: 'admin' } as AuthUser);
     expect(useAuthStore.getState().isAdmin).toBe(true);
   });
 
@@ -37,15 +39,15 @@ describe('useAuthStore', () => {
       name: 'Asha',
       role: 'voter',
       ward: { id: 7, number: '12', name: 'North Ward', assembly: 'A1' },
-    } as any);
-    const u = useAuthStore.getState().user as any;
+    } as AuthUser);
+    const u = useAuthStore.getState().user;
     expect(u.wardId).toBe(7);
     expect(u.wardNumber).toBe('12');
     expect(u.wardName).toBe('North Ward');
   });
 
   it('clearSession wipes the in-memory session', () => {
-    useAuthStore.getState().setAuth('jwt', { name: 'Asha', role: 'voter' } as any);
+    useAuthStore.getState().setAuth('jwt', { id: 1, name: 'Asha', role: 'voter' } as AuthUser);
     useAuthStore.getState().clearSession();
     const s = useAuthStore.getState();
     expect(s.token).toBeNull();

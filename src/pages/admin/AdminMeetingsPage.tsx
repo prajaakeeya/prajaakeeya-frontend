@@ -28,10 +28,11 @@ import {
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
-import meetingsService, { Meeting } from '../../services/meetingsService';
+import { meetingsService, Meeting } from '../../services/meetingsService';
 import { getWards } from '../../services/wardService';
 import { Autocomplete } from '@mui/material';
 import { safeUrl } from '../../utils/safeUrl';
+import useSnackbar from '../../hooks/useSnackbar';
 
 const AdminMeetingsPage: React.FC = () => {
     const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -39,6 +40,7 @@ const AdminMeetingsPage: React.FC = () => {
     const [wardFilter, setWardFilter] = useState('');
     const [activeFilter, setActiveFilter] = useState('');
     const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; meeting?: Meeting }>({ open: false });
+    const { showMessage } = useSnackbar();
 
     const [wards, setWards] = useState<{ ward_number: string; ward_name: string }[]>([]);
 
@@ -52,6 +54,7 @@ const AdminMeetingsPage: React.FC = () => {
                 setWards(Array.isArray(data) ? data : []);
             } catch (e) {
                 console.warn('Failed to load wards', e);
+                showMessage('Failed to load wards filter options', 'error');
             }
         })();
     }, []);
@@ -67,6 +70,7 @@ const AdminMeetingsPage: React.FC = () => {
             setMeetings(data);
         } catch (error) {
             console.error('Failed to load meetings:', error);
+            showMessage('Failed to load meetings', 'error');
         } finally {
             setLoading(false);
         }
@@ -100,8 +104,10 @@ const AdminMeetingsPage: React.FC = () => {
             await meetingsService.deleteMeeting(deleteConfirm.meeting.id);
             // Remove the deleted meeting from the list
             setMeetings(prev => prev.filter(m => m.id !== deleteConfirm.meeting!.id));
+            showMessage('Meeting deleted successfully', 'success');
         } catch (error) {
             console.error('Failed to delete meeting:', error);
+            showMessage('Failed to delete meeting', 'error');
         } finally {
             setDeleteConfirm({ open: false });
         }

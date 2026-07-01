@@ -37,7 +37,7 @@ function AllProviders({
   const entry = state ? { pathname: route, state } : route;
   return (
     <ThemeProvider theme={getTheme('light')}>
-      <MemoryRouter initialEntries={[entry]}>{children}</MemoryRouter>
+      <MemoryRouter initialEntries={[entry]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>{children}</MemoryRouter>
     </ThemeProvider>
   );
 }
