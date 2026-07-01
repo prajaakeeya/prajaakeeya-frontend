@@ -1,9 +1,9 @@
 // UNIT TESTS for src/utils/profileUtils.ts
 import { isProfileComplete, getMissingProfileFields } from '../utils/profileUtils';
+import { AuthUser } from '../types/auth';
 
-// A fully-complete non-admin user. We cast to any since AuthUser has many
-// optional fields we don't need for these logic tests.
-const completeUser: any = {
+// A fully-complete non-admin user. We use Partial<AuthUser> to avoid specifying every field.
+const completeUser: Partial<AuthUser> = {
   role: 'voter',
   name: 'Asha',
   gender: 'female',
@@ -18,7 +18,7 @@ describe('isProfileComplete', () => {
   });
 
   it('returns true for an admin regardless of fields', () => {
-    expect(isProfileComplete({ role: 'admin' } as any)).toBe(true);
+    expect(isProfileComplete({ role: 'admin' } as AuthUser)).toBe(true);
   });
 
   it('returns true when all required fields are present', () => {

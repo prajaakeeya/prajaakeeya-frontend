@@ -34,14 +34,14 @@ const useAuthStore = create<AuthState>()(
           apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
         }
         // Normalize user to ensure ward fields are available whether API returns nested `ward` or top-level wardName/wardNumber
-        const normalizedUser: any = {
+        const normalizedUser: AuthUser = {
           ...user,
-          aspirantWardNumber: (user as any).aspirantWardNumber,
-          wardId: (user as any).ward?.id ?? user.wardId,
-          wardNumber: (user as any).ward?.number ?? user.wardNumber,
-          wardName: (user as any).ward?.name ?? user.wardName,
-          assembly: (user as any).ward?.assembly ?? user.assembly,
-          ward: (user as any).ward ?? {
+          aspirantWardNumber: user.aspirantWardNumber,
+          wardId: user.ward?.id ?? user.wardId,
+          wardNumber: user.ward?.number ?? user.wardNumber,
+          wardName: user.ward?.name ?? user.wardName,
+          assembly: user.ward?.assembly ?? user.assembly,
+          ward: user.ward ?? {
             id: user.wardId,
             number: user.wardNumber,
             name: user.wardName,
@@ -166,9 +166,9 @@ const useAuthStore = create<AuthState>()(
         }
         try {
           const response = await fetchProfile();
-          const apiUser = response.data as any;
+          const apiUser = response.data as AuthUser;
           // Normalize nested ward object into top-level fields if present
-          const normalizedUser: any = {
+          const normalizedUser: AuthUser = {
             ...apiUser,
             aspirantId: apiUser.aspirantId,
             wardId: apiUser.ward?.id ?? apiUser.wardId,
@@ -180,7 +180,7 @@ const useAuthStore = create<AuthState>()(
           if ((normalizedUser.wardNumber === undefined || normalizedUser.wardName === undefined) && normalizedUser.wardId) {
             try {
               const wardResp = await getWardById(normalizedUser.wardId as number);
-              const wardData = (wardResp && (wardResp as any).data) || null;
+              const wardData = (wardResp && (wardResp as { data: Record<string, unknown> }).data) || null;
               if (wardData) {
                 normalizedUser.wardNumber = normalizedUser.wardNumber ?? wardData.number;
                 normalizedUser.wardName = normalizedUser.wardName ?? wardData.name;
@@ -224,7 +224,7 @@ const useAuthStore = create<AuthState>()(
           if (state?.user) {
             state.isAuthenticated = true;
             state.isAdmin = state.user.role === 'admin';
-            setSentryUser({ id: (state.user as any).id, role: state.user.role });
+            setSentryUser({ id: state.user.id, role: state.user.role });
           }
           return;
         }
@@ -233,7 +233,7 @@ const useAuthStore = create<AuthState>()(
           apiClient.defaults.headers.common.Authorization = `Bearer ${state.token}`;
           state.isAuthenticated = true;
           state.isAdmin = state.user.role === 'admin';
-          setSentryUser({ id: (state.user as any).id, role: state.user.role });
+          setSentryUser({ id: state.user.id, role: state.user.role });
         }
       }
     }
