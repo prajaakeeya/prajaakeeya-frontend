@@ -95,8 +95,16 @@ apiClient.interceptors.response.use(
         useAuthStore.getState().clearSession();
       }
     } else if (!COOKIE_AUTH && error.response?.status === 401) {
-      // Legacy header-auth: a 401 means the stored token is no longer valid.
-      useAuthStore.getState().logout();
+      // Legacy header-auth: only force logout when there is a client session to
+      // invalidate. Guest/public requests can receive 401s too; those should
+      // fail normally instead of hard-redirecting the app to home.
+      const state = useAuthStore.getState();
+      const hasSession =
+        Boolean(state.token) ||
+        Boolean(apiClient.defaults.headers.common.Authorization);
+      if (hasSession) {
+        state.logout();
+      }
     }
     const isNetworkOrTimeout =
       !error.response &&
