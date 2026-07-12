@@ -32,7 +32,7 @@ describe('SopPage', () => {
 
   it('renders the SOP flow chart', () => {
     renderWithProviders(<SopPage />);
-    expect(screen.getByText('pages.landing.sopOverline')).toBeInTheDocument();
+    expect(screen.getByText(/how prajaakeeya works/i)).toBeInTheDocument();
   });
 
   it('shows aspirant list button', () => {
