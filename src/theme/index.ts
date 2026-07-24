@@ -97,6 +97,10 @@ export const getTheme = (mode: PaletteMode) =>
       },
 
       // ── Typography ───────────────────────────────────────────────────────
+      // Editorial system: a high-contrast serif reserved for the two largest
+      // "statement" sizes (h1/h2), then a clean grotesque for every working
+      // heading and all body copy. Mixing—rather than setting serif on every
+      // heading—is what keeps it from reading as a template.
       typography: {
         fontFamily:
           '"Inter", "Noto Sans Kannada", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -105,85 +109,121 @@ export const getTheme = (mode: PaletteMode) =>
           fontFamily: '"Playfair Display", serif',
           fontWeight: 800,
           fontSize: '2.8rem',
-          lineHeight: 1.15,
-          letterSpacing: '-0.03em',
+          lineHeight: 1.12,
+          letterSpacing: '-0.02em',
         },
         h2: {
           fontFamily: '"Playfair Display", serif',
           fontWeight: 700,
-          fontSize: '2.25rem',
-          lineHeight: 1.2,
+          fontSize: '2.2rem',
+          lineHeight: 1.18,
+          letterSpacing: '-0.015em',
         },
         h3: {
-          fontFamily: '"Playfair Display", serif',
-          fontWeight: 600,
-          fontSize: '1.9rem',
+          fontWeight: 700,
+          fontSize: '1.75rem',
+          lineHeight: 1.25,
+          letterSpacing: '-0.01em',
         },
         h4: {
-          fontFamily: '"Playfair Display", serif',
-          fontWeight: 600,
-          fontSize: '1.55rem',
+          fontWeight: 700,
+          fontSize: '1.4rem',
+          lineHeight: 1.3,
+          letterSpacing: '-0.01em',
         },
-        h5: { fontWeight: 600, fontSize: '1.25rem' },
-        h6: { fontWeight: 600, fontSize: '1.1rem' },
+        h5: { fontWeight: 600, fontSize: '1.2rem', letterSpacing: '-0.005em' },
+        h6: { fontWeight: 600, fontSize: '1.05rem' },
 
-        body1: { fontSize: '1rem', lineHeight: 1.7 },
+        subtitle2: {
+          fontWeight: 700,
+          fontSize: '0.72rem',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+        },
+
+        body1: { fontSize: '1rem', lineHeight: 1.65 },
         body2: { fontSize: '0.875rem', lineHeight: 1.6 },
 
         button: {
           textTransform: 'none',
           fontWeight: 600,
-          letterSpacing: '0.03em',
+          letterSpacing: '0.01em',
         },
       },
 
       // ── Component overrides ──────────────────────────────────────────────
       components: {
-        /* BUTTONS */
+        /* BUTTONS — solid, single-colour, quiet. No gradient fills and no
+           translate-on-hover "float"; the hover just deepens the surface and
+           adds a restrained shadow. That one change removes the most obvious
+           template tell from every button in the app. */
         MuiButton: {
+          defaultProps: { disableElevation: true },
           styleOverrides: {
             root: {
               borderRadius: 10,
-              padding: '10px 26px',
+              padding: '10px 24px',
               minHeight: 44,
-              transition: 'all 0.25s ease',
+              transition:
+                'background-color .18s ease, box-shadow .18s ease, border-color .18s ease',
             },
             contained: {
-              backgroundImage: `linear-gradient(145deg, ${BRAND.red}, ${BRAND.saffron})`,
+              backgroundImage: 'none',
+              backgroundColor: BRAND.red,
               color: '#ffffff',
-              boxShadow: '0 6px 18px rgba(217, 119, 6, 0.2)',
+              boxShadow: 'none',
               '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: '0 12px 30px rgba(217, 119, 6, 0.35)',
+                backgroundColor: '#A5130A',
+                boxShadow: '0 4px 14px rgba(200, 24, 10, 0.28)',
               },
+              '&:active': { backgroundColor: '#8E1008' },
             },
-            outlined: {
+            outlined: ({ theme }) => ({
               borderWidth: 1.5,
-              borderColor: BRAND.yellow,
-              color: '#B45309',
+              borderColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(245,168,0,0.55)'
+                  : 'rgba(200,24,10,0.35)',
+              color: theme.palette.mode === 'dark' ? BRAND.yellow : BRAND.red,
               '&:hover': {
-                backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                borderColor:
+                  theme.palette.mode === 'dark' ? BRAND.yellow : BRAND.red,
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(245,168,0,0.08)'
+                    : 'rgba(200,24,10,0.05)',
               },
+            }),
+            text: {
+              '&:hover': { backgroundColor: 'rgba(200,24,10,0.06)' },
             },
           },
         },
 
-        /* CARDS */
+        /* CARDS — flat surface, a single hairline border, and a whisper of
+           shadow. Hover shifts the border/shadow instead of lifting the whole
+           card off the page. */
         MuiCard: {
+          defaultProps: { elevation: 0 },
           styleOverrides: {
             root: ({ theme }) => ({
               borderRadius: UI_RADIUS.card,
+              backgroundImage: 'none',
+              border: `1px solid ${theme.palette.divider}`,
               boxShadow:
                 theme.palette.mode === 'dark'
-                  ? '0 6px 20px rgba(0,0,0,0.45)'
-                  : '0 6px 20px rgba(17, 24, 39, 0.06)',
-              transition: 'all 0.25s ease',
+                  ? '0 1px 2px rgba(0,0,0,0.4)'
+                  : '0 1px 2px rgba(17,24,39,0.05)',
+              transition: 'border-color .2s ease, box-shadow .2s ease',
               '&:hover': {
-                transform: 'translateY(-4px)',
+                borderColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(245,168,0,0.35)'
+                    : 'rgba(200,24,10,0.22)',
                 boxShadow:
                   theme.palette.mode === 'dark'
-                    ? '0 14px 36px rgba(0,0,0,0.65)'
-                    : '0 14px 36px rgba(17, 24, 39, 0.12)',
+                    ? '0 6px 22px rgba(0,0,0,0.5)'
+                    : '0 6px 22px rgba(17,24,39,0.08)',
               },
             }),
           },
