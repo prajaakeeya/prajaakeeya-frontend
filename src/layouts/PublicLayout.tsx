@@ -152,7 +152,6 @@ const PublicLayout = () => {
                   sx={{
                     borderRadius: 20,
                     px: 3,
-                    boxShadow: isActive ? 'none' : 'none',
                     color: isActive ? '#fff' : 'text.primary',
                     bgcolor: isActive ? 'primary.main' : 'transparent',
                     '&:hover': {
@@ -201,7 +200,7 @@ const PublicLayout = () => {
         {drawer}
       </Drawer>
 
-      <Container maxWidth="lg" sx={{ pt: 0, pb: 0, px: { xs: 0, sm: 3 } }}>
+      <Container maxWidth="lg" sx={{ pt: 0, pb: 0, px: { xs: 2, sm: 3 } }}>
         <Outlet />
       </Container>
     </Box>

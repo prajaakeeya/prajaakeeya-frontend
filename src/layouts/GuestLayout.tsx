@@ -46,7 +46,7 @@ const GuestLayout = () => {
           {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
         </Box>
 
-        <Container maxWidth="xl" sx={{ px: '0 !important' }}>
+        <Container maxWidth="xl" disableGutters>
           <Toolbar sx={{ justifyContent: 'space-between', py: { xs: 0.9, sm: 1.2 }, minHeight: { xs: 56, sm: 72 } }}>
             {!isLoggedIn && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer' }}

@@ -286,7 +286,6 @@ const HomePage: React.FC = () => {
         {/* ═══ NO ENTRY CARD ═══ */}
         <section className={`anim-up ${step >= 1 ? 'on' : ''}`} style={{ transitionDelay: '0s' }}>
           <div style={noEntryCardStyle}>
-            {/* <div className="stripe-red" /> */}
 
             <div style={S.noEntryHeader}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -302,10 +301,6 @@ const HomePage: React.FC = () => {
               <div style={S.personText}>
             <h3 style={S.redTitle}>{t('pages.landing.homePage.hopelessQuote')}</h3>
             <p style={{...S.quote, textTransform: 'uppercase', fontWeight: 700}}>{t('pages.landing.homePage.hopelessLabel')}</p>
-                {/* <div style={S.tagRow}>
-                     <span style={redTagStyle}>{t('pages.landing.homePage.defeatedMindset')}</span>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.gaveUp')}</span>
-                </div> */}
               </div>
             </div>
 
@@ -316,10 +311,6 @@ const HomePage: React.FC = () => {
               <div style={S.personText}>
                  <h3 style={S.redTitle} >{t('pages.landing.homePage.dreamerQuote')}</h3>
                 <p style={{...S.quote, fontWeight: 700}}>{t('pages.landing.homePage.dreamerLabel')}</p>
-                {/* <div style={S.tagRow}>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.blindFollower')}</span>
-                  <span style={redTagStyle}>{t('pages.landing.homePage.noSelfWill')}</span>
-                </div> */}
               </div>
             </div>
           </div>
@@ -330,13 +321,11 @@ const HomePage: React.FC = () => {
           <div className={`anim-up ${step >= 4 ? 'on' : ''}`}>
             <div style={welcomeCardStyle}>
               <div className={`anim-left ${step >= 2 ? 'on' : ''}`} style={{ ...S.sectionLabel, justifyContent: 'center', marginBottom: 12 }}>
-                {/* <div style={S.greenLineLeft} /> */}
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M12 3l7.5 3.5v5c0 5-3.5 8.5-7.5 10.5-4-2-7.5-5.5-7.5-10.5v-5L12 3z" fill="#166534" stroke="#22C55E" strokeWidth="1.5" />
                   <path d="M9 12.5l2 2 4-4" stroke="#BBF7D0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span style={S.greenLabel}>{t('pages.landing.homePage.welcomeLabel')}</span>
-                {/* <div style={S.greenLine} /> */}
               </div>
               <div className="shimmer" />
               <div style={{ position: 'absolute', top: 16, right: 16, opacity: .55 }}><img src={unlockImg} alt="unlock" style={{ width: 22, height: 22, objectFit: 'contain' }} /></div>
