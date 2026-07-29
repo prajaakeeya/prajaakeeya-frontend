@@ -137,7 +137,6 @@ const UserLayout = () => {
               {!isDashboard && !isVotersPage && !isCivicIssuesPage && !isSopPage && !isAspirantRegister && !isNotificationsPage && !isRegisteredAspirants && !isProfilePage && (
                 <IconButton
                   onClick={() => navigate(-1)}
-                  size="small"
                   aria-label="go back"
                   sx={{
                     display: { xs: 'flex', sm: 'none' },
@@ -209,7 +208,7 @@ const UserLayout = () => {
               {/* User avatar (desktop: full, mobile: compact) */}
               <Box sx={{
                 display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1.2, cursor: 'pointer',
-                p: 0.7, pr: { xs: 0.7, sm: 1.2 }, borderRadius: 3,
+                p: 0.7, pr: 1.2, borderRadius: 3,
                 border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : theme.palette.divider}`,
                 bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'action.hover',
                 '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.07)' : 'action.selected' },

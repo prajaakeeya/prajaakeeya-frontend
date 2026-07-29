@@ -135,27 +135,27 @@ const AdminLayout = () => {
                   color: isSelected ? '#f5550b' : 'white',
                 },
                 '&.Mui-selected': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  bgcolor: 'white',
+                  color: '#f5550b',
                   '& .MuiListItemIcon-root': {
-                    color: '#f5550b !important',
+                    color: '#f5550b',
                   },
                   '& .MuiListItemText-primary': {
-                    color: '#f5550b !important',
+                    color: '#f5550b',
                     fontWeight: 700,
                   }
                 },
                 '&.Mui-selected:hover': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  bgcolor: 'white',
+                  color: '#f5550b',
                 },
                 '&.Mui-selected:active': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  bgcolor: 'white',
+                  color: '#f5550b',
                 },
                 '&.Mui-selected:focus': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
+                  bgcolor: 'white',
+                  color: '#f5550b',
                 },
                 '& .MuiListItemIcon-root': {
                   color: isSelected ? '#f5550b' : 'white',
