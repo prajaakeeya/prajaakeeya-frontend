@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Alert, Collapse } from '@mui/material';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
+import { useTranslation } from 'react-i18next';
 
 const OfflineBanner = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleOffline = () => setIsOffline(true);
@@ -31,7 +33,7 @@ const OfflineBanner = () => {
           '& .MuiAlert-message': { textAlign: 'center' },
         }}
       >
-        You&apos;re offline. Some features may not be available.
+        {t('common.offlineMessage', "You're offline. Some features may not be available.")}
       </Alert>
     </Collapse>
   );

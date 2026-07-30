@@ -1,5 +1,6 @@
 {
   "common": {
+    "offlineMessage": "You're offline. Some features may not be available.",
     "logout": "Logout",
     "status": "Status",
     "action": "Action",
