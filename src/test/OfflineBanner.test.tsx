@@ -9,8 +9,15 @@
 // These classes are toggled in JS (not CSS), so they're deterministic in jsdom.
 import { renderWithProviders, screen, act, waitFor } from './test-utils';
 import OfflineBanner from '../components/OfflineBanner';
+import { vi } from 'vitest';
 
-const OFFLINE_TEXT = "You're offline. Some features may not be available.";
+const OFFLINE_TEXT = 'common.offlineMessage';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (k: string, o?: any) => o?.defaultValue ?? k }),
+  Trans: ({ children }: any) => children,
+  initReactI18next: { type: '3rdParty', init: () => {} },
+}));
 
 function collapseEl(container: HTMLElement) {
   return container.querySelector('.MuiCollapse-root') as HTMLElement;
