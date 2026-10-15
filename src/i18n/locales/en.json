@@ -47,6 +47,43 @@
     "withdrawAspirantMessage": "Please withdraw your aspirant registration before deleting your account. You can withdraw it below.",
     "goToDashboard": "Go to Dashboard"
   },
+  "admin": {
+    "municipality": {
+      "edit": "Edit Municipality",
+      "add": "Add Municipality",
+      "name": "Name",
+      "state": "State"
+    },
+    "assembly": {
+      "edit": "Edit Assembly",
+      "add": "Add Assembly",
+      "name": "Name",
+      "state": "State",
+      "parliamentary": "Parliamentary"
+    },
+    "parliamentary": {
+      "edit": "Edit Parliament",
+      "add": "Add Parliament",
+      "name": "Name",
+      "state": "State"
+    },
+    "meeting": {
+      "create": "Create Meeting",
+      "edit": "Edit Meeting",
+      "saving": "Saving...",
+      "saved": "Save Link"
+    },
+    "user": {
+      "create": "Create User",
+      "edit": "Edit User",
+      "updating": "Updating...",
+      "updated": "Update User"
+    },
+    "aspirant": {
+      "block": "Block Aspirant",
+      "unblock": "Unblock Aspirant"
+    }
+  },
   "profile": {
     "completeProfile": "Complete Your Profile",
     "supportLine": "Facing an issue? Reach us at ",

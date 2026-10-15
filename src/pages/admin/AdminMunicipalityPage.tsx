@@ -29,8 +29,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import adminMunicipalityService, { Municipality } from '../../services/adminMunicipalityService';
 import { getStates } from '../../services/geographyService';
+import { useTranslation } from 'react-i18next';
 
 const AdminMunicipalityPage: React.FC = () => {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Municipality[]>([]);
   const [states, setStates] = useState<string[]>([]);
   const [selectedState, setSelectedState] = useState<string>('');
@@ -212,19 +214,19 @@ const AdminMunicipalityPage: React.FC = () => {
 
       {/* Create / Edit Dialog */}
       <Dialog open={formOpen} onClose={closeForm} maxWidth="sm" fullWidth>
-        <DialogTitle>{editing ? 'Edit Municipality' : 'Add Municipality'}</DialogTitle>
+        <DialogTitle>{editing ? t('admin.municipality.edit') : t('admin.municipality.add')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             {formError && <Alert severity="error">{formError}</Alert>}
             <TextField
-              label="Name"
+              label={t('admin.municipality.name')}
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               fullWidth
             />
             <TextField
               select
-              label="State"
+              label={t('admin.municipality.state')}
               value={formData.state}
               onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
               fullWidth

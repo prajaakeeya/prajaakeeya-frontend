@@ -1,5 +1,6 @@
-import { Card, CardContent, Typography, Box, Stack, useTheme } from '@mui/material';
+import { Card, CardContent, Typography, Box, Stack, Button, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
+import { Share as ShareIcon } from '@mui/icons-material';
 import React from 'react';
 import leaderImg from '../../assets/images/leader.webp';
 import alertImg from '../../assets/images/alert.webp';
@@ -43,6 +44,26 @@ const GuestDashboardPage = () => {
   const gridOverlay = isDark
     ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
     : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)';
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Prajaakeeya',
+      text: isKannada
+        ? 'ಹೊಣೆಗಾರಿಕೆಯುಳ್ಳ, ಹಣ-ಮುಕ್ತ ಮತ್ತು ಜಾಹೀರಾತು-ಮುಕ್ತ ಪ್ರಜಾಕೀಯ ವ್ಯವಸ್ಥೆಯನ್ನು ನಿರ್ಮಿಸೋಣ. ಅಧಿಕೃತ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸ್ಥಾಪಿಸಿ:'
+        : 'Let us build a responsible, money-free, and advertisement-free Prajaakeeya system together. Install the official app:',
+      url: 'https://prajaakeeya.org',
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+      }
+    } catch (err) {
+      // User cancelled or clipboard failed — silently ignore
+    }
+  };
 
   const actions = [
     // Registered Citizens tile — temporarily disabled; count shown in hero strip instead
@@ -201,6 +222,39 @@ const GuestDashboardPage = () => {
           </Box>
         ))}
       </Box>
+
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.34, delay: 0.4 }}>
+        <Button
+          variant="contained"
+          fullWidth
+          startIcon={<ShareIcon />}
+          onClick={handleShare}
+          sx={{
+            py: 1.5,
+            borderRadius: '18px',
+            fontWeight: 800,
+            fontSize: '1rem',
+            fontFamily: FF,
+            textTransform: 'none',
+            background: isDark
+              ? 'linear-gradient(135deg, rgba(245,168,0,0.9) 0%, rgba(200,24,10,0.9) 100%)'
+              : 'linear-gradient(135deg, #F5A800 0%, #C8180A 100%)',
+            color: '#fff',
+            boxShadow: isDark
+              ? '0 0 24px rgba(245,168,0,0.4), 0 8px 32px rgba(0,0,0,0.4)'
+              : '0 8px 32px rgba(245,168,0,0.3)',
+            transition: 'transform 0.28s cubic-bezier(.17,.67,.4,1.3), box-shadow 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-2px) scale(1.01)',
+              boxShadow: isDark
+                ? '0 0 36px rgba(245,168,0,0.6), 0 12px 40px rgba(0,0,0,0.5)'
+                : '0 12px 40px rgba(245,168,0,0.4)',
+            },
+          }}
+        >
+          {isKannada ? 'ಅಪ್ಲಿಕೇಶನ್ ಹಂಚಿಕೊಳ್ಳಿ' : 'Share Prajaakeeya App'}
+        </Button>
+      </motion.div>
     </Stack>
   );
 };
