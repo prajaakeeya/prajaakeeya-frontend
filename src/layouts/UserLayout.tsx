@@ -14,6 +14,8 @@ import {
   Paper,
   BottomNavigation,
   BottomNavigationAction,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   Logout as LogoutIcon,
@@ -26,10 +28,12 @@ import {
   DescriptionRounded as DescriptionRoundedIcon,
   PersonAddAlt1Rounded as PersonAddAlt1RoundedIcon,
   PersonRounded as PersonRoundedIcon,
+  IosShareRounded as ShareIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
+import useSnackbar from '../hooks/useSnackbar';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
 import { BRAND } from '../theme';
 import LanguageSelector from '../components/LanguageSelector';
@@ -81,6 +85,28 @@ const UserLayout = () => {
   // state is cleared — do NOT navigate() here too, or the client-side nav races
   // the reload and flashes the register/home page before the preloader.
   const handleLogout = () => { logout(); };
+
+  const snackbar = useSnackbar();
+
+  // Share the app via the native Web Share sheet (WhatsApp/Telegram/SMS/etc.),
+  // falling back to copying the link when Web Share isn't available (#44).
+  const handleShareApp = async () => {
+    const shareData = {
+      title: t('pages.landing.kicker'),
+      text: t('menu.shareText'),
+      url: 'https://prajaakeeya.org',
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        snackbar.showMessage(t('menu.shareCopied'), 'success');
+      }
+    } catch {
+      // User dismissed the share sheet, or share/clipboard is unavailable — no-op.
+    }
+  };
 
   // ── Mobile bottom navigation (xs only). Mirrors the dashboard's primary
   //    actions; the dashboard "Home" now shows the aspirants list with tabs.
@@ -200,6 +226,19 @@ const UserLayout = () => {
                   color: isDark ? BRAND.yellow : BRAND.saffron,
                 }}
               />
+
+              {/* Share app — opens the native share sheet (or copies the link) */}
+              <IconButton
+                onClick={handleShareApp}
+                size="small"
+                aria-label={t('menu.shareApp')}
+                title={t('menu.shareApp')}
+                sx={{
+                  width: 36, height: 36,
+                  color: isDark ? BRAND.yellow : BRAND.saffron,
+                }}>
+                <ShareIcon sx={{ fontSize: 22 }} />
+              </IconButton>
 
               {/* Notifications bell — opens /user/notifications */}
               <NotificationBell />
@@ -384,6 +423,12 @@ const UserLayout = () => {
           ))}
         </BottomNavigation>
       </Paper>
+
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={snackbar.close} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert onClose={snackbar.close} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
