@@ -34,6 +34,8 @@ import {
 const MPIcon = BridgeIcon;
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import PageHeader from '../components/PageHeader';
+import SegmentedTabs from '../components/SegmentedTabs';
 import useAuthStore from '../store/useAuthStore';
 import {
   getIssuesByElectionAndConstituency,
@@ -46,7 +48,6 @@ import {
   fetchGPStates, fetchGPDistricts, fetchGPTaluks, fetchGPGrams, fetchGPVillages,
   type Election, type Constituency, type GPVillage,
 } from '../services/electionService';
-import { BRAND } from '../theme';
 import roadMapImg from '../assets/images/road-map.webp';
 import architectImg from '../assets/images/architect.webp';
 import wasteImg from '../assets/images/waste.webp';
@@ -57,7 +58,7 @@ import savePlanetImg from '../assets/images/save-the-planet.webp';
 import capitolInactiveImg from '../assets/images/capitol.png';
 import capitolActiveImg from '../assets/images/capitol1.webp';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 const CivicIssuesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -168,12 +169,12 @@ const CivicIssuesPage: React.FC = () => {
   const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: 'success' | 'error' | 'info' }>({ open: false, msg: '', severity: 'success' });
 
   // Colours
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const GOLD = theme.palette.primary.main;
   const BG = theme.palette.background.paper;
-  const borderFaint = isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)';
+  const borderFaint = theme.palette.divider;
   const textPrimary = theme.palette.text.primary;
-  const textMid = isDark ? 'rgba(255,255,255,0.64)' : 'rgba(17,24,39,0.65)';
-  const textDim = isDark ? 'rgba(255,255,255,0.42)' : 'rgba(17,24,39,0.46)';
+  const textMid = theme.palette.text.secondary;
+  const textDim = theme.palette.text.secondary;
 
   // If the user arrived via the "Public Issue" button on the aspirants list,
   // location.state carries filterElectionId. Map that election type back to
@@ -525,82 +526,7 @@ const CivicIssuesPage: React.FC = () => {
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 1, sm: 0 } }}>
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38 }}>
-        <Box sx={{
-          bgcolor: BG,
-          borderRadius: 3,
-          border: `1px solid ${borderFaint}`,
-          overflow: 'hidden',
-          boxShadow: isDark ? '0 14px 32px rgba(0,0,0,0.32)' : '0 4px 14px rgba(17,24,39,0.06)',
-          mb: 3,
-        }}>
-          {/* Tri-colour bar */}
-          <Box sx={{ display: 'flex', height: '4px' }}>
-            {[BRAND.red, BRAND.blue, BRAND.brown].map(c => (
-              <Box key={c} sx={{ flex: 1, bgcolor: c }} />
-            ))}
-          </Box>
-
-          <Box sx={{
-            px: { xs: 2.5, sm: 4 },
-            py: 3,
-            display: 'flex',
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2,
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-              <Box sx={{
-                width: 52, height: 52, borderRadius: '12px',
-                background: 'linear-gradient(135deg,rgba(200,24,10,.22),rgba(37,58,154,.18))',
-                border: '1.5px solid rgba(245,168,0,.35)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-              }}>
-                <ReportProblemIcon sx={{ color: GOLD, fontSize: 26 }} />
-              </Box>
-              <Box>
-                <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
-                  {t('civicIssues.title')}
-                </Typography>
-                {/* Election + constituency sub-line removed — the same info is
-                    already shown by the tab-section's value cards below, so it
-                    was rendering twice on /user/civic-issues. */}
-                {/* {filterElectionName && filterConstituencyName ? (
-                  <Box>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
-                      {filterElectionName}
-                    </Typography>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
-                      {t('civicIssues.constituency')}: {filterConstituencyName}
-                    </Typography>
-                  </Box>
-                ) : (selectedElectionId && selectedConstituency) ? (
-                  <Box>
-                    <Typography sx={{ fontFamily: FF, fontSize: '0.9rem', color: isDark ? '#fff' : 'text.primary', mt: 0.5, fontWeight: 800 }}>
-                      {elections.find((e) => e.id === selectedElectionId)?.name}
-                    </Typography>
-                    {selectedElectionType === 'municipal_corporation' && selectedMunicipality ? (
-                      <>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
-                          {t('civicIssues.municipality', { defaultValue: 'Municipality' })}: {selectedMunicipality.name}
-                        </Typography>
-                        <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.2, fontWeight: 600 }}>
-                          {t('civicIssues.ward', { defaultValue: 'Ward' })}: {selectedConstituency?.number} - {selectedConstituency?.name}
-                        </Typography>
-                      </>
-                    ) : (
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.85rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary', mt: 0.3, fontWeight: 600 }}>
-                        {t('civicIssues.constituency')}: {selectedConstituency.name}
-                      </Typography>
-                    )}
-                  </Box>
-                ) : null} */}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </motion.div>
+      <PageHeader title={t('civicIssues.title')} />
 
       {/* ── 3-Tab selector (MP / MLA / Ward·Panchayat) — always shown so the
             user can switch tabs even after deep-linking from the aspirants
@@ -608,93 +534,16 @@ const CivicIssuesPage: React.FC = () => {
             automatically by the effect above. */}
       {(
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38, delay: 0.1 }}>
-          <Box sx={{
-            p: { xs: 1.5, sm: 2 },
-            mb: 2.5,
-            borderRadius: 3,
-            border: `1px solid ${borderFaint}`,
-            bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(17,24,39,0.02)',
-          }}>
-            <Stack direction="row" spacing={{ xs: 1, sm: 1.5 }}>
-              {(
-                [
-                  { key: 'mp' as const, label: t('civicIssues.tabMp', { defaultValue: 'MP Constituency' }), Icon: MPIcon, inactiveImg: undefined as string | undefined, activeImg: undefined as string | undefined },
-                  // MLA: use capitol1.png when inactive and capitol.png when
-                  // active so both states show the building image rather than
-                  // the Gavel SvgIcon.
-                  { key: 'mla' as const, label: t('civicIssues.tabMla', { defaultValue: 'MLA Constituency' }), Icon: MLAIcon, inactiveImg: capitolInactiveImg, activeImg: capitolActiveImg },
-                  { key: 'ward_panchayat' as const, label: t('civicIssues.tabWardPanchayat', { defaultValue: 'Ward / Panchayat' }), Icon: WardPinIcon, inactiveImg: undefined as string | undefined, activeImg: undefined as string | undefined },
-                ]
-              ).map(({ key, label, Icon, inactiveImg, activeImg }) => {
-                const isActive = activeTab === key;
-                const imgSrc = isActive ? activeImg : inactiveImg;
-                return (
-                  <Box
-                    key={key}
-                    onClick={() => { setActiveTab(key); setUserSwitchedTab(true); }}
-                    sx={{
-                      flex: 1,
-                      cursor: 'pointer',
-                      px: { xs: 1, sm: 1.5 },
-                      py: { xs: 1.4, sm: 1.6 },
-                      borderRadius: 2,
-                      border: isActive
-                        ? '1.5px solid rgba(245,168,0,0.55)'
-                        : `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.08)'}`,
-                      background: isActive
-                        ? 'linear-gradient(135deg, rgba(245,168,0,0.95) 0%, rgba(224,32,16,0.85) 100%)'
-                        : isDark
-                          ? 'rgba(255,255,255,0.03)'
-                          : 'rgba(17,24,39,0.02)',
-                      color: isActive ? '#fff' : isDark ? 'rgba(255,255,255,0.78)' : 'rgba(17,24,39,0.78)',
-                      transition: 'all 0.18s ease',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 0.4,
-                      textAlign: 'center',
-                      minWidth: 0,
-                      '&:hover': isActive
-                        ? {}
-                        : {
-                            borderColor: 'rgba(245,168,0,0.45)',
-                            background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
-                          },
-                    }}
-                  >
-                    {imgSrc ? (
-                      <Box
-                        component="img"
-                        src={imgSrc}
-                        alt={label}
-                        sx={{
-                          width: { xs: 26, sm: 30 },
-                          height: { xs: 26, sm: 30 },
-                          objectFit: 'contain',
-                        }}
-                      />
-                    ) : (
-                      <Icon
-                        sx={{
-                          fontSize: { xs: 24, sm: 26 },
-                          color: isActive ? '#fff' : BRAND.yellow,
-                        }}
-                      />
-                    )}
-                    <Typography
-                      sx={{
-                        fontFamily: FF,
-                        fontWeight: 700,
-                        fontSize: { xs: '0.78rem', sm: '0.88rem' },
-                        lineHeight: 1.15,
-                      }}
-                    >
-                      {label}
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </Stack>
+          <Box sx={{ mb: 3 }}>
+            <SegmentedTabs
+              tabs={[
+                { key: 'mp' as const, label: t('civicIssues.tabMp', { defaultValue: 'MP Constituency' }), Icon: MPIcon },
+                { key: 'mla' as const, label: t('civicIssues.tabMla', { defaultValue: 'MLA Constituency' }), Icon: MLAIcon },
+                { key: 'ward_panchayat' as const, label: t('civicIssues.tabWardPanchayat', { defaultValue: 'Ward / Panchayat' }), Icon: WardPinIcon },
+              ]}
+              value={activeTab}
+              onChange={(key) => { setActiveTab(key); setUserSwitchedTab(true); }}
+            />
 
             {/* Constituency value display (read-only, sourced from /auth/me) */}
             {(() => {
@@ -708,7 +557,7 @@ const CivicIssuesPage: React.FC = () => {
                       mt: 2,
                       p: 2,
                       borderRadius: 2,
-                      border: `1px dashed ${isDark ? 'rgba(245,168,0,0.35)' : 'rgba(245,168,0,0.45)'}`,
+                      border: `1px dashed ${isDark ? 'rgba(120,113,108,0.35)' : 'rgba(120,113,108,0.45)'}`,
                       textAlign: 'center',
                     }}
                   >
@@ -721,12 +570,6 @@ const CivicIssuesPage: React.FC = () => {
                       variant="outlined"
                       size="small"
                       onClick={() => navigate('/user/complete-profile')}
-                      sx={{
-                        borderColor: BRAND.yellow,
-                        color: BRAND.yellow,
-                        fontWeight: 700,
-                        textTransform: 'none',
-                      }}
                     >
                       {t('civicIssues.updateProfile', { defaultValue: 'Update Profile' })}
                     </Button>
@@ -749,7 +592,7 @@ const CivicIssuesPage: React.FC = () => {
                         border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(17,24,39,0.10)'}`,
                       }}
                     >
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
+                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: 'text.secondary', textTransform: 'uppercase', mb: 0.3 }}>
                         {t('civicIssues.municipality', { defaultValue: 'Municipality' })}
                       </Typography>
                       <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', fontWeight: 700, color: textPrimary, wordBreak: 'break-word' }}>
@@ -769,7 +612,7 @@ const CivicIssuesPage: React.FC = () => {
                     }}
                   >
                     <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: BRAND.yellow, textTransform: 'uppercase', mb: 0.3 }}>
+                      <Typography sx={{ fontFamily: FF, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.10em', color: 'text.secondary', textTransform: 'uppercase', mb: 0.3 }}>
                         {isMunicipal
                           ? t('civicIssues.ward', { defaultValue: 'Ward' })
                           : wantedType === 'gram_panchayat'
@@ -835,7 +678,7 @@ const CivicIssuesPage: React.FC = () => {
                         <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
                           <Box sx={{
                             width: 40, height: 40, borderRadius: '50%',
-                            bgcolor: isDark ? 'rgba(245,168,0,0.1)' : 'rgba(245,168,0,0.15)',
+                            bgcolor: isDark ? 'rgba(120,113,108,0.1)' : 'rgba(120,113,108,0.15)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             flexShrink: 0,
                           }}>
@@ -870,7 +713,7 @@ const CivicIssuesPage: React.FC = () => {
         </Box>
       ) : fetchError ? (
         <Box sx={{ bgcolor: BG, borderRadius: 3, border: `1px solid ${borderFaint}`, py: 6, textAlign: 'center' }}>
-          <Typography sx={{ fontFamily: FF, color: '#C8180A', fontWeight: 700, mb: 1 }}>{t('civicIssues.error')}</Typography>
+          <Typography sx={{ fontFamily: FF, color: '#B42318', fontWeight: 700, mb: 1 }}>{t('civicIssues.error')}</Typography>
           <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: textMid }}>{fetchError}</Typography>
         </Box>
       ) : (
@@ -926,7 +769,6 @@ const CivicIssuesPage: React.FC = () => {
                   >
                     <Box sx={{ display: 'flex' }}>
                       {/* Left accent bar */}
-                      <Box sx={{ width: '4px', flexShrink: 0, bgcolor: idx % 3 === 0 ? BRAND.red : idx % 3 === 1 ? BRAND.blue : BRAND.brown }} />
                       <CardContent sx={{ flex: 1, py: 2, px: { xs: 2, sm: 2.5 }, '&:last-child': { pb: 2 } }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1, flexWrap: 'wrap' }}>
                           {/* Category name + count */}
@@ -986,9 +828,9 @@ const CivicIssuesPage: React.FC = () => {
                                 sx={{
                                   fontFamily: FF, fontWeight: 700, textTransform: 'none',
                                   borderRadius: 2, fontSize: '0.82rem',
-                                  borderColor: 'rgba(245,168,0,0.45)',
+                                  borderColor: 'rgba(120,113,108,0.45)',
                                   color: GOLD,
-                                  '&:hover': { bgcolor: 'rgba(245,168,0,0.08)', borderColor: GOLD },
+                                  '&:hover': { bgcolor: 'rgba(120,113,108,0.08)', borderColor: GOLD },
                                 }}
                                 variant="outlined"
                               >
@@ -1015,18 +857,9 @@ const CivicIssuesPage: React.FC = () => {
           onClick={() => navigate('/user/sop')}
           sx={{
             borderRadius: 3,
-            textTransform: 'none',
             fontWeight: 700,
-            fontFamily: FF,
             py: 1.5,
             fontSize: '0.95rem',
-            color: '#fff',
-            background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-            boxShadow: '0 6px 24px rgba(200,24,10,0.4)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-              boxShadow: '0 8px 30px rgba(200,24,10,0.55)',
-            },
           }}
         >
           {isKannada ? 'ಪರಿಹಾರ (SOP)' : 'Solutions (SOP)'}

@@ -25,6 +25,7 @@ import {
   MenuItem,
   useTheme,
   Fab,
+  ButtonBase,
 } from '@mui/material';
 import {
   LocationOn as LocationOnIcon,
@@ -51,6 +52,7 @@ import {
   Gavel as GavelIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import SegmentedTabs, { SegmentedTab } from '../components/SegmentedTabs';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import googleMeetImg from '../assets/images/googl-meet.webp';
 import zoomImg from '../assets/images/zoom.webp';
@@ -75,8 +77,6 @@ import { fetchVotingWindow, submitVote, fetchMyVote } from '../services/voteServ
 import useAuthStore from '../store/useAuthStore';
 import apiClient from '../services/apiClient';
 import CloseIcon from '@mui/icons-material/Close';
-import capitolInactiveImg from '../assets/images/capitol.png';
-import capitolActiveImg from '../assets/images/capitol1.webp';
 import { BRAND } from '../theme';
 import SopAgreementCard from '../components/aspirant/SopAgreementCard';
 import { safeUrl } from '../utils/safeUrl';
@@ -156,15 +156,15 @@ const getPlatformIcon = (platform?: string | null, size = 18, variant: 'default'
 const getPlatformButtonStyle = (platform?: string | null) => {
   switch (platform) {
     case 'google_meet':
-      return { background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`, '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` } };
+      return { background: BRAND.red, '&:hover': { background: BRAND.red2 } };
     case 'zoom':
-      return { background: 'linear-gradient(135deg, #2D8CFF 0%, #0B5CFF 100%)', '&:hover': { background: 'linear-gradient(135deg, #0B5CFF 0%, #2D8CFF 100%)' } };
+      return { background: '#2D8CFF', '&:hover': { background: '#0B5CFF' } };
     case 'instagram':
-      return { background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', '&:hover': { background: 'linear-gradient(135deg, #bc1888 0%, #cc2366 25%, #dc2743 50%, #e6683c 75%, #f09433 100%)' } };
+      return { background: '#f09433', '&:hover': { background: '#bc1888' } };
     case 'facebook':
       return { background: '#1877F2', '&:hover': { background: '#0d65d9' } };
     default:
-      return { background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`, '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` } };
+      return { background: BRAND.red, '&:hover': { background: BRAND.red2 } };
   }
 };
 
@@ -208,7 +208,7 @@ interface WardCandidateListPageProps {
 const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps = {}) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const GOLD = theme.palette.primary.main;
 
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [demoSopOpen, setDemoSopOpen] = useState(false);
@@ -645,35 +645,35 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
   const confettiItems = useMemo(() => Array.from({ length: 55 }, (_, i) => ({
     id: i,
     x: (i * 1.87 + 0.9) % 100,
-    color: ['#C8180A', '#F5A800', '#22c55e', '#3b82f6', '#FFCB00', '#ec4899', '#a78bfa', '#fff'][i % 8],
+    color: ['#B42318', '#D92D20', '#22c55e', '#3b82f6', '#D92D20', '#ec4899', '#a78bfa', '#fff'][i % 8],
     size: 5 + (i % 7) * 1.6,
     round: i % 3 === 0,
     delay: (i * 0.042) % 2.4,
     duration: 2.2 + (i % 5) * 0.5,
   })), []);
 
-  // ── theme-aware color tokens ──────────────────────────────────────────
+  // ── theme-aware color tokens (all derived from the MUI theme) ─────────
   const textPrimary = theme.palette.text.primary;
   const textSecondary = theme.palette.text.secondary;
-  const textDim = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(17,24,39,0.42)';
-  const textFaint = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(17,24,39,0.52)';
-  const cardBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #130B0B 100%)' : theme.palette.background.paper;
-  const panelBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #160C0C 100%)' : theme.palette.background.paper;
-  const dialogBg = isDark ? 'linear-gradient(160deg, #1C1212 0%, #150E0E 100%)' : theme.palette.background.paper;
-  const insetBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.04)';
-  const insetBorder = isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(17,24,39,0.10)';
-  const cardBorder = isDark ? '1px solid rgba(245,168,0,0.1)' : '1px solid rgba(245,168,0,0.22)';
-  const panelBorder = isDark ? '1px solid rgba(245,168,0,0.2)' : '1px solid rgba(245,168,0,0.30)';
-  const dividerBorder = isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(17,24,39,0.08)';
-  const avatarBg = isDark ? '#1C1010' : theme.palette.background.paper;
-  const outlinedBtnBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(17,24,39,0.22)';
-  const outlinedBtnColor = isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.70)';
-  const outlinedBtnHoverBorder = isDark ? 'rgba(255,255,255,0.30)' : 'rgba(17,24,39,0.38)';
-  const outlinedBtnHoverBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(17,24,39,0.05)';
-  const disabledBg = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.08)';
-  const disabledColor = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(17,24,39,0.28)';
-  const votesLabelColor = isDark ? 'rgba(255,255,255,0.78)' : 'rgba(17,24,39,0.62)';
-  const votesValueColor = isDark ? '#ff6a5f' : BRAND.red;
+  const textDim = theme.palette.text.secondary;
+  const textFaint = theme.palette.text.secondary;
+  const cardBg = theme.palette.background.paper;
+  const panelBg = theme.palette.background.paper;
+  const dialogBg = theme.palette.background.paper;
+  const insetBg = theme.palette.action.hover;
+  const insetBorder = `1px solid ${theme.palette.divider}`;
+  const cardBorder = `1px solid ${theme.palette.divider}`;
+  const panelBorder = `1px solid ${theme.palette.divider}`;
+  const dividerBorder = `1px solid ${theme.palette.divider}`;
+  const avatarBg = theme.palette.action.hover;
+  const outlinedBtnBorder = theme.palette.divider;
+  const outlinedBtnColor = theme.palette.text.primary;
+  const outlinedBtnHoverBorder = theme.palette.grey[isDark ? 600 : 400];
+  const outlinedBtnHoverBg = theme.palette.action.hover;
+  const disabledBg = theme.palette.action.disabledBackground;
+  const disabledColor = theme.palette.action.disabled;
+  const votesLabelColor = theme.palette.text.secondary;
+  const votesValueColor = theme.palette.primary.main;
 
   // Detect if user has a pending (incomplete) aspirant registration
   const hasPendingRegistration = (() => {
@@ -1452,17 +1452,14 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
             sx={{
               flex: 1,
               borderRadius: '10px',
-              textTransform: 'none',
               fontWeight: 700,
               whiteSpace: 'nowrap',
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               px: { xs: 1.5, sm: 2 },
               py: { xs: 1, sm: 1.25 },
-              background: `linear-gradient(135deg, #ef4444 0%, #dc2626 100%)`,
-              boxShadow: '0 4px 18px rgba(239,68,68,0.4)',
+              background: `#ef4444`,
               '&:hover': {
-                background: `linear-gradient(135deg, #dc2626 0%, #ef4444 100%)`,
-                boxShadow: '0 6px 24px rgba(239,68,68,0.5)',
+                background: `#dc2626`,
               },
             }}
           >
@@ -1509,17 +1506,14 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 sx={{
                   flex: 1,
                   borderRadius: '10px',
-                  textTransform: 'none',
                   fontWeight: 700,
                   whiteSpace: 'nowrap',
                   fontSize: { xs: '0.65rem', sm: '0.78rem' },
                   px: { xs: 1.2, sm: 1.6 },
                   py: { xs: 0.8, sm: 1 },
-                  background: `linear-gradient(135deg, #ef4444 0%, #dc2626 100%)`,
-                  boxShadow: '0 4px 18px rgba(239,68,68,0.4)',
+                  background: `#ef4444`,
                   '&:hover': {
-                    background: `linear-gradient(135deg, #dc2626 0%, #ef4444 100%)`,
-                    boxShadow: '0 6px 24px rgba(239,68,68,0.5)',
+                    background: `#dc2626`,
                   },
                 }}
               >
@@ -1570,7 +1564,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 })()}
               </Typography>
               {votingWindowActive && (
-                <Typography sx={{ fontSize: '0.76rem', color: isDark ? 'rgba(245,168,0,0.85)' : BRAND.yellowLight, fontWeight: 600, mt: 0.5 }}>
+                <Typography sx={{ fontSize: '0.76rem', color: isDark ? '#D92D20' : '#D92D20', fontWeight: 600, mt: 0.5 }}>
                   {t('pages.wardCandidates.votingEligibility')}
                 </Typography>
               )}
@@ -1582,7 +1576,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
         {!embedded && !votingWindow && (
           <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'center', md: 'center' }} justifyContent="space-between" spacing={2}>
             <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-              <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5, color: textPrimary, fontFamily: '"Baloo 2", cursive', letterSpacing: '-0.5px' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5, color: textPrimary, fontFamily: 'inherit', letterSpacing: '-0.5px' }}>
                 {t('pages.wardCandidates.title') || 'Aspirants'}
               </Typography>
               <Typography variant="body2" sx={{ color: textFaint, mb: 1.5 }}>
@@ -1597,102 +1591,21 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
             visited without a `?type=` deep-link (e.g. coming from /user/sop
             "My Area Aspirants"). Dashboard tiles pass `?type=` and skip the
             tab UI entirely. Styled to match the Civic Issues page tabs. */}
-        {showTabSelector && (
-        <Box sx={{
-          p: { xs: 1.5, sm: 2 },
-          mb: 2.5,
-          borderRadius: 3,
-          border: `1px solid ${isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)'}`,
-          bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(17,24,39,0.02)',
-        }}>
-          <Stack direction="row" spacing={{ xs: 1, sm: 1.5 }}>
-            {(() => {
-              const hasMunicipal = (user as any)?.municipalCorporationConstituency?.id != null;
-              const hasGp = (user as any)?.gramPanchayatConstituency != null;
-              const wardTabLabel = hasMunicipal
-                ? (t('userDashboard.actions.myMunicipalCorporationAspirants') || 'My Municipal Aspirants')
-                : hasGp
-                  ? (t('userDashboard.actions.myGramPanchayatAspirants') || 'My Gram Panchayat Aspirants')
-                  : (t('pages.wardCandidates.tabWardPanchayat') || 'My Ward / Panchayat Aspirants');
-              const wardTabIcon = PlaceIcon;
-              const tabs: { key: AspirantTab; label: string; Icon: typeof ParliamentIcon; inactiveImg?: string; activeImg?: string }[] = [
-                { key: 'mp', label: t('userDashboard.actions.myLokSabhaAspirants') || 'My Lok Sabha Aspirants', Icon: ParliamentIcon },
-                { key: 'mla', label: t('userDashboard.actions.myStateAssemblyAspirants') || 'My State Assembly Aspirants', Icon: GavelIcon, inactiveImg: capitolInactiveImg, activeImg: capitolActiveImg },
-                { key: 'ward_panchayat', label: wardTabLabel, Icon: wardTabIcon },
-              ];
-              return tabs.map(({ key, label, Icon, inactiveImg, activeImg }) => {
-                const isActive = activeTab === key;
-                const imgSrc = isActive ? activeImg : inactiveImg;
-                return (
-                  <Box
-                    key={key}
-                    onClick={() => setActiveTab(key)}
-                    sx={{
-                      flex: 1,
-                      cursor: 'pointer',
-                      px: { xs: 1, sm: 1.5 },
-                      py: { xs: 1.4, sm: 1.6 },
-                      borderRadius: 2,
-                      border: isActive
-                        ? '1.5px solid rgba(245,168,0,0.55)'
-                        : `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.08)'}`,
-                      background: isActive
-                        ? 'linear-gradient(135deg, rgba(245,168,0,0.95) 0%, rgba(224,32,16,0.85) 100%)'
-                        : isDark
-                          ? 'rgba(255,255,255,0.03)'
-                          : 'rgba(17,24,39,0.02)',
-                      color: isActive ? '#fff' : isDark ? 'rgba(255,255,255,0.78)' : 'rgba(17,24,39,0.78)',
-                      transition: 'all 0.18s ease',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 0.4,
-                      textAlign: 'center',
-                      minWidth: 0,
-                      '&:hover': isActive
-                        ? {}
-                        : {
-                            borderColor: 'rgba(245,168,0,0.45)',
-                            background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
-                          },
-                    }}
-                  >
-                    {imgSrc ? (
-                      <Box
-                        component="img"
-                        src={imgSrc}
-                        alt={label}
-                        sx={{
-                          width: { xs: 26, sm: 30 },
-                          height: { xs: 26, sm: 30 },
-                          objectFit: 'contain',
-                        }}
-                      />
-                    ) : (
-                      <Icon
-                        sx={{
-                          fontSize: { xs: 24, sm: 26 },
-                          color: isActive ? '#fff' : BRAND.yellow,
-                        }}
-                      />
-                    )}
-                    <Typography
-                      sx={{
-                        fontFamily: '"Baloo 2", cursive',
-                        fontWeight: 700,
-                        fontSize: { xs: '0.78rem', sm: '0.88rem' },
-                        lineHeight: 1.15,
-                      }}
-                    >
-                      {label}
-                    </Typography>
-                  </Box>
-                );
-              });
-            })()}
-          </Stack>
-        </Box>
-        )}
+        {showTabSelector && (() => {
+          const hasMunicipal = (user as any)?.municipalCorporationConstituency?.id != null;
+          const hasGp = (user as any)?.gramPanchayatConstituency != null;
+          const wardTabLabel = hasMunicipal
+            ? (t('userDashboard.actions.myMunicipalCorporationAspirants') || 'My Municipal Aspirants')
+            : hasGp
+              ? (t('userDashboard.actions.myGramPanchayatAspirants') || 'My Gram Panchayat Aspirants')
+              : (t('pages.wardCandidates.tabWardPanchayat') || 'My Ward / Panchayat Aspirants');
+          const tabs: SegmentedTab<AspirantTab>[] = [
+            { key: 'mp', label: t('userDashboard.actions.myLokSabhaAspirants') || 'My Lok Sabha Aspirants', Icon: ParliamentIcon },
+            { key: 'mla', label: t('userDashboard.actions.myStateAssemblyAspirants') || 'My State Assembly Aspirants', Icon: GavelIcon },
+            { key: 'ward_panchayat', label: wardTabLabel, Icon: PlaceIcon },
+          ];
+          return <SegmentedTabs tabs={tabs} value={activeTab} onChange={setActiveTab} />;
+        })()}
 
         {/* Legacy filter UI — preserved but never renders now that the tab
             selector above always sets `autoElectionType`. */}
@@ -1717,21 +1630,21 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               '& .MuiOutlinedInput-root': {
                 background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                 '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
               },
               '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-              '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+              '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
               '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)' },
             }}
             SelectProps={{
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    bgcolor: isDark ? '#1a1515' : '#ffffff',
+                    bgcolor: isDark ? '#1C1917' : '#ffffff',
                     '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                    '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                    '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.1)' },
+                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.2)', color: '#D92D20' },
                   },
                 },
               },
@@ -1751,7 +1664,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedElectionId}
                 loading={loadingGpStates}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1760,11 +1673,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       '& .MuiOutlinedInput-root': {
                         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                         '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                        '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                        '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                        '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                        '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                       },
                       '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                      '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                     }}
                   />
                 )}
@@ -1776,7 +1689,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedGpState}
                 loading={loadingGpDistricts}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1785,11 +1698,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       '& .MuiOutlinedInput-root': {
                         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                         '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                        '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                        '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                        '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                        '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                       },
                       '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                      '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                     }}
                   />
                 )}
@@ -1806,7 +1719,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedElectionId}
                 loading={loadingMunicipalities}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1815,11 +1728,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       '& .MuiOutlinedInput-root': {
                         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                         '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                        '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                        '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                        '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                        '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                       },
                       '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                      '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                     }}
                   />
                 )}
@@ -1834,7 +1747,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 disabled={!selectedMunicipality}
                 loading={loadingCityConstituencies}
                 sx={{ flex: 1, minWidth: 0 }}
-                ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+                ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1843,11 +1756,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       '& .MuiOutlinedInput-root': {
                         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                         '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                        '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                        '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                        '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                        '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                       },
                       '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                      '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                     }}
                   />
                 )}
@@ -1869,10 +1782,10 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               }}
               ListboxProps={{
                 sx: {
-                  bgcolor: isDark ? '#1a1515' : '#fff',
+                  bgcolor: isDark ? '#1C1917' : '#fff',
                   '& .MuiAutocomplete-option': {
                     color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(15,23,42,0.9)',
-                    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' },
+                    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.1)' },
                     '&.Mui-focused': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.04)' },
                   },
                 },
@@ -1885,11 +1798,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     '& .MuiOutlinedInput-root': {
                       background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                       '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                      '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                      '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                      '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                      '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                     },
                     '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                    '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                    '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                   }}
                 />
               )}
@@ -1907,7 +1820,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               disabled={!selectedGpDistrict}
               loading={loadingGpTaluks}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1916,11 +1829,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     '& .MuiOutlinedInput-root': {
                       background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                       '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                      '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                      '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                      '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                      '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                     },
                     '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                    '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                    '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                   }}
                 />
               )}
@@ -1932,7 +1845,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               disabled={!selectedGpTaluk}
               loading={loadingGpGrams}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1941,11 +1854,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     '& .MuiOutlinedInput-root': {
                       background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                       '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                      '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                      '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                      '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                      '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                     },
                     '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                    '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                    '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                   }}
                 />
               )}
@@ -1959,7 +1872,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               loading={loadingGpVillages}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, minWidth: 0 }}
-              ListboxProps={{ sx: { bgcolor: isDark ? '#1a1515' : '#fff' } }}
+              ListboxProps={{ sx: { bgcolor: isDark ? '#1C1917' : '#fff' } }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1968,11 +1881,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     '& .MuiOutlinedInput-root': {
                       background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
                       '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-                      '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-                      '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+                      '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+                      '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
                     },
                     '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-                    '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+                    '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
                   }}
                 />
               )}
@@ -2000,10 +1913,10 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               p: { xs: 3, sm: 4 },
               borderRadius: 3,
               textAlign: 'center',
-              border: `1px solid ${isDark ? 'rgba(245,168,0,0.28)' : 'rgba(245,168,0,0.42)'}`,
+              border: `1px solid ${isDark ? 'rgba(120,113,108,0.28)' : 'rgba(120,113,108,0.42)'}`,
               background: isDark
-                ? 'linear-gradient(135deg, rgba(245,168,0,0.08) 0%, rgba(224,32,16,0.04) 100%)'
-                : 'linear-gradient(135deg, rgba(245,168,0,0.10) 0%, rgba(224,32,16,0.04) 100%)',
+                ? 'rgba(120,113,108,0.08)'
+                : 'rgba(120,113,108,0.10)',
             }}
           >
             <Typography
@@ -2047,16 +1960,12 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 px: 3.5,
                 borderRadius: 2,
                 fontWeight: 800,
-                textTransform: 'none',
                 fontSize: '0.95rem',
-                color: '#fff',
                 background:
-                  'linear-gradient(135deg, #C8180A 0%, #E02010 100%)',
-                boxShadow: '0 6px 20px rgba(200,24,10,0.35)',
+                  '#B42318',
                 '&:hover': {
                   background:
-                    'linear-gradient(135deg, #E02010 0%, #C8180A 100%)',
-                  boxShadow: '0 8px 26px rgba(200,24,10,0.5)',
+                    '#D92D20',
                 },
               }}
             >
@@ -2067,65 +1976,20 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           </Box>
         )}
 
-        {/* Context strip — shows the currently active election + constituency.
-            Stacks vertically on mobile so a long election name (e.g.
-            "Municipal Corporation (Corporator)") doesn't squeeze the ward
-            name into an awkward 3-line wrap. */}
+        {/* Context header — the active election + constituency, with its counts. */}
         {selectedElection && !missingConstituencyForType && (selectedConstituency || selectedGpVillage || selectedMunicipality) && (
-          <Box
-            sx={{
-              mt: { xs: 0.5, sm: 1 },
-              mb: { xs: 1, sm: 1.5 },
-              px: { xs: 1.5, sm: 2 },
-              py: { xs: 1, sm: 1.25 },
-              borderRadius: 2,
-              border: `1px solid ${isDark ? 'rgba(245,168,0,0.25)' : 'rgba(245,168,0,0.4)'}`,
-              background: isDark
-                ? 'linear-gradient(135deg, rgba(245,168,0,0.06) 0%, rgba(224,32,16,0.04) 100%)'
-                : 'linear-gradient(135deg, rgba(245,168,0,0.08) 0%, rgba(224,32,16,0.04) 100%)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: { xs: 0.75, sm: 1 },
-            }}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1.5, sm: 3 }}
+            alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
+            justifyContent="space-between"
+            sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                alignItems: { xs: 'flex-start', sm: 'center' },
-                gap: { xs: 0.75, sm: 1.5 },
-              }}
-            >
-              <Box
-                component="span"
-                sx={{
-                  fontSize: '0.65rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  color: BRAND.yellow,
-                  px: 0.9,
-                  py: 0.3,
-                  borderRadius: 1,
-                  border: `1px solid ${BRAND.yellow}`,
-                  lineHeight: 1.2,
-                  alignSelf: 'flex-start',
-                  maxWidth: '100%',
-                }}
-              >
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                 {selectedElection.name}
-              </Box>
-              <Typography
-                sx={{
-                  fontSize: { xs: '0.95rem', sm: '0.95rem' },
-                  fontWeight: 700,
-                  color: isDark ? '#fff' : 'rgba(17,24,39,0.92)',
-                  lineHeight: 1.3,
-                  flex: 1,
-                  minWidth: 0,
-                  wordBreak: 'break-word',
-                }}
-              >
+              </Typography>
+              <Typography variant="h5" component="h2" sx={{ wordBreak: 'break-word' }}>
                 {isGramPanchayat
                   ? selectedGpVillage?.villageName
                   : isMunicipalElection
@@ -2138,59 +2002,24 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               </Typography>
             </Box>
             {constituencyStats && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: { xs: 0.75, sm: 1 },
-                  pt: { xs: 0.5, sm: 0.25 },
-                  borderTop: `1px dashed ${isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.35)'}`,
-                  mt: { xs: 0.25, sm: 0.25 },
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.75,
-                    px: 1,
-                    py: 0.5,
-                    borderRadius: 999,
-                    background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
-                    border: `1px solid ${isDark ? 'rgba(245,168,0,0.25)' : 'rgba(245,168,0,0.3)'}`,
-                  }}
-                >
-                  <GroupsIcon sx={{ fontSize: '1rem', color: BRAND.yellow }} />
-                  <Typography sx={{ fontSize: '0.78rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(17,24,39,0.65)', fontWeight: 600 }}>
-                    {t('userDashboard.cards.voters', { defaultValue: 'Registered Citizens' })}:
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.88rem', color: isDark ? '#fff' : 'rgba(17,24,39,0.92)', fontWeight: 800 }}>
-                    {constituencyStats.totalVoters.toLocaleString()}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.75,
-                    px: 1,
-                    py: 0.5,
-                    borderRadius: 999,
-                    background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.7)',
-                    border: `1px solid ${isDark ? 'rgba(224,32,16,0.3)' : 'rgba(224,32,16,0.3)'}`,
-                  }}
-                >
-                  <HowToVoteIcon sx={{ fontSize: '1rem', color: '#e02010' }} />
-                  <Typography sx={{ fontSize: '0.78rem', color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(17,24,39,0.65)', fontWeight: 600 }}>
-                    {t('userDashboard.cards.aspirants', { defaultValue: 'Aspirants' })}:
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.88rem', color: isDark ? '#fff' : 'rgba(17,24,39,0.92)', fontWeight: 800 }}>
-                    {constituencyStats.totalAspirants.toLocaleString()}
-                  </Typography>
-                </Box>
-              </Box>
+              <Stack direction="row" spacing={3} divider={<Divider orientation="vertical" flexItem />}>
+                {[
+                  { icon: <GroupsIcon fontSize="small" />, label: t('userDashboard.cards.voters', { defaultValue: 'Registered Citizens' }), value: constituencyStats.totalVoters },
+                  { icon: <HowToVoteIcon fontSize="small" />, label: t('userDashboard.cards.aspirants', { defaultValue: 'Aspirants' }), value: constituencyStats.totalAspirants },
+                ].map((stat) => (
+                  <Box key={stat.label}>
+                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>
+                      {(stat.value ?? 0).toLocaleString()}
+                    </Typography>
+                    <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: 'text.secondary' }}>
+                      {stat.icon}
+                      <Typography variant="body2">{stat.label}</Typography>
+                    </Stack>
+                  </Box>
+                ))}
+              </Stack>
             )}
-          </Box>
+          </Stack>
         )}
 
         {/* If server reports user has voted AND the active voting window is for
@@ -2208,7 +2037,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
             while only the list area below shows a spinner during a tab switch. */}
         {loading && (
           <Box display="flex" justifyContent="center" alignItems="center" minHeight="320px">
-            <CircularProgress sx={{ color: BRAND.red }} />
+            <CircularProgress />
           </Box>
         )}
 
@@ -2217,32 +2046,30 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} alignItems="stretch" sx={{ width: '100%' }}>
             {/* No candidates yet card */}
             <Box sx={{
-              flex: 1, p: 3, borderRadius: '16px', textAlign: 'center',
+              flex: 1, p: 3, borderRadius: 3, textAlign: 'center',
               background: panelBg,
               border: dividerBorder,
-              boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(17,24,39,0.08)',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Typography sx={{ fontWeight: 800, fontSize: '1.1rem', mb: 0.75, color: textPrimary, fontFamily: '"Baloo 2", cursive' }}>
+              <Typography sx={{ fontWeight: 800, fontSize: '1.1rem', mb: 0.75, color: textPrimary, fontFamily: 'inherit' }}>
                 {t('pages.wardCandidates.noAspirantsTitle')}
               </Typography>
               <Typography sx={{ fontSize: '0.85rem', color: textFaint, mb: 1 }}>
                 {t('pages.wardCandidates.noAspirantsDescription')}
               </Typography>
-              <Typography sx={{ fontSize: '0.8rem', color: '#e05820', fontStyle: 'italic', fontWeight: 600 }}>
+              <Typography sx={{ fontSize: '0.8125rem', color: 'warning.main', fontWeight: 500 }}>
                 {t('pages.wardCandidates.demoAspirantNotice')}
               </Typography>
             </Box>
             {/* Register as aspirant card - hidden when voting is open for THIS election type */}
             {!registrationBlocked && (
               <Box sx={{
-                flex: 1, p: 3, borderRadius: '16px',
+                flex: 1, p: 3, borderRadius: 3,
                 background: panelBg,
                 border: panelBorder,
-                boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(17,24,39,0.08)',
               }}>
                 <Stack spacing={2}>
-                  <Typography sx={{ color: GOLD, fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.55 }}>
+                  <Typography sx={{ color: textPrimary, fontWeight: 600, fontSize: '1rem', lineHeight: 1.5 }}>
                     {hasPendingRegistration
                       ? t('pages.wardCandidates.pendingApprovalTitle')
                       : t('pages.wardCandidates.registerQuestion')}
@@ -2257,10 +2084,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       variant="contained"
                       onClick={() => hasPendingRegistration ? handleNavigateToRegistration() : navigate(registerPath)}
                       sx={{
-                        alignSelf: { xs: 'stretch', sm: 'flex-start' }, fontWeight: 700, borderRadius: '8px', textTransform: 'none',
-                        color: '#fff', background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`,
-                        boxShadow: '0 4px 18px rgba(200,24,10,0.4)',
-                        '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` }
+                        alignSelf: { xs: 'stretch', sm: 'flex-start' },
                       }}
                     >
                       {hasPendingRegistration ? t('pages.wardCandidates.continueRegistration') : t('pages.wardCandidates.yesRegister')}
@@ -2274,18 +2098,17 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
 
         {candidates.length > 0 && candidates.every(c => isDemoCandidate(c)) && (!user || (user.role === 'aspirant' && aspirantStatus !== 'pending')) && (
           <Box sx={{
-            width: '100%', p: 4, borderRadius: '16px', textAlign: 'center',
+            width: '100%', p: 4, borderRadius: 3, textAlign: 'center',
             background: panelBg,
             border: dividerBorder,
-            boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(17,24,39,0.08)',
           }}>
-            <Typography sx={{ fontWeight: 800, fontSize: '1.1rem', mb: 0.75, color: textPrimary, fontFamily: '"Baloo 2", cursive' }}>
+            <Typography sx={{ fontWeight: 800, fontSize: '1.1rem', mb: 0.75, color: textPrimary, fontFamily: 'inherit' }}>
               {t('pages.wardCandidates.noAspirantsTitle')}
             </Typography>
             <Typography sx={{ fontSize: '0.85rem', color: textFaint, mb: 1 }}>
               {t('pages.wardCandidates.noAspirantsDescription')}
             </Typography>
-            <Typography sx={{ fontSize: '0.8rem', color: '#e05820', fontStyle: 'italic', fontWeight: 600 }}>
+            <Typography sx={{ fontSize: '0.8125rem', color: 'warning.main', fontWeight: 500 }}>
               {t('pages.wardCandidates.demoAspirantNotice')}
             </Typography>
           </Box>
@@ -2294,25 +2117,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
         {candidates.length > 0 && (
           <Alert
             severity="info"
-            icon={<InfoOutlinedIcon fontSize="small" sx={{ color: isDark ? '#FFCB00' : '#dc2626' }} />}
-            sx={{
-              borderRadius: '10px',
-              mb: 2,
-              ...(isDark
-                ? {
-                    color: '#FFCB00',
-                    backgroundColor: 'rgba(255,203,0,0.08)',
-                    border: '1px solid rgba(255,203,0,0.25)',
-                    '& .MuiAlert-icon': { color: '#FFCB00' },
-                  }
-                : {
-                    color: '#dc2626',
-                    backgroundColor: 'rgba(220,38,38,0.06)',
-                    border: '1px solid rgba(220,38,38,0.25)',
-                    '& .MuiAlert-icon': { color: '#dc2626' },
-                  }),
-              '& .MuiAlert-message': { fontSize: '0.85rem' },
-            }}
+            variant="outlined"
+            icon={<InfoOutlinedIcon fontSize="small" />}
+            sx={{ '& .MuiAlert-message': { fontSize: '0.875rem' } }}
           >
             {t('pages.wardCandidates.profileDisclaimer')}
           </Alert>
@@ -2342,42 +2149,22 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    borderRadius: '12px',
                     p: 0,
                     width: { xs: '100%', sm: 'auto' },
-                    background: cardBg,
-                    border: cardBorder,
                     position: 'relative',
-                    boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(17,24,39,0.08)',
                     overflow: 'hidden',
-                    transition: 'transform 0.24s cubic-bezier(.2,.8,.2,1), box-shadow 0.24s ease, border-color 0.24s ease',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: '4px',
-                      background: `linear-gradient(180deg, ${BRAND.red} 0%, ${BRAND.yellow} 55%, ${BRAND.brown} 100%)`,
-                    },
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: isDark ? '0 20px 50px rgba(0,0,0,0.7)' : '0 20px 50px rgba(17,24,39,0.14)',
-                      borderColor: 'rgba(245,168,0,0.28)',
-                    }
+                    transition: 'border-color 120ms ease',
+                    '&:hover': { borderColor: outlinedBtnHoverBorder },
                   }}
                 >
                   <CardContent sx={{ flexGrow: 1, p: { xs: '14px', md: '16px' }, pb: '8px !important' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 1.5, mb: 1 }}>
                       {/* Avatar */}
-                      <Box sx={{
-                        p: '2.5px', borderRadius: '50%', flexShrink: 0,
-                        background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)`,
-                      }}>
+                      <Box sx={{ flexShrink: 0 }}>
                         <Avatar
                           src={candidate.selfieUrl || candidate.recentPhotoUrl || undefined}
                           alt={candidate.name}
-                          sx={{ width: 56, height: 56, bgcolor: avatarBg, color: GOLD, fontWeight: 700, border: `2px solid ${avatarBg}`, fontSize: '1.25rem' }}
+                          sx={{ width: 56, height: 56, bgcolor: avatarBg, color: textSecondary, fontWeight: 600, fontSize: '1.25rem' }}
                         >
                           {!(candidate.selfieUrl || candidate.recentPhotoUrl) ? (candidate.name || 'U').charAt(0) : null}
                         </Avatar>
@@ -2387,13 +2174,13 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                         <Box>
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
                             <Box sx={{ minWidth: 0, pr: 1 }}>
-                              <Typography sx={{ fontWeight: 800, fontSize: '0.98rem', lineHeight: 1.25, color: textPrimary, fontFamily: '"Baloo 2", cursive' }}>
+                              <Typography sx={{ fontWeight: 600, fontSize: '1rem', lineHeight: 1.3, color: textPrimary }}>
                                 {candidate.name}
                               </Typography>
 
                               <Box sx={{ mt: 0.25 }}>
                                 {candidate.education && (
-                                  <Typography variant="body2" sx={{ color: textDim, fontSize: '0.75rem', lineHeight: 1.1, fontWeight: 600 }}>
+                                  <Typography variant="body2" sx={{ color: textDim, fontSize: '0.8125rem', lineHeight: 1.3 }}>
                                     {candidate.education}
                                   </Typography>
                                 )}
@@ -2402,7 +2189,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   {/* <Typography variant="body2" sx={{ fontSize: '0.72rem', color: votesLabelColor, fontWeight: 600 }}>
                                     Vote:
                                   </Typography>
-                                  <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 900, color: votesValueColor, fontFamily: '"Baloo 2", cursive' }}>
+                                  <Typography variant="body2" sx={{ fontSize: '0.9rem', fontWeight: 900, color: votesValueColor, fontFamily: 'inherit' }}>
                                     {votePercentages[candidate.id] ?? 0}%
                                   </Typography> */}
                                 </Box>
@@ -2413,10 +2200,10 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   return (
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.3 }}>
                                       <Box sx={{ display: 'flex', alignItems: 'center' }}>{renderStars(or.averageRating, 11)}</Box>
-                                      <Typography sx={{ fontSize: '0.68rem', fontWeight: 800, color: BRAND.yellow, lineHeight: 1 }}>
+                                      <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: textPrimary, lineHeight: 1 }}>
                                         {or.averageRating.toFixed(1)}
                                       </Typography>
-                                      <Typography sx={{ fontSize: '0.6rem', color: textFaint, lineHeight: 1 }}>
+                                      <Typography sx={{ fontSize: '0.75rem', color: textFaint, lineHeight: 1 }}>
                                         ({or.totalRatings} {or.totalRatings === 1 ? 'rating' : 'ratings'})
                                       </Typography>
                                     </Box>
@@ -2433,11 +2220,12 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   return isIndependent ? t('forms.aspirant.defaults.party') : candidate.party;
                                 })()}
                                 size="small"
-                                sx={{ borderRadius: '6px', bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgba(245,168,0,0.3)', fontWeight: 700, fontSize: '0.65rem', flexShrink: 0, height: 20 }}
+                                variant="outlined"
+                                sx={{ fontWeight: 500, fontSize: '0.6875rem', flexShrink: 0, height: 22, color: textSecondary }}
                               />
 
                               {isDemoCandidate(candidate) && (
-                                <Chip label="DEMO" size="small" sx={{ borderRadius: '6px', bgcolor: 'rgba(200,24,10,0.15)', color: BRAND.red, border: `1px solid ${BRAND.red}`, fontWeight: 800, fontSize: '0.6rem', height: 20 }} />
+                                <Chip label="DEMO" size="small" color="warning" variant="outlined" sx={{ fontWeight: 600, fontSize: '0.625rem', height: 20 }} />
                               )}
                               <Button
                                 size="small"
@@ -2448,12 +2236,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   try { sessionStorage.setItem('wardlist_return_aspirant', String(candidate.id)); } catch { /* ignore */ }
                                   navigate(`/user/aspirants/${candidate.id}/view`, { state: { candidate } });
                                 }}
-                                sx={{
-                                  px: 0.68, py: 0.68, minWidth: 82, borderRadius: 1.5, minHeight: 25,
-                                  textTransform: 'none', fontWeight: 700, fontSize: '0.55rem', lineHeight: 1,
-                                  background: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgb(245, 167, 0)',
-                                  '&:hover': { bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: `1px solid ${GOLD}` }
-                                }}
+                                sx={{ minHeight: 30, px: 1.25, fontSize: '0.75rem', whiteSpace: 'nowrap' }}
                                 variant="outlined"
                               >
                                 {t('pages.wardCandidates.viewManifesto') || 'View Details'}
@@ -2472,7 +2255,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     </Box>
 
                     {/* Divider after profile */}
-                    <Box sx={{ height: '1px', my: 1, background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
+                    <Divider sx={{ my: 1.5 }} />
 
                     {/* Video Meet Section — all meetings */}
                     {(() => {
@@ -2509,7 +2292,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                             })();
                             const meetingStatus = getMeetingTimeStatus(scheduledAt ? scheduledAt.getTime() : null, meetEndMs, now, isDemo);
                             return (
-                              <Box key={meeting.id || mIdx} sx={{ mb: mIdx < visibleMeetings.length - 1 ? 1 : 0, p: 1, borderRadius: '8px', bgcolor: insetBg, border: `1px solid ${BRAND.red}` }}>
+                              <Box key={meeting.id || mIdx} sx={{ mb: mIdx < visibleMeetings.length - 1 ? 1 : 0, p: 1.25, borderRadius: 2, bgcolor: insetBg, border: insetBorder }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
                                   <Box sx={{ minWidth: 0, flex: 1 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.8, mb: 0.2, flexWrap: 'nowrap' }}>
@@ -2567,7 +2350,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                               return `${startStr} - ${endDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`;
                                             })()}
                                           </Typography>
-                                          <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' }}>
+                                          <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.1)' }}>
                                             {(() => { const h = scheduledAt.getHours(); return h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening'; })()}
                                           </Typography>
                                         </Box>
@@ -2622,7 +2405,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                     disabled={!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs}
                                     startIcon={<Box sx={{ display: 'flex', alignItems: 'center' }}>{getPlatformIcon(meeting.platform, 25, (!isDemoCandidate(candidate) && !!meetEndMs && now > meetEndMs) ? 'default' : (meeting.platform === 'instagram' || meeting.platform === 'facebook') ? 'white' : 'default')}</Box>}
                                     endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
-                                    sx={{ mt: 1.2, height: 34, borderRadius: '8px', textTransform: 'none', fontWeight: 800, color: '#fff', fontSize: '0.74rem', ...getPlatformButtonStyle(meeting.platform), '&.Mui-disabled': { background: 'rgba(120,120,120,0.25)', color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.6)', '& .MuiSvgIcon-root': { color: isDark ? 'rgba(255,255,255,0.35)' : '#1976d2' } } }}
+                                    sx={{ mt: 1.2, height: 34, borderRadius: '8px', textTransform: 'none', fontWeight: 800, fontSize: '0.74rem', ...getPlatformButtonStyle(meeting.platform), '&.Mui-disabled': { background: 'rgba(120,120,120,0.25)', color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.6)', '& .MuiSvgIcon-root': { color: isDark ? 'rgba(255,255,255,0.35)' : '#1976d2' } } }}
                                     onClick={() => {
                                       void trackInteraction(candidate.id);
                                       const raw = meeting.meetingLink;
@@ -2794,7 +2577,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                           })}
                         </Box>
                         {/* Divider after video meet */}
-                        <Box sx={{ height: '1px', my: 1, background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
+                        <Divider sx={{ my: 1.5 }} />
                       </>
                       );
                     })()}
@@ -2892,7 +2675,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                       <Typography variant="caption" sx={{ color: isDark ? '#fff' : textPrimary, fontSize: '0.65rem', fontWeight: 600 }}>
                                         {startDate ? startDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }) : ''}{startDate && (endDate ? ` - ${endDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}` : ` - ${new Date((startDate).getTime() + 3600000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`)}
                                       </Typography>
-                                      <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' }}>
+                                      <Typography variant="caption" sx={{ color: isDark ? 'rgba(255,255,255,0.65)' : 'rgba(17,24,39,0.65)', fontSize: '0.63rem', fontWeight: 600, px: 0.5, py: 0.2, borderRadius: '4px', bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.1)' }}>
                                         {(() => {
                                           const hour = startDate ? startDate.getHours() : 0;
                                           if (hour < 12) return 'Morning';
@@ -2942,7 +2725,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                 {visit.rating?.totalRatings > 0 && (
                                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.8 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>{renderStars(visit.rating.averageRating, 13)}</Box>
-                                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 800, color: BRAND.yellow, lineHeight: 1 }}>
+                                    <Typography sx={{ fontSize: '0.7rem', fontWeight: 800, color: '#D92D20', lineHeight: 1 }}>
                                       {Number(visit.rating.averageRating).toFixed(1)}
                                     </Typography>
                                     <Typography sx={{ fontSize: '0.63rem', color: textFaint, lineHeight: 1 }}>
@@ -3100,7 +2883,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                           })}
                         </Box>
                         {/* Divider after direct meets */}
-                        <Box sx={{ height: '1px', my: 1, background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
+                        <Divider sx={{ my: 1.5 }} />
                       </>
                     )}
 
@@ -3117,7 +2900,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                 startIcon={<WhatsAppIcon sx={{ fontSize: 16 }} />}
                                 sx={{
                                   minHeight: 40, borderRadius: '8px', textTransform: 'none', fontWeight: 700,
-                                  background: '#25D366', color: '#fff', border: '1px solid rgba(37,211,102,0.12)',
+                                  background: '#25D366', border: '1px solid rgba(37,211,102,0.12)',
                                   fontSize: '0.72rem',
                                   '&:hover': { background: '#1fa851' },
                                 }}
@@ -3162,8 +2945,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                 sx={{
                                   px: 1.25, py: 0.45, minWidth: 84, minHeight: 40, borderRadius: 1.2,
                                   textTransform: 'none', fontWeight: 700, fontSize: '0.68rem',
-                                  background: GOLD, color: '#fff', border: '1px solid rgba(245,168,0,0.3)',
-                                  '&:hover': { bgcolor: '#FFD700', background: '#FFD700', color: '#111', border: '1px solid #FFD700' }
+                                  background: GOLD, color: '#fff', border: '1px solid rgba(120,113,108,0.3)',
+                                  '&:hover': { bgcolor: '#D92D20', background: '#D92D20', color: '#111', border: '1px solid #FDB022' }
                                 }}
                                 variant="outlined"
                               >
@@ -3182,9 +2965,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                               startIcon={<ForumIcon sx={{ fontSize: 16 }} />}
                               sx={{
                                 minHeight: 40, borderRadius: '8px', textTransform: 'none', fontWeight: 700,
-                                color: '#fff', background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`,
                                 fontSize: '0.72rem',
-                                '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` },
                               }}
                               onClick={() => {
                                 const _contactTs = Date.now();
@@ -3217,7 +2998,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                             rating-window info. Window = next day after contact, 10 AM–10 PM
                             (same calculation as meeting ratings). Hidden once rated. */}
                         {(!!candidate.phone || !!candidate.whatsappNumber || (candidate.allowChat && user?.aspirantId !== candidate.id)) && (() => {
-                          const helperSx = { mt: 0.6, fontFamily: '"Baloo 2", cursive', fontSize: '0.72rem', lineHeight: 1.4, color: isDark ? '#FFCB00' : '#412323', textAlign: 'center' as const };
+                          const helperSx = { mt: 0.6, fontFamily: 'inherit', fontSize: '0.72rem', lineHeight: 1.4, color: isDark ? '#D92D20' : '#412323', textAlign: 'center' as const };
                           const currentRating = contactRatings[candidate.id] ?? getStoredContactRating(candidate.id);
                           const rated = candidate.isContactRated || currentRating > 0;
 
@@ -3357,7 +3138,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                           );
                         })()}
                         {/* Divider after contact buttons */}
-                        <Box sx={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(245,168,0,0.25), transparent)' }} />
+                        <Divider />
                       </>
                     )}
                   </CardContent>
@@ -3390,7 +3171,6 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   sx={{
                                     height: 34,
                                     borderRadius: '8px',
-                                    textTransform: 'none',
                                     fontWeight: 700,
                                     color: isDark ? '#fff' : textPrimary,
                                     borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(17,24,39,0.12)',
@@ -3428,10 +3208,9 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                                   disabled={finalDisabled || posting}
                                   sx={{
                                     height: 34, borderRadius: '8px', textTransform: 'none', fontWeight: 700,
-                                    color: '#fff', background: `linear-gradient(135deg, ${BRAND.green} 0%, #16a34a 100%)`,
-                                    boxShadow: '0 3px 10px rgba(37,58,154,0.4)',
+                                    background: `${BRAND.green}`,
                                     fontSize: { xs: '0.72rem', sm: isKannada ? '0.68rem' : '0.8rem' },
-                                    '&:hover': { background: `linear-gradient(135deg, #16a34a 0%, ${BRAND.green} 100%)`, boxShadow: '0 5px 16px rgba(37,58,154,0.6)' },
+                                    '&:hover': { background: `#16a34a`, boxShadow: 'none' },
                                     '&.Mui-disabled': { background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.12)', color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(17,24,39,0.38)', boxShadow: 'none' },
                                   }}
                                   onClick={!finalDisabled ? async (e) => {
@@ -3475,15 +3254,14 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
         {/* Register as aspirant banner below the candidate list — hide when only demo is showing (top section already has it) */}
         {candidates.some(c => !isDemoCandidate(c)) && user && user.role !== 'aspirant' && !user.aspirantId && !registrationBlocked && (
           <Box sx={{
-            width: '100%', p: 3, borderRadius: '16px',
+            width: '100%', p: 3, borderRadius: 3,
             background: panelBg,
             border: panelBorder,
-            boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(17,24,39,0.08)',
             display: 'flex', flexDirection: { xs: 'column', sm: 'row' },
             alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2, justifyContent: 'space-between',
           }}>
             <Box>
-              <Typography sx={{ color: GOLD, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>
+              <Typography sx={{ color: textPrimary, fontWeight: 600, fontSize: '1.0625rem', mb: 0.5 }}>
                 {hasPendingRegistration
                   ? (t('pages.wardCandidates.registrationPendingTitle') || 'Your registration is pending.')
                   : (t('pages.wardCandidates.aspirantRegistrationTitle') || 'Want to represent your ward?')}
@@ -3502,10 +3280,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 sx={{
                   flexShrink: 0, fontWeight: 700, borderRadius: '8px', textTransform: 'none', whiteSpace: 'nowrap',
                   alignSelf: { xs: 'stretch', sm: 'auto' },
-                  color: '#fff', background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`,
-                  boxShadow: '0 4px 18px rgba(200,24,10,0.4)',
-                  '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` }
-                }}
+                  }}
               >
                 {hasPendingRegistration ? (t('pages.wardCandidates.continueRegistration') || 'Continue Registration') : (t('pages.wardCandidates.register') || 'Register as Aspirant')}
               </Button>
@@ -3522,18 +3297,15 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           PaperProps={{
             sx: {
               background: dialogBg,
-              border: `1px solid rgba(245,168,0,0.18)`,
-              borderRadius: '20px',
-              boxShadow: isDark ? '0 24px 80px rgba(0,0,0,0.85)' : '0 24px 80px rgba(17,24,39,0.18)',
+              borderRadius: '12px',
               overflow: 'hidden',
             },
           }}
         >
-          <Box sx={{ height: 4, background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)` }} />
           <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <HowToVoteIcon sx={{ color: GOLD, fontSize: 22 }} />
-              <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: textPrimary, fontFamily: '"Baloo 2", cursive' }}>
+              <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: textPrimary, fontFamily: 'inherit' }}>
                 {t('pages.wardCandidates.votingWindowTitle') || 'Voting Eligibility'}
               </Typography>
             </Box>
@@ -3547,7 +3319,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               return (
                 <>
                   {isEligible && !votingWindowActive ? (
-                    <Box sx={{ p: '12px 14px', mb: 2, borderRadius: '10px', background: isDark ? 'rgba(245,168,0,0.07)' : 'rgba(245,168,0,0.1)', border: '1px solid rgba(245,168,0,0.28)' }}>
+                    <Box sx={{ p: '12px 14px', mb: 2, borderRadius: '10px', background: isDark ? 'rgba(120,113,108,0.07)' : 'rgba(120,113,108,0.1)', border: '1px solid rgba(120,113,108,0.28)' }}>
                       <Typography sx={{ fontSize: '0.88rem', fontWeight: 700, color: GOLD, mb: 0.4 }}>
                          {t('pages.wardCandidates.votingEligibilityEnabled')}
                       </Typography>
@@ -3583,7 +3355,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               fullWidth
               variant="contained"
               onClick={() => setEligibilityDialogOpen(false)}
-              sx={{ borderRadius: '8px', fontWeight: 700, textTransform: 'none', color: '#fff', background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`, boxShadow: '0 4px 14px rgba(200,24,10,0.35)', '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)` } }}
+              sx={{ borderRadius: '8px', fontWeight: 700, textTransform: 'none', boxShadow: 'none', }}
             >
               {t('common.ok') || 'OK'}
             </Button>
@@ -3601,8 +3373,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               borderRadius: 4,
               overflow: 'visible',
               background: theme.palette.mode === 'dark'
-                ? 'linear-gradient(145deg, #1e1e2e 0%, #2a2a3e 100%)'
-                : 'linear-gradient(145deg, #ffffff 0%, #f8f8ff 100%)',
+                ? '#1e1e2e'
+                : '#ffffff',
               boxShadow: '0 24px 60px rgba(0,0,0,0.3)',
             }
           }}
@@ -3616,11 +3388,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
             width: 72,
             height: 72,
             borderRadius: '50%',
-            background: `linear-gradient(135deg, ${BRAND.green} 0%, #16a34a 100%)`,
+            background: `${BRAND.green}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: `0 8px 24px rgba(34,197,94,0.45)`,
+            boxShadow: 'none',
             zIndex: 10,
             border: '4px solid',
             borderColor: theme.palette.mode === 'dark' ? '#1e1e2e' : '#ffffff',
@@ -3634,7 +3406,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               width: 48,
               height: 4,
               borderRadius: 2,
-              background: `linear-gradient(90deg, ${BRAND.red}, ${BRAND.yellow})`,
+              background: `${BRAND.red}`,
               mx: 'auto',
               mb: 2.5,
             }} />
@@ -3656,7 +3428,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 gap: 1,
                 px: 2.5,
                 py: 1,
-                borderRadius: 50,
+                borderRadius: 2,
                 background: theme.palette.mode === 'dark'
                   ? 'rgba(34,197,94,0.08)'
                   : 'rgba(34,197,94,0.08)',
@@ -3676,15 +3448,12 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
               onClick={() => setVoteThankOpen(false)}
               variant="contained"
               sx={{
-                textTransform: 'none',
                 fontWeight: 700,
                 px: 4,
                 py: 1,
-                borderRadius: 50,
-                background: `linear-gradient(135deg, ${BRAND.green} 0%, #16a34a 100%)`,
-                boxShadow: '0 4px 14px rgba(16,185,129,0.18)',
-                color: '#fff',
-                '&:hover': { background: `linear-gradient(135deg, #16a34a 0%, ${BRAND.green} 100%)` },
+                borderRadius: 2,
+                background: `${BRAND.green}`,
+                '&:hover': { background: `#16a34a` },
               }}
             >
               {t('pages.voting.close') || 'Close'}
@@ -3711,15 +3480,12 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           PaperProps={{
             sx: {
               background: dialogBg,
-              border: `1px solid rgba(245,168,0,0.18)`,
-              borderRadius: '20px',
-              boxShadow: isDark ? '0 24px 80px rgba(0,0,0,0.85)' : '0 24px 80px rgba(17,24,39,0.18)',
+              borderRadius: '12px',
               overflow: 'hidden',
             },
           }}
         >
           {/* Conic accent bar */}
-          <Box sx={{ height: 4, background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2} 180deg 270deg, ${BRAND.yellow2} 270deg 360deg)` }} />
 
           <DialogContent sx={{ px: 3, pt: 3, pb: 3 }}>
             <Stack spacing={2.5}>
@@ -3744,11 +3510,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     handleNavigateToRegistration();
                   }}
                   sx={{
-                    py: 1.1, borderRadius: '8px', fontWeight: 700, textTransform: 'none', fontSize: '0.95rem', color: '#fff',
-                    background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`,
-                    boxShadow: '0 4px 18px rgba(200,24,10,0.45)',
-                    '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)`, boxShadow: '0 6px 24px rgba(200,24,10,0.6)' },
-                  }}
+                    py: 1.1, borderRadius: '8px', fontWeight: 700, textTransform: 'none', fontSize: '0.95rem', }}
                 >
                   {t('common.yes', { defaultValue: 'Yes' })}
                 </Button>
@@ -3795,7 +3557,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 exit={{ opacity: 0, transition: { duration: 0.6 } }}
                 style={{
                   position: 'fixed', inset: 0, zIndex: 9999,
-                  background: 'radial-gradient(ellipse at 50% 15%, #2a1008 0%, #150E0E 55%, #0d0505 100%)',
+                  background: '#2a1008',
                   display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', overflow: 'hidden', padding: '24px',
                 }}
@@ -3840,11 +3602,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       transition={{ repeat: Infinity, duration: 5, ease: 'linear' }}
                       style={{
                         width: 110, height: 110, borderRadius: '50%',
-                        background: 'conic-gradient(#C8180A 0deg, #F5A800 90deg, #22c55e 180deg, #3b82f6 270deg, #C8180A 360deg)',
+                        background: '#B42318',
                         padding: 3, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}
                     >
-                      <Box sx={{ width: '100%', height: '100%', borderRadius: '50%', bgcolor: '#150E0E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Box sx={{ width: '100%', height: '100%', borderRadius: '50%', bgcolor: '#1C1917', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <motion.div
                           initial={{ scale: 0, rotate: -30 }}
                           animate={{ scale: 1, rotate: 0 }}
@@ -3859,18 +3621,18 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
 
                   {/* Welcome heading */}
                   <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.45 }}>
-                    <Typography sx={{ fontFamily: '"Baloo 2", cursive', fontWeight: 900, fontSize: { xs: '1.4rem', sm: '1.85rem' }, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em' }}>
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 900, fontSize: { xs: '1.4rem', sm: '1.85rem' }, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.06em' }}>
                       {t('pages.pledge.welcome', { defaultValue: 'Welcome,' })}
                     </Typography>
-                    <Typography sx={{ fontFamily: '"Baloo 2", cursive', fontWeight: 900, fontSize: { xs: '2rem', sm: '2.7rem' }, color: '#fff', lineHeight: 1.05, mb: 2 }}>
+                    <Typography sx={{ fontFamily: 'inherit', fontWeight: 900, fontSize: { xs: '2rem', sm: '2.7rem' }, color: '#fff', lineHeight: 1.05, mb: 2 }}>
                       {(user as any)?.name || 'Citizen'}
                     </Typography>
-                    <Box sx={{ width: 88, height: 3, mx: 'auto', mb: 3, borderRadius: 99, background: 'linear-gradient(90deg, #C8180A, #F5A800, #FFCB00, #F5A800, #C8180A)', boxShadow: '0 0 18px rgba(245,168,0,0.7)' }} />
+                    <Box sx={{ width: 88, height: 3, mx: 'auto', mb: 3, borderRadius: 99, background: '#B42318', boxShadow: 'none' }} />
                   </motion.div>
 
                   {/* Para 4 — word-by-word blur reveal */}
-                  <Box sx={{ px: { xs: 1.5, sm: 3 }, py: 2.5, mb: 2, borderRadius: '18px', background: 'rgba(245,168,0,0.07)', border: '1px solid rgba(245,168,0,0.22)', backdropFilter: 'blur(10px)' }}>
-                    <Typography component="div" sx={{ fontFamily: '"Baloo 2", cursive', fontWeight: 800, fontSize: { xs: '1.05rem', sm: '1.22rem' }, lineHeight: 1.65, color: '#F5A800' }}>
+                  <Box sx={{ px: { xs: 1.5, sm: 3 }, py: 2.5, mb: 2, borderRadius: '12px', background: 'rgba(120,113,108,0.07)', border: '1px solid rgba(120,113,108,0.22)', backdropFilter: 'blur(10px)' }}>
+                    <Typography component="div" sx={{ fontFamily: 'inherit', fontWeight: 800, fontSize: { xs: '1.05rem', sm: '1.22rem' }, lineHeight: 1.65, color: '#D92D20' }}>
                       {t('pages.login.oath.para4')
                         .split(' ').map((word, i) => (
                           <motion.span
@@ -3887,8 +3649,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                   </Box>
 
                   {/* Para 5 — word-by-word blur reveal */}
-                  <Box sx={{ px: { xs: 1.5, sm: 3 }, py: 2.5, mb: 3.5, borderRadius: '18px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-                    <Typography component="div" sx={{ fontFamily: '"Baloo 2", cursive', fontWeight: 700, fontSize: { xs: '0.92rem', sm: '1.05rem' }, lineHeight: 1.75, color: 'rgba(255,255,255,0.88)' }}>
+                  <Box sx={{ px: { xs: 1.5, sm: 3 }, py: 2.5, mb: 3.5, borderRadius: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+                    <Typography component="div" sx={{ fontFamily: 'inherit', fontWeight: 700, fontSize: { xs: '0.92rem', sm: '1.05rem' }, lineHeight: 1.75, color: 'rgba(255,255,255,0.88)' }}>
                       {t('pages.login.oath.para5')
                         .split(' ').map((word, i) => (
                           <motion.span
@@ -3917,11 +3679,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       }}
                       sx={{
                         px: 5, py: 1.5, borderRadius: 3, fontWeight: 800,
-                        fontFamily: '"Baloo 2", cursive', fontSize: '1.05rem',
-                        textTransform: 'none', color: '#fff',
-                        background: 'linear-gradient(135deg, #C8180A 0%, #E02010 100%)',
-                        boxShadow: '0 6px 30px rgba(200,24,10,0.55)',
-                        '&:hover': { background: 'linear-gradient(135deg, #E02010 0%, #C8180A 100%)', boxShadow: '0 8px 38px rgba(200,24,10,0.7)', transform: 'translateY(-2px)' },
+                        fontFamily: 'inherit', fontSize: '1.05rem',
+                        textTransform: 'none', '&:hover': { boxShadow: 'none', transform: 'translateY(-2px)' },
                         transition: 'all 0.2s ease',
                       }}
                     >
@@ -3958,13 +3717,13 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                 exit={{ opacity: 0, scale: 0.9, y: 16 }}
                 transition={{ duration: 0.4, type: 'spring', stiffness: 260, damping: 22 }}
                 style={{
-                  background: isDark ? 'linear-gradient(160deg, #1C1010 0%, #130A0A 100%)' : '#FFFFFF',
-                  border: '1px solid rgba(245,168,0,0.18)',
-                  borderRadius: '20px',
+                  background: isDark ? '#1C1917' : '#FFFFFF',
+                  border: '1px solid rgba(120,113,108,0.18)',
+                  borderRadius: '12px',
                   padding: '28px 24px 24px',
                   maxWidth: '420px',
                   width: '100%',
-                  boxShadow: '0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,24,10,0.08)',
+                  boxShadow: 'none',
                 }}
               >
                 <Stack spacing={2}>
@@ -3976,7 +3735,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     textAlign: 'center',
                   }}>
                     <Typography sx={{
-                      fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                      fontFamily: 'inherit', fontWeight: 800,
                       color: textPrimary, mb: 1.5, lineHeight: 1.4,
                       fontSize: { xs: '1rem', sm: '1.05rem' },
                     }}>
@@ -3991,10 +3750,8 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       }}
                       sx={{
                         py: 1.2, px: 4, borderRadius: 3, fontWeight: 700, fontSize: '1rem',
-                        fontFamily: "'Baloo 2', sans-serif", textTransform: 'none', color: '#fff',
-                        background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)',
-                        boxShadow: '0 4px 20px rgba(34,197,94,0.4)',
-                        '&:hover': { background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', boxShadow: '0 6px 28px rgba(34,197,94,0.55)' },
+                        fontFamily: 'inherit', textTransform: 'none', background: '#16a34a',
+                        '&:hover': { background: '#22c55e', boxShadow: 'none' },
                       }}
                     >
                       {t('common.proceed', { defaultValue: 'Proceed' })}
@@ -4009,7 +3766,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                     textAlign: 'center',
                   }}>
                     <Typography sx={{
-                      fontFamily: "'Baloo 2', sans-serif", fontWeight: 800,
+                      fontFamily: 'inherit', fontWeight: 800,
                       color: textPrimary, mb: 1.5, lineHeight: 1.4,
                       fontSize: { xs: '1rem', sm: '1.05rem' },
                     }}>
@@ -4021,11 +3778,7 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
                       onClick={() => setShowAspirantPrompt(false)}
                       sx={{
                         py: 1.2, px: 4, borderRadius: 3, fontWeight: 700, fontSize: '1rem',
-                        fontFamily: "'Baloo 2', sans-serif", textTransform: 'none', color: '#fff',
-                        background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.red2} 100%)`,
-                        boxShadow: '0 4px 20px rgba(200,24,10,0.45)',
-                        '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, ${BRAND.red} 100%)`, boxShadow: '0 6px 28px rgba(200,24,10,0.6)' },
-                      }}
+                        fontFamily: 'inherit', textTransform: 'none', }}
                     >
                       {t('common.proceed', { defaultValue: 'Proceed' })}
                     </Button>
@@ -4055,11 +3808,11 @@ const WardCandidateListPage = ({ embedded = false }: WardCandidateListPageProps 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="scroll to top"
           sx={{
-            background: 'linear-gradient(135deg, #f87444 0%, #fbbf24 100%)',
+            background: '#f87444',
             color: '#fff',
             boxShadow: 'none',
             '&:hover': {
-              background: 'linear-gradient(135deg, #fbbf24 0%, #f87444 100%)',
+              background: '#fbbf24',
               boxShadow: 'none',
               transform: 'translateY(-2px)',
             },

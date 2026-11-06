@@ -19,11 +19,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
-const GOLD = '#F5A800';
-const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
-const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const GOLD = 'primary.main';
+const GOLDD = 'divider';
+const DARK = 'background.paper';
+const BORDER = 'divider';
+const FF = 'inherit';
 
 interface Props {
   cameraActive: boolean;
@@ -70,8 +70,8 @@ const LivePhotoCaptureStep = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
-  const cardBg = isDark ? DARK : 'linear-gradient(180deg,#fffdfa 0%,#f9f4ec 100%)';
-  const cardBorder = isDark ? BORDER : 'rgba(245,168,0,0.24)';
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = theme.palette.divider;
   const textPrimary = isDark ? '#fff' : 'rgba(15,23,42,0.94)';
   const textSecondary = isDark ? 'rgba(255,255,255,0.56)' : 'rgba(15,23,42,0.62)';
   const [showLiveness, setShowLiveness] = useState(false);
@@ -235,9 +235,6 @@ const LivePhotoCaptureStep = ({
       border: `1px solid ${cardBorder}`,
       boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 30px rgba(17,24,39,0.08)',
     }}>
-      <Box sx={{ display: 'flex', height: '5px' }}>
-        {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-      </Box>
 
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.42 }}>
         <Box sx={{
@@ -253,8 +250,8 @@ const LivePhotoCaptureStep = ({
             width: 52,
             height: 52,
             borderRadius: '12px',
-            background: 'linear-gradient(135deg,rgba(200,24,10,.24),rgba(37,58,154,.22))',
-            border: '1.5px solid rgba(245,168,0,.35)',
+            background: 'rgba(200,24,10,.24)',
+            border: '1.5px solid rgba(120,113,108,.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -301,14 +298,9 @@ const LivePhotoCaptureStep = ({
                       onClick={() => { if (onSelfieCaptured) { setShowLiveness(true); } else { startCamera?.(); } }}
                       sx={{
                         py: 1.35,
-                        fontFamily: FF,
                         fontWeight: 700,
-                        background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-                        color: '#fff',
-                        boxShadow: '0 4px 20px rgba(200,24,10,0.35)',
                         '&:hover': {
-                          background: 'linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)',
-                          boxShadow: '0 6px 24px rgba(200,24,10,0.55)',
+                          background: '#e01c0c',
                         },
                       }}
                     >
@@ -323,11 +315,10 @@ const LivePhotoCaptureStep = ({
                     onClick={() => fileInputRef.current?.click()}
                     sx={{
                       py: 1.35,
-                      fontFamily: FF,
                       fontWeight: 700,
                       color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                       borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.2)',
-                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                     }}
                   >
                     {t('forms.aspirant.livePhoto.uploadFromFile', { defaultValue: 'Upload From File' })}
@@ -357,14 +348,13 @@ const LivePhotoCaptureStep = ({
                     sx={{
                       width: 260,
                       py: '11px',
-                      borderRadius: '28px',
-                      fontFamily: FF,
+                      borderRadius: '12px',
                       fontWeight: 700,
                       fontSize: 14,
                       letterSpacing: '0.3px',
                       color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                       borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.2)',
-                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                     }}
                   >
                     {t('forms.aspirant.navigation.back', { defaultValue: 'Back' })}
@@ -389,7 +379,7 @@ const LivePhotoCaptureStep = ({
                   overflow: 'hidden',
                   bgcolor: '#000',
                   mx: 'auto',
-                  boxShadow: '0 0 0 2px rgba(245,168,0,0.18), 0 10px 30px rgba(0,0,0,0.35)',
+                  boxShadow: '0 0 0 2px rgba(120,113,108,0.18), 0 10px 30px rgba(0,0,0,0.35)',
                 }}
               >
                 <video
@@ -437,12 +427,11 @@ const LivePhotoCaptureStep = ({
                       onClick={switchCamera}
                       title={facingMode === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
                       sx={{
-                        fontFamily: FF,
                         minWidth: 'auto',
                         px: 1.2,
                         color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.78)',
                         borderColor: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,23,42,0.2)',
-                        '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                        '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                       }}
                     >
                       <CameraswitchIcon fontSize="small" />
@@ -453,11 +442,8 @@ const LivePhotoCaptureStep = ({
                       startIcon={<CameraAltIcon />}
                       onClick={capturePhoto}
                       sx={{
-                        fontFamily: FF,
                         fontWeight: 700,
-                        background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-                        color: '#fff',
-                        '&:hover': { background: 'linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)' },
+                        '&:hover': { background: '#e01c0c' },
                       }}
                     >
                       {t('forms.aspirant.livePhoto.capture')}
@@ -473,7 +459,7 @@ const LivePhotoCaptureStep = ({
                   <Box sx={{
                     width: 200, height: 200, borderRadius: '50%',
                     overflow: 'hidden',
-                    boxShadow: '0 0 0 2px rgba(43,180,104,0.45), 0 10px 30px rgba(0,0,0,0.35)',
+                    boxShadow: 'none',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: 'rgba(0,0,0,0.3)',
                   }}>
@@ -506,7 +492,7 @@ const LivePhotoCaptureStep = ({
                       fontFamily: FF, fontWeight: 700,
                       color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                       borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
-                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                      '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                     }}
                   >
                     {t('forms.aspirant.livePhoto.retake')}
@@ -525,7 +511,7 @@ const LivePhotoCaptureStep = ({
                       aspectRatio: '1',
                       borderRadius: '50%',
                       overflow: 'hidden',
-                      boxShadow: '0 0 0 2px rgba(245,168,0,0.2), 0 10px 30px rgba(0,0,0,0.35)',
+                      boxShadow: '0 0 0 2px rgba(120,113,108,0.2), 0 10px 30px rgba(0,0,0,0.35)',
                     }}
                   >
                     <img
@@ -572,10 +558,9 @@ const LivePhotoCaptureStep = ({
                           whiteSpace: 'nowrap',
                           minWidth: 'auto',
                           px: 1.5,
-                          fontFamily: FF,
                           color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                           borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
-                          '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                          '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                         }}
                       >
                         {t('forms.aspirant.livePhoto.retake')}
@@ -590,10 +575,9 @@ const LivePhotoCaptureStep = ({
                           whiteSpace: 'nowrap',
                           minWidth: 'auto',
                           px: 1.5,
-                          fontFamily: FF,
                           color: isDark ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.8)',
                           borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.2)',
-                          '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                          '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                         }}
                       >
                         {t('forms.aspirant.livePhoto.uploadFromFile', { defaultValue: 'Upload' })}
@@ -627,11 +611,10 @@ const LivePhotoCaptureStep = ({
           startIcon={<ArrowBackIcon />}
           onClick={onBack}
           sx={{
-            fontFamily: FF,
             fontWeight: 700,
             color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
             borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
-            '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+            '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
           }}
         >
           {t('forms.aspirant.navigation.back')}
@@ -639,7 +622,7 @@ const LivePhotoCaptureStep = ({
       </Box>
 
       <Box sx={{ display: 'flex', height: '3px' }}>
-        {['#6B3A00', '#253A9A', '#C8180A'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
+        {['#6B3A00', '#253A9A', '#B42318'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
       </Box> */}
     </Box>
   );

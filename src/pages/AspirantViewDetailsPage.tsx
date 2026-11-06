@@ -33,7 +33,7 @@ import { BRAND } from '../theme';
 import SopAgreementCard from '../components/aspirant/SopAgreementCard';
 import { safeUrl } from '../utils/safeUrl';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 // blocking handoff to native apps (Instagram, Facebook, etc.). Navigate the current
 // window instead — iOS then hands the URL off to the right app.
 const openExternal = (url: string, e?: React.MouseEvent) => {
@@ -53,52 +53,31 @@ const openExternal = (url: string, e?: React.MouseEvent) => {
 const StarRating: React.FC<{ value: number; total?: number }> = ({ value, total = 5 }) => {
     const stars = [];
     for (let i = 1; i <= total; i++) {
-        if (value >= i) stars.push(<StarIcon key={i} sx={{ fontSize: '1.1rem', color: '#F5A800' }} />);
-        else if (value >= i - 0.5) stars.push(<StarHalfIcon key={i} sx={{ fontSize: '1.1rem', color: '#F5A800' }} />);
-        else stars.push(<StarBorderIcon key={i} sx={{ fontSize: '1.1rem', color: '#F5A800' }} />);
+        if (value >= i) stars.push(<StarIcon key={i} sx={{ fontSize: '1.1rem', color: '#E8A10A' }} />);
+        else if (value >= i - 0.5) stars.push(<StarHalfIcon key={i} sx={{ fontSize: '1.1rem', color: '#E8A10A' }} />);
+        else stars.push(<StarBorderIcon key={i} sx={{ fontSize: '1.1rem', color: '#E8A10A' }} />);
     }
     return <Stack direction="row" alignItems="center" spacing={0.2}>{stars}</Stack>;
 };
 
-const InfoTile: React.FC<{ icon: React.ReactNode; label: string; value: string | number }> = ({ icon, label, value }) => {
-    const theme = useTheme();
-    const isDark = theme.palette.mode === 'dark';
-    return (
-        <Box sx={{
-            p: 1, borderRadius: 2.5,
-            background: isDark
-                ? 'linear-gradient(135deg, rgba(37,58,154,0.18) 0%, rgba(245,168,0,0.1) 100%)'
-                : 'linear-gradient(135deg, rgba(37,58,154,0.05) 0%, rgba(245,168,0,0.05) 100%)',
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.09)'}`,
-            borderLeft: `3px solid ${isDark ? BRAND.yellow : BRAND.saffron}`,
-        }}>
-            <Stack direction="row" spacing={1.2} alignItems="center">
-                <Box sx={{ color: isDark ? BRAND.yellow : BRAND.saffron, display: 'flex' }}>{icon}</Box>
-                <Box>
-                    <Typography sx={{ fontSize: '0.7rem', fontFamily: FF, fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</Typography>
-                    <Typography sx={{ fontSize: '0.95rem', fontFamily: FF, fontWeight: 700, color: 'text.primary', lineHeight: 1.2, mt: 0.2 }}>{value}</Typography>
-                </Box>
-            </Stack>
-        </Box>
-    );
-};
-
-const SectionHeader: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => {
-    const theme = useTheme();
-    const isDark = theme.palette.mode === 'dark';
-    return (
-        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.8 }}>
-            <Box sx={{
-                width: 36, height: 36, borderRadius: 1.8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: `linear-gradient(135deg, ${BRAND.saffron} 0%, ${BRAND.yellow} 100%)`,
-                color: '#fff', boxShadow: '0 4px 12px rgba(200,24,10,0.25)'
-            }}>{icon}</Box>
-            <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: FF, letterSpacing: '-0.01em', color: isDark ? '#FFD27A' : '#B45309' }}>
-                {title}
-            </Typography>
+const InfoTile: React.FC<{ icon: React.ReactNode; label: string; value: string | number }> = ({ icon, label, value }) => (
+    <Box sx={{ p: 1.5, borderRadius: 2, border: 1, borderColor: 'divider' }}>
+        <Stack direction="row" spacing={1.25} alignItems="center">
+            <Box sx={{ color: 'text.secondary', display: 'flex' }}>{icon}</Box>
+            <Box>
+                <Typography variant="overline" sx={{ color: 'text.secondary', lineHeight: 1.4, display: 'block' }}>{label}</Typography>
+                <Typography sx={{ fontSize: '0.9375rem', fontWeight: 600, color: 'text.primary', lineHeight: 1.3 }}>{value}</Typography>
+            </Box>
         </Stack>
-    );
-};
+    </Box>
+);
+
+const SectionHeader: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => (
+    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2, color: 'text.secondary' }}>
+        {icon}
+        <Typography variant="h6" component="h2" sx={{ color: 'text.primary' }}>{title}</Typography>
+    </Stack>
+);
 
 const RatingBar: React.FC<{ label: string; count: number; total: number; color: string }> = ({ label, count, total, color }) => (
     <Stack direction="row" spacing={1} alignItems="center">
@@ -127,10 +106,10 @@ const AspirantViewDetailsPage: React.FC = () => {
     const [photoOpen, setPhotoOpen] = useState(false);
     const [pdfViewUrl, setPdfViewUrl] = useState<string | null>(null);
 
-    const border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)';
+    const border = theme.palette.divider;
     const cardBg = isDark
-        ? 'linear-gradient(160deg, rgba(20,24,34,0.97) 0%, rgba(13,17,28,0.98) 100%)'
-        : 'linear-gradient(160deg, #ffffff 0%, #f8fafc 100%)';
+        ? 'rgba(20,24,34,0.97)'
+        : '#ffffff';
 
     useEffect(() => {
         if (!id) return;
@@ -200,15 +179,10 @@ const AspirantViewDetailsPage: React.FC = () => {
                 {/* Gradient banner */}
                 <Box sx={{
                     height: { xs: 50, sm: 75 },
-                    background: isDark
-                        ? 'radial-gradient(130% 200% at 0% 0%, rgba(200,24,10,0.45) 0%, rgba(37,58,154,0.45) 55%, rgba(13,17,28,1) 100%)'
-                        : 'linear-gradient(135deg, rgba(200,24,10,0.85) 0%, rgba(37,58,154,0.85) 60%, rgba(107,58,0,0.8) 100%)',
+                    bgcolor: 'action.hover', borderBottom: 1, borderColor: 'divider',
                     position: 'relative',
                 }}>
                     {/* Decorative strip */}
-                    <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', height: 4 }}>
-                        {['#C8180A', '#253A9A', '#6B3A00', '#F5A800'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-                    </Box>
                 </Box>
 
                 <CardContent sx={{ pt: 0, pb: '14px !important', px: { xs: 1.5, sm: 2.5 }, position: 'relative' }}>
@@ -219,8 +193,8 @@ const AspirantViewDetailsPage: React.FC = () => {
                             flexDirection: 'row', alignItems: 'center', gap: '3.2px',
                             position: 'absolute', top: -7, right: 18, zIndex: 1,
                         }}>
-                            <StarIcon sx={{ fontSize: '1rem', color: '#F5A800' }} />
-                            <Typography sx={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#F5A800' }}>
+                            <StarIcon sx={{ fontSize: '1rem', color: '#E8A10A' }} />
+                            <Typography sx={{ fontSize: '0.95rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#D92D20' }}>
                                 {avgRating.toFixed(1)}
                             </Typography>
                         </Box>
@@ -234,10 +208,10 @@ const AspirantViewDetailsPage: React.FC = () => {
                             sx={{
                                 width: { xs: 64, sm: 100 }, height: { xs: 64, sm: 100 },
                                 border: `3px solid ${isDark ? '#1a1f2e' : '#ffffff'}`,
-                                boxShadow: '0 6px 18px rgba(0,0,0,0.22)',
+                                boxShadow: 'none',
                                 fontSize: '1.6rem', fontWeight: 800,
-                                background: 'linear-gradient(135deg, #C8180A 0%, #253A9A 100%)',
-                                color: '#fff',
+                                bgcolor: 'grey.200',
+                                color: 'text.secondary',
                                 cursor: (aspirant.selfieUrl || aspirant.recentPhotoUrl) ? 'pointer' : 'default',
                             }}
                         >
@@ -258,7 +232,8 @@ const AspirantViewDetailsPage: React.FC = () => {
                                 <Chip
                                     label={aspirant.party || 'Independent'}
                                     size="small"
-                                    sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.68rem', height: 20, bgcolor: isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.14)', color: isDark ? '#F5A800' : '#92400e', border: `1px solid ${isDark ? 'rgba(245,168,0,0.4)' : 'rgba(245,168,0,0.3)'}` }}
+                                    sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.68rem', height: 20, color: 'text.secondary' }}
+                                    variant="outlined"
                                 />
                             </Stack>
                             {/* Row 2: Election chip */}
@@ -288,7 +263,7 @@ const AspirantViewDetailsPage: React.FC = () => {
                                 flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
                                 flexShrink: 0, minWidth: 90, alignSelf: 'flex-end', pb: 1,
                             }}>
-                                <Typography sx={{ fontSize: '2rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#F5A800' }}>
+                                <Typography sx={{ fontSize: '2rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: '#D92D20' }}>
                                     {avgRating.toFixed(1)}
                                 </Typography>
                                 <StarRating value={avgRating} />
@@ -309,7 +284,7 @@ const AspirantViewDetailsPage: React.FC = () => {
                 <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <MuiIconButton
                         onClick={() => setPhotoOpen(false)}
-                        sx={{ position: 'absolute', top: -16, right: -16, bgcolor: isDark ? '#1a1f2e' : '#fff', border: `2px solid ${BRAND.yellow}`, zIndex: 1, '&:hover': { bgcolor: isDark ? '#252a3a' : '#f5f5f5' } }}
+                        sx={{ position: 'absolute', top: -16, right: -16, bgcolor: isDark ? '#1a1f2e' : '#fff', border: `2px solid #D92D20`, zIndex: 1, '&:hover': { bgcolor: isDark ? '#252a3a' : '#f5f5f5' } }}
                     >
                         <CloseIcon sx={{ fontSize: 18 }} />
                     </MuiIconButton>
@@ -346,7 +321,7 @@ const AspirantViewDetailsPage: React.FC = () => {
                 <Card sx={{ mb: 2.5, borderRadius: 3, border: `1px solid ${border}`, background: cardBg, boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                     <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
                         <SectionHeader icon={<DescriptionIcon fontSize="small" />} title={isKannada ? ' ನನ್ನ ಬಗ್ಗೆ' : 'About me'} />
-                        <Box sx={{ p: 2, borderRadius: 2, bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.03)', border: `1px solid ${border}`, borderLeft: `4px solid ${isDark ? BRAND.yellow : BRAND.saffron}` }}>
+                        <Box sx={{ p: 2, borderRadius: 2, bgcolor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.03)', border: `1px solid ${border}`, borderLeft: `4px solid ${isDark ? 'rgba(120,113,108,0.35)' : BRAND.saffron}` }}>
                             <Typography sx={{ fontFamily: FF, fontSize: '0.95rem', lineHeight: 1.75, color: 'text.primary', whiteSpace: 'pre-line' }}>
                                 {aspirant.manifesto}
                             </Typography>
@@ -362,17 +337,17 @@ const AspirantViewDetailsPage: React.FC = () => {
                         <SectionHeader icon={<ShareIcon fontSize="small" />} title={isKannada ? 'ಸಾಮಾಜಿಕ ವೇದಿಕೆಗಳು' : 'Social Platforms'} />
                         <Alert
                             severity="info"
-                            icon={<InfoOutlinedIcon fontSize="small" sx={{ color: isDark ? '#FFCB00' : '#dc2626' }} />}
+                            icon={<InfoOutlinedIcon fontSize="small" sx={{ color: isDark ? '#D92D20' : '#dc2626' }} />}
                             sx={{
                                 borderRadius: '10px',
                                 mb: 1.5,
                                 mt: 0.5,
                                 ...(isDark
                                     ? {
-                                        color: '#FFCB00',
-                                        backgroundColor: 'rgba(255,203,0,0.08)',
-                                        border: '1px solid rgba(255,203,0,0.25)',
-                                        '& .MuiAlert-icon': { color: '#FFCB00' },
+                                        color: '#D92D20',
+                                        backgroundColor: 'rgba(120,113,108,0.08)',
+                                        border: '1px solid rgba(120,113,108,0.25)',
+                                        '& .MuiAlert-icon': { color: '#D92D20' },
                                       }
                                     : {
                                         color: '#dc2626',
@@ -480,7 +455,7 @@ const AspirantViewDetailsPage: React.FC = () => {
                         <SectionHeader icon={<StarIcon fontSize="small" />} title={isKannada ? 'ಒಟ್ಟಾರೆ ರೇಟಿಂಗ್' : 'Overall Rating'} />
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems={{ sm: 'center' }}>
                             <Box sx={{ textAlign: 'center' }}>
-                                <Typography sx={{ fontSize: '3.5rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: isDark ? '#F5A800' : '#92400e' }}>
+                                <Typography sx={{ fontSize: '3.5rem', fontWeight: 900, fontFamily: FF, lineHeight: 1, color: 'text.primary' }}>
                                     {avgRating.toFixed(1)}
                                 </Typography>
                                 <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
@@ -569,13 +544,13 @@ const AspirantViewDetailsPage: React.FC = () => {
                                     <Box key={v.id} sx={{
                                         p: 2, borderRadius: 2.5,
                                         border: `1px solid ${border}`,
-                                        borderLeft: `4px solid ${isDark ? BRAND.yellow : BRAND.saffron}`,
-                                        bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.04)',
+                                        borderLeft: `4px solid ${isDark ? 'rgba(120,113,108,0.35)' : BRAND.saffron}`,
+                                        bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.04)',
                                     }}>
                                         {v.title && <Typography sx={{ fontFamily: FF, fontWeight: 700, fontSize: '0.95rem', mb: 0.5 }}>{v.title}</Typography>}
                                         {v.location && (
                                             <Stack direction="row" spacing={0.6} alignItems="flex-start" sx={{ mb: 0.4 }}>
-                                                <PlaceIcon sx={{ fontSize: '0.85rem', color: isDark ? BRAND.yellow : BRAND.saffron, mt: '3px', flexShrink: 0 }} />
+                                                <PlaceIcon sx={{ fontSize: '0.85rem', color: isDark ? '#D92D20' : BRAND.saffron, mt: '3px', flexShrink: 0 }} />
                                                 <Typography variant="body2" sx={{ fontFamily: FF, fontWeight: 600 }}>{v.location}</Typography>
                                             </Stack>
                                         )}
@@ -630,11 +605,11 @@ const AspirantViewDetailsPage: React.FC = () => {
                                 <Grid item xs={12} sm={6} key={d.label}>
                                     <Box sx={{
                                         p: 1.5, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        border: `1px solid ${isDark ? 'rgba(245,168,0,0.2)' : 'rgba(245,168,0,0.25)'}`,
-                                        bgcolor: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.04)',
+                                        border: `1px solid ${isDark ? 'rgba(120,113,108,0.2)' : 'rgba(120,113,108,0.25)'}`,
+                                        bgcolor: isDark ? 'rgba(120,113,108,0.06)' : 'rgba(120,113,108,0.04)',
                                     }}>
                                         <Stack direction="row" spacing={1.2} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
-                                            <Box sx={{ width: 32, height: 32, borderRadius: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.14)', color: isDark ? BRAND.yellow : BRAND.saffron, flexShrink: 0 }}>
+                                            <Box sx={{ width: 32, height: 32, borderRadius: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: isDark ? 'rgba(120,113,108,0.18)' : 'rgba(120,113,108,0.14)', color: isDark ? 'rgba(120,113,108,0.35)' : BRAND.saffron, flexShrink: 0 }}>
                                                 <DescriptionIcon sx={{ fontSize: '1rem' }} />
                                             </Box>
                                             <Box sx={{ minWidth: 0 }}>
@@ -660,7 +635,7 @@ const AspirantViewDetailsPage: React.FC = () => {
                                                 sx={{
                                                     textTransform: 'none', fontFamily: FF, fontWeight: 700,
                                                     fontSize: '0.75rem', borderRadius: 1.5, ml: 1, flexShrink: 0,
-                                                    color: isDark ? BRAND.yellow : BRAND.saffron,
+                                                    color: isDark ? '#D92D20' : BRAND.saffron,
                                                 }}
                                             >
                                                 View

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllAspirants } from '../../services/aspirantService';
 import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 const GuestRegisteredAspirantsPage = () => {
     const { t, i18n } = useTranslation();
@@ -29,9 +29,9 @@ const GuestRegisteredAspirantsPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
 
-    const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
-    const border = isDark ? 'rgba(245,168,0,0.15)' : 'rgba(17,24,39,0.12)';
-    const cardBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #130B0B 100%)' : theme.palette.background.paper;
+    const GOLD = theme.palette.text.secondary;
+    const border = theme.palette.divider;
+    const cardBg = theme.palette.background.paper;
     const textPrimary = theme.palette.text.primary;
 
     useEffect(() => {
@@ -110,12 +110,12 @@ const GuestRegisteredAspirantsPage = () => {
                                     position: 'relative',
                                     '&::before': {
                                         content: '""', position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px',
-                                        background: `linear-gradient(180deg, ${BRAND.red} 0%, ${BRAND.yellow} 55%, ${BRAND.brown} 100%)`,
+                                        background: `${BRAND.red}`,
                                     },
                                     '&:hover': {
                                         transform: 'translateY(-2px)',
                                         boxShadow: isDark ? '0 14px 36px rgba(0,0,0,0.6)' : '0 10px 28px rgba(17,24,39,0.12)',
-                                        borderColor: isDark ? 'rgba(245,168,0,0.35)' : 'rgba(245,168,0,0.4)',
+                                        borderColor: isDark ? 'rgba(120,113,108,0.35)' : 'rgba(120,113,108,0.4)',
                                     },
                                 }}
                             >
@@ -123,12 +123,12 @@ const GuestRegisteredAspirantsPage = () => {
                                     <Stack direction="row" spacing={1.5} alignItems="center">
                                         <Box sx={{
                                             p: '2px', borderRadius: '50%', flexShrink: 0,
-                                            background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red} 180deg 270deg, ${BRAND.yellow} 270deg 360deg)`,
+                                            background: `${BRAND.red}`,
                                         }}>
                                             <Avatar
                                                 src={a.selfieUrl || undefined}
                                                 alt={a.name || ''}
-                                                sx={{ width: 46, height: 46, bgcolor: isDark ? '#1C1010' : '#fff', color: GOLD, fontWeight: 700, border: `2px solid ${isDark ? '#1C1010' : '#fff'}` }}
+                                                sx={{ width: 46, height: 46, bgcolor: isDark ? '#1C1917' : '#fff', color: GOLD, fontWeight: 700, border: `2px solid ${isDark ? '#1C1917' : '#fff'}` }}
                                             >
                                                 {!a.selfieUrl && (a.name ? a.name.charAt(0).toUpperCase() : <PersonIcon fontSize="small" />)}
                                             </Avatar>
@@ -138,7 +138,7 @@ const GuestRegisteredAspirantsPage = () => {
                                                 {a.name || ''}
                                             </Typography>
                                             <Stack direction="row" spacing={0.6} flexWrap="wrap" sx={{ mt: 0.4 }}>
-                                                <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 18, fontFamily: FF, bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgba(245,168,0,0.25)' }} />
+                                                <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 18, fontFamily: FF, bgcolor: 'rgba(120,113,108,0.12)', color: GOLD, border: '1px solid rgba(120,113,108,0.25)' }} />
                                             </Stack>
                                             <Typography variant="caption" color="text.secondary" sx={{ fontFamily: FF, display: 'block', mt: 0.3, lineHeight: 1.3 }}>
                                                 {a.electionName || ''}{a.constituencyName ? ` · ${a.constituencyName}` : ''}
@@ -156,7 +156,7 @@ const GuestRegisteredAspirantsPage = () => {
                 <Card sx={{ borderRadius: '14px', border: `1px solid ${border}`, background: cardBg, overflow: 'hidden', boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.45)' : '0 8px 24px rgba(17,24,39,0.07)' }}>
                     <Table>
                         <TableHead>
-                            <TableRow sx={{ bgcolor: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.04)' }}>
+                            <TableRow sx={{ bgcolor: isDark ? 'rgba(120,113,108,0.06)' : 'rgba(120,113,108,0.04)' }}>
                                 <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>#</TableCell>
                                 <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಹೆಸರು' : 'Name'}</TableCell>
                                 <TableCell sx={{ fontWeight: 800, fontFamily: FF, fontSize: '0.85rem', color: GOLD, borderBottom: `1px solid ${border}` }}>{isKannada ? 'ಪಕ್ಷ' : 'Party'}</TableCell>
@@ -173,7 +173,7 @@ const GuestRegisteredAspirantsPage = () => {
                                     sx={{
                                         cursor: 'pointer',
                                         borderBottom: `1px solid ${border}`,
-                                        '&:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.05)' : 'rgba(245,168,0,0.03)' },
+                                        '&:hover': { bgcolor: isDark ? 'rgba(120,113,108,0.05)' : 'rgba(120,113,108,0.03)' },
                                         '&:last-child td': { border: 0 },
                                     }}
                                 >
@@ -184,12 +184,12 @@ const GuestRegisteredAspirantsPage = () => {
                                         <Stack direction="row" alignItems="center" spacing={1.5}>
                                             <Box sx={{
                                                 p: '2px', borderRadius: '50%',
-                                                background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red} 180deg 270deg, ${BRAND.yellow} 270deg 360deg)`,
+                                                background: `${BRAND.red}`,
                                             }}>
                                                 <Avatar
                                                     src={a.selfieUrl || undefined}
                                                     alt={a.name || ''}
-                                                    sx={{ width: 34, height: 34, bgcolor: isDark ? '#1C1010' : '#fff', color: GOLD, fontWeight: 700, border: `2px solid ${isDark ? '#1C1010' : '#fff'}`, fontSize: '0.85rem' }}
+                                                    sx={{ width: 34, height: 34, bgcolor: isDark ? '#1C1917' : '#fff', color: GOLD, fontWeight: 700, border: `2px solid ${isDark ? '#1C1917' : '#fff'}`, fontSize: '0.85rem' }}
                                                 >
                                                     {!a.selfieUrl && (a.name ? a.name.charAt(0).toUpperCase() : <PersonIcon sx={{ fontSize: '1rem' }} />)}
                                                 </Avatar>
@@ -198,7 +198,7 @@ const GuestRegisteredAspirantsPage = () => {
                                         </Stack>
                                     </TableCell>
                                     <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem' }}>
-                                        <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 20, fontFamily: FF, bgcolor: 'rgba(245,168,0,0.1)', color: GOLD, border: '1px solid rgba(245,168,0,0.22)' }} />
+                                        <Chip label={a.party || 'Independent'} size="small" sx={{ fontSize: '0.68rem', height: 20, fontFamily: FF, bgcolor: 'rgba(120,113,108,0.1)', color: GOLD, border: '1px solid rgba(120,113,108,0.22)' }} />
                                     </TableCell>
                                     <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary' }}>{a.electionName || ''}</TableCell>
                                     <TableCell sx={{ fontFamily: FF, fontSize: '0.88rem', color: 'text.secondary' }}>{a.constituencyName || ''}</TableCell>

@@ -155,9 +155,9 @@ const AspirantProfilePage: React.FC = () => {
     }
 
     return (
-        <Box sx={{ py: { xs: 2, md: 4 }, px: { xs: 0, md: 3 } }}>
+        <Box>
             <ProfileCompletionPage hideLogout />
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 3, px: { xs: 2, md: 0 } }}>
+            <Typography variant="h4" component="h2" sx={{ mt: { xs: 5, md: 7 }, mb: 3 }}>
                 {t('userDashboard.aspirant.tabs.profile') || 'My Profile'}
             </Typography>
 
@@ -180,7 +180,6 @@ const AspirantProfilePage: React.FC = () => {
                     onClick={() => { logout(); }}
                     sx={{
                         fontWeight: 700,
-                        textTransform: 'none',
                         py: 1.2,
                         borderRadius: 2,
                         borderColor: 'rgba(255,255,255,0.25)',
@@ -199,7 +198,7 @@ const AspirantProfilePage: React.FC = () => {
                     <Box
                         component="a"
                         href="mailto:support@prajaakeeya.org"
-                        sx={{ color: '#F5A800', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                        sx={{ color: '#D92D20', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
                     >
                         support@prajaakeeya.org
                     </Box>

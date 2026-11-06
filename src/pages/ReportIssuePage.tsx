@@ -23,7 +23,7 @@ import useAuthStore from '../store/useAuthStore';
 import { createIssue } from '../services/civicIssuesService';
 import { BRAND } from '../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 const DESC_MAX = 1000;
 
 const ISSUE_CATEGORIES = [
@@ -52,14 +52,14 @@ const ReportIssuePage: React.FC = () => {
   const [done, setDone] = useState(false);
 
   // Colours
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
-  const GOLDD = 'rgba(245,168,0,0.45)';
+  const GOLD = theme.palette.primary.main;
+  const GOLDD = theme.palette.divider;
   const BG = theme.palette.background.paper;
-  const borderFaint = isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)';
-  const borderSubtle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.10)';
+  const borderFaint = theme.palette.divider;
+  const borderSubtle = theme.palette.divider;
   const textPrimary = theme.palette.text.primary;
-  const textMid = isDark ? 'rgba(255,255,255,0.64)' : 'rgba(17,24,39,0.65)';
-  const textDim = isDark ? 'rgba(255,255,255,0.42)' : 'rgba(17,24,39,0.46)';
+  const textMid = theme.palette.text.secondary;
+  const textDim = theme.palette.text.secondary;
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories(prev =>
@@ -106,11 +106,6 @@ const ReportIssuePage: React.FC = () => {
             overflow: 'hidden',
             boxShadow: isDark ? '0 14px 32px rgba(0,0,0,0.32)' : '0 4px 14px rgba(17,24,39,0.06)',
           }}>
-            <Box sx={{ display: 'flex', height: '4px' }}>
-              {[BRAND.red, BRAND.blue, BRAND.brown].map(c => (
-                <Box key={c} sx={{ flex: 1, bgcolor: c }} />
-              ))}
-            </Box>
             <Box sx={{ p: { xs: 4, sm: 5 }, textAlign: 'center' }}>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}>
                 <CheckCircleIcon sx={{ fontSize: 68, color: '#22c55e', mb: 2 }} />
@@ -128,7 +123,7 @@ const ReportIssuePage: React.FC = () => {
                   sx={{
                     fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
                     borderColor: GOLDD, color: GOLD,
-                    '&:hover': { bgcolor: 'rgba(245,168,0,0.06)', borderColor: GOLD },
+                    '&:hover': { bgcolor: 'rgba(120,113,108,0.06)', borderColor: GOLD },
                   }}
                 >
                   Report Another
@@ -138,9 +133,7 @@ const ReportIssuePage: React.FC = () => {
                   onClick={() => navigate('/user/civic-issues')}
                   sx={{
                     fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
-                    background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
-                    color: '#fff',
-                    '&:hover': { background: `linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)` },
+                    '&:hover': { background: `#e01c0c` },
                   }}
                 >
                   View All Issues
@@ -163,18 +156,13 @@ const ReportIssuePage: React.FC = () => {
           boxShadow: isDark ? '0 14px 32px rgba(0,0,0,0.32)' : '0 4px 14px rgba(17,24,39,0.06)',
         }}>
           {/* Tri-colour bar */}
-          <Box sx={{ display: 'flex', height: '4px' }}>
-            {[BRAND.red, BRAND.blue, BRAND.brown].map(c => (
-              <Box key={c} sx={{ flex: 1, bgcolor: c }} />
-            ))}
-          </Box>
 
           {/* Header */}
           <Box sx={{ px: { xs: 2.5, sm: 4 }, py: 3, borderBottom: `1px solid ${borderSubtle}`, display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'space-between' }}>
             <Box sx={{
               width: 50, height: 50, borderRadius: '12px',
-              background: 'linear-gradient(135deg,rgba(200,24,10,.22),rgba(37,58,154,.18))',
-              border: '1.5px solid rgba(245,168,0,.35)',
+              background: 'rgba(200,24,10,.22)',
+              border: '1.5px solid rgba(120,113,108,.35)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
               <ReportProblemIcon sx={{ color: GOLD, fontSize: 24 }} />
@@ -192,8 +180,8 @@ const ReportIssuePage: React.FC = () => {
               startIcon={<ArrowBackIcon />}
               onClick={() => navigate('/user/civic-issues')}
               sx={{
-                fontFamily: FF, fontWeight: 700, textTransform: 'none',
-                color: textMid, '&:hover': { color: GOLD },
+                flexShrink: 0, whiteSpace: 'nowrap',
+                color: textMid, '&:hover': { color: 'text.primary' },
               }}
             >
               Back to Issues
@@ -232,19 +220,19 @@ const ReportIssuePage: React.FC = () => {
                           fontSize: '0.83rem',
                           cursor: submitting ? 'default' : 'pointer',
                           bgcolor: active
-                            ? `linear-gradient(135deg,${BRAND.red},${BRAND.yellow})`
+                            ? `${BRAND.red}`
                             : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.06)',
                           background: active
-                            ? `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`
+                            ? `${BRAND.red}`
                             : undefined,
                           color: active ? '#fff' : textMid,
                           border: `1.5px solid ${active ? 'transparent' : borderSubtle}`,
-                          boxShadow: active ? '0 2px 10px rgba(200,24,10,0.28)' : 'none',
+                          boxShadow: 'none',
                           transition: 'all 0.18s ease',
                           '&:hover': {
                             background: active
-                              ? `linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)`
-                              : isDark ? 'rgba(245,168,0,0.10)' : 'rgba(245,168,0,0.10)',
+                              ? `#e01c0c`
+                              : isDark ? 'rgba(120,113,108,0.10)' : 'rgba(120,113,108,0.10)',
                             borderColor: active ? 'transparent' : GOLDD,
                           },
                           '& .MuiChip-label': { px: 1.4 },
@@ -296,7 +284,7 @@ const ReportIssuePage: React.FC = () => {
                 <LinearProgress
                   sx={{
                     borderRadius: 1, height: 3,
-                    '& .MuiLinearProgress-bar': { background: `linear-gradient(90deg,${BRAND.red},${BRAND.yellow})` },
+                    '& .MuiLinearProgress-bar': { background: `${BRAND.red}` },
                     bgcolor: borderSubtle,
                   }}
                 />
@@ -311,7 +299,7 @@ const ReportIssuePage: React.FC = () => {
                   sx={{
                     fontFamily: FF, fontWeight: 700, borderRadius: 2, textTransform: 'none',
                     borderColor: borderSubtle, color: textMid,
-                    '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.04)' },
+                    '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.04)' },
                   }}
                 >
                   Cancel
@@ -324,14 +312,10 @@ const ReportIssuePage: React.FC = () => {
                   sx={{
                     fontFamily: FF, fontWeight: 800, borderRadius: 2, textTransform: 'none',
                     px: 3, py: 1.1,
-                    background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
-                    color: '#fff',
-                    boxShadow: '0 4px 20px rgba(200,24,10,0.3)',
-                    '&:hover': { background: `linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)`, boxShadow: '0 6px 24px rgba(200,24,10,0.5)' },
+                    '&:hover': { background: `#e01c0c`, boxShadow: 'none' },
                     '&.Mui-disabled': {
                       background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.10)',
                       color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(17,24,39,0.35)',
-                      boxShadow: 'none',
                     },
                   }}
                 >

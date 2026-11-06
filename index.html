@@ -14,7 +14,7 @@
   <meta name="keywords" content="Prajaakeeya, elections, democracy, ward elections, GBA, Greater Bengaluru Authority, BBMP, Lok Sabha, Vidhan Sabha, candidates, aspirants, voters, voter registration, civic issues, technology in elections, election platform, Karnataka elections, India elections, transparent elections, accountability, responsibility, transparency" />
   <!-- Manifest is auto-injected by vite-plugin-pwa -->
   <!-- Status bar / browser chrome colour (Android Chrome + iOS Safari 15+) -->
-  <meta name="theme-color" content="#0A0808" />
+  <meta name="theme-color" content="#FAFAF9" />
   <!-- Open Graph -->
   <meta property="og:title" content="Prajaakeeya - Your Voice, Your Rule, Your Vote | Ward Elections &amp; Democracy Platform" />
   <meta property="og:description" content="A democratic platform connecting voters, aspirants, and candidates across ward elections, GBA, BBMP, Lok Sabha, and Vidhan Sabha. Technology-driven transparent elections for people's voice." />
@@ -38,631 +38,49 @@
        src/index.css and the runtime @import in HomePage.tsx (which fired after
        React mounted — the worst case for LCP). -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Mukta:wght@300;400;600;700&family=Playfair+Display:wght@400;500;600;700&family=Tiro+Kannada&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
 
-  <!-- ═══ Preloader styles — inline so they load before React ═══ -->
+  <!-- ═══ Preloader styles — inline so they render before React ═══ -->
+  <script>
+    (function () {
+      try {
+        var m = JSON.parse(localStorage.getItem('theme-storage') || '{}').state;
+        document.documentElement.setAttribute('data-theme', (m && m.mode) || 'light');
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    })();
+  </script>
   <style>
     #preloader {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #08060A;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center
+      --pl-bg: #FAFAF9; --pl-fg: #1C1917; --pl-muted: #78716C; --pl-red: #B42318; --pl-track: #E7E5E4;
+      position: fixed; inset: 0; z-index: 9999; background: var(--pl-bg); color: var(--pl-fg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+      font-family: "Inter", "Noto Sans Kannada", system-ui, sans-serif; text-align: center; padding: 24px;
     }
-
-    #preloader.exit {
-      animation: plExit .7s ease forwards
-    }
-
-    @keyframes plExit {
-      to {
-        opacity: 0;
-        transform: scale(1.04)
-      }
-    }
-
-    .pl-bar-top,
-    .pl-bar-bottom {
-      position: absolute;
-      left: 0;
-      right: 0;
-      display: flex
-    }
-
-    .pl-bar-top {
-      top: 0;
-      height: 4px
-    }
-
-    .pl-bar-bottom {
-      bottom: 0;
-      height: 3px;
-      opacity: .4
-    }
-
-    .pl-bar-top span:nth-child(1),
-    .pl-bar-bottom span:nth-child(1) {
-      flex: 1;
-      background: #C8180A
-    }
-
-    .pl-bar-top span:nth-child(2),
-    .pl-bar-bottom span:nth-child(2) {
-      flex: 1;
-      background: #F5A800
-    }
-
-    .pl-bar-top span:nth-child(3),
-    .pl-bar-bottom span:nth-child(3) {
-      flex: 1;
-      background: #E02010
-    }
-
-    .pl-bg-glow {
-      position: absolute;
-      width: 560px;
-      height: 560px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245, 168, 0, .10) 0%, rgba(200, 24, 10, .05) 45%, transparent 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: plBreathe 4s ease-in-out infinite;
-      pointer-events: none
-    }
-
-    @keyframes plBreathe {
-
-      0%,
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: .8
-      }
-
-      50% {
-        transform: translate(-50%, -50%) scale(1.15);
-        opacity: 1
-      }
-    }
-
-    .pl-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .018) 1px, transparent 1px);
-      background-size: 44px 44px;
-      animation: plGridFade 1s .2s ease both;
-      pointer-events: none
-    }
-
-    @keyframes plGridFade {
-      from {
-        opacity: 0
-      }
-
-      to {
-        opacity: 1
-      }
-    }
-
-    .pl-scan {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      top: -2px;
-      background: linear-gradient(90deg, transparent, rgba(245, 168, 0, .3), transparent);
-      animation: plScan 3s .5s ease-in-out infinite;
-      pointer-events: none
-    }
-
-    @keyframes plScan {
-      0% {
-        top: -2px
-      }
-
-      100% {
-        top: 100vh
-      }
-    }
-
-    #pl-particles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1
-    }
-
-    .pl-particle {
-      position: absolute;
-      border-radius: 50%;
-      animation: plRise linear infinite
-    }
-
-    @keyframes plRise {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0
-      }
-
-      8% {
-        opacity: 1
-      }
-
-      92% {
-        opacity: .4
-      }
-
-      100% {
-        transform: translateY(-110vh) translateX(var(--dx));
-        opacity: 0
-      }
-    }
-
-    .pl-stage {
-      position: relative;
-      z-index: 5;
-      width: min(440px, 90vw);
-      height: 220px;
-      overflow: visible
-    }
-
-    .pl-word-old,
-    .pl-word-new {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center
-    }
-
-    .pl-word-old {
-      animation: plWordOldIn .8s 0s ease both, plWordOldOut .6s 2.2s ease forwards
-    }
-
-    @keyframes plWordOldIn {
-      from {
-        opacity: 0;
-        transform: translateY(calc(-50% + 30px))
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(-50%)
-      }
-    }
-
-    @keyframes plWordOldOut {
-      to {
-        opacity: 0;
-        transform: translateY(calc(-50% - 40px));
-        filter: blur(4px)
-      }
-    }
-
-    .pl-old-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .30);
-      border: 1px solid rgba(255, 255, 255, .12);
-      padding: 3px 14px;
-      border-radius: 20px;
-      margin-bottom: 10px
-    }
-
-    .pl-old-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(42px, 9vw, 82px);
-      font-weight: 900;
-      letter-spacing: 3px;
-      line-height: 1;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative
-    }
-
-    .pl-old-word::after {
-      content: '';
-      position: absolute;
-      left: -4%;
-      top: 50%;
-      width: 0%;
-      height: 3px;
-      background: linear-gradient(90deg, #C8180A, #E02010);
-      box-shadow: 0 0 10px rgba(200, 24, 10, .7);
-      animation: plStrike .7s 1.0s ease forwards
-    }
-
-    @keyframes plStrike {
-      from {
-        width: 0%
-      }
-
-      to {
-        width: 108%
-      }
-    }
-
-    .pl-old-kannada {
-      font-family: 'Tiro Kannada', serif;
-      font-size: clamp(14px, 2.5vw, 22px);
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 4px;
-      margin-top: 5px;
-      animation: plFadeSlideUp .6s 0.8s ease both
-    }
-
-    .pl-word-new {
-      animation: plWordNewIn .9s 3.0s cubic-bezier(.34, 1.56, .64, 1) both
-    }
-
-    @keyframes plWordNewIn {
-      from {
-        opacity: 0;
-        transform: translateY(calc(-50% + 50px)) scale(.8);
-        filter: blur(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-        filter: blur(0)
-      }
-    }
-
-    .pl-new-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #fff;
-      background: linear-gradient(90deg, #C8180A, #F5A800);
-      padding: 3px 14px;
-      border-radius: 20px;
-      margin-bottom: 10px
-    }
-
-    .pl-the-real {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(22px, 5vw, 48px);
-      font-weight: 900;
-      letter-spacing: 2px;
-      line-height: 1;
-      margin-bottom: 4px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: plFadeSlideUp .6s 3.2s ease both
-    }
-
-    .pl-new-word {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(42px, 9vw, 82px);
-      font-weight: 900;
-      letter-spacing: 3px;
-      line-height: 1.3;
-      padding-bottom: 8px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: plGlowPulse 3s 3.9s ease-in-out infinite
-    }
-
-    @keyframes plGlowPulse {
-
-      0%,
-      100% {
-        filter: drop-shadow(0 0 10px rgba(245, 168, 0, .3))
-      }
-
-      50% {
-        filter: drop-shadow(0 0 24px rgba(245, 168, 0, .7)) drop-shadow(0 0 48px rgba(200, 24, 10, .3))
-      }
-    }
-
-    .pl-new-prefix {
-      font-family: 'Baloo 2', 'Tiro Kannada', cursive, serif;
-      font-size: clamp(16px, 3vw, 28px);
-      font-weight: 800;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 3px;
-      margin-bottom: -4px;
-      animation: plFadeSlideUp .5s 3.2s ease both
-    }
-
-    .pl-new-kannada {
-      font-family: 'Tiro Kannada', serif;
-      font-size: clamp(14px, 2.5vw, 22px);
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 4px;
-      margin-top: 5px;
-      animation: plFadeSlideUp .6s 3.7s ease both
-    }
-
-    .pl-tagline-wrap {
-      position: absolute;
-      bottom: -78px;
-      left: 0;
-      right: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      animation: plFadeSlideUp .7s 3.9s ease both
-    }
-
-    @keyframes plFadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(16px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    .pl-tagline-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px
-    }
-
-    .pl-div-line-l {
-      width: 48px;
-      height: 1.5px;
-      background: linear-gradient(90deg, transparent, #C8180A)
-    }
-
-    .pl-div-dot {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #C8180A, #F5A800);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      box-shadow: 0 0 10px rgba(245, 168, 0, .4)
-    }
-
-    .pl-div-line-r {
-      width: 48px;
-      height: 1.5px;
-      background: linear-gradient(90deg, #F5A800, transparent)
-    }
-
-    .pl-art-row {
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .pl-art-pill {
-      display: flex;
-      align-items: baseline;
-      gap: 3px
-    }
-
-    .pl-art-letter {
-      font-family: 'Baloo 2', cursive;
-      font-size: clamp(18px, 3vw, 26px);
-      font-weight: 900;
-      background: linear-gradient(135deg, #E02010, #F5A800);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text
-    }
-
-    .pl-art-word {
-      font-family: 'Mukta', sans-serif;
-      font-size: clamp(8px, 1.2vw, 11px);
-      font-weight: 600;
-      letter-spacing: 1px;
-      background: linear-gradient(135deg, #E02010, #F5A800, #FFCB00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-transform: uppercase
-    }
-
-    .pl-art-sep {
-      color: rgba(245, 168, 0, .4);
-      font-size: 20px;
-      line-height: 1
-    }
-
-    .pl-progress-wrap {
-      position: absolute;
-      bottom: 34px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(320px, 80vw);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 9px;
-      z-index: 5
-    }
-
-    .pl-progress-track {
-      width: 100%;
-      height: 2.5px;
-      background: rgba(255, 255, 255, .08);
-      border-radius: 2px;
-      overflow: hidden
-    }
-
-    .pl-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #C8180A, #F5A800, #FFCB00);
-      border-radius: 2px;
-      box-shadow: 0 0 10px rgba(245, 168, 0, .5);
-      animation: plProgressFill 4.6s .4s cubic-bezier(.4, 0, .2, 1) forwards
-    }
-
-    @keyframes plProgressFill {
-      0% {
-        width: 0%
-      }
-
-      30% {
-        width: 25%
-      }
-
-      55% {
-        width: 50%
-      }
-
-      72% {
-        width: 70%
-      }
-
-      100% {
-        width: 100%
-      }
-    }
-
-    .pl-progress-label {
-      font-family: 'Mukta', sans-serif;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, .20)
-    }
-
-    .pl-progress-label::after {
-      content: '';
-      display: inline-block;
-      width: 18px;
-      text-align: left;
-      animation: plDots 2s steps(7, end) infinite
-    }
-
-    @keyframes plDots {
-      0% {
-        content: ''
-      }
-
-      14% {
-        content: '.'
-      }
-
-      28% {
-        content: '..'
-      }
-
-      42% {
-        content: '...'
-      }
-
-      57% {
-        content: '..'
-      }
-
-      71% {
-        content: '.'
-      }
-
-      85%,
-      100% {
-        content: ''
-      }
-    }
-
-    .pl-logo-wrap {
-      position: relative;
-      z-index: 5;
-      width: 168px;
-      height: 168px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      animation: plLogoIn .9s .1s cubic-bezier(.34, 1.56, .64, 1) both
-    }
-
-    .pl-logo-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: conic-gradient(#E02010 0deg 120deg, #FF7A00 120deg 240deg, #FFCB00 240deg 360deg);
-      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
-      mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
-      animation: plLogoSpin 4.8s linear infinite;
-      box-shadow: 0 0 18px rgba(245, 168, 0, .22)
-    }
-
-    .pl-logo-inner {
-      position: relative;
-      width: 94px;
-      height: 94px;
-      border-radius: 20px;
-      background: #0A0808;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, .45)
-    }
-
-    .pl-logo-img {
-      width: 86px;
-      height: 86px;
-      border-radius: 16px;
-      object-fit: contain;
-      display: block
-    }
-
-    @keyframes plLogoIn {
-      from {
-        opacity: 0;
-        transform: scale(.5);
-        filter: blur(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-        filter: blur(0)
-      }
-    }
-
-    @keyframes plLogoSpin {
-      from {
-        rotate: 0deg
-      }
-
-      to {
-        rotate: 360deg
-      }
+    [data-theme="dark"] #preloader { --pl-bg: #0C0A09; --pl-fg: #FAFAF9; --pl-muted: #A8A29E; --pl-red: #F04438; --pl-track: #292524; }
+    #preloader.exit { animation: plExit .45s ease forwards }
+    @keyframes plExit { to { opacity: 0; visibility: hidden } }
+    .pl-logo { width: 64px; height: 64px; border-radius: 14px; animation: plIn .4s ease both }
+    .pl-words { position: relative; height: 56px; min-width: 260px }
+    .pl-old, .pl-new { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: "Noto Sans Kannada", "Inter", sans-serif; font-weight: 700; font-size: 40px; line-height: 1; letter-spacing: -0.01em }
+    .pl-old { color: var(--pl-muted); animation: plIn .35s ease .15s both, plOut .3s ease 1.05s forwards }
+    .pl-old > span { position: relative }
+    .pl-old > span::after { content: ""; position: absolute; left: -4px; right: -4px; top: 52%; height: 3px; background: var(--pl-red);
+      transform: scaleX(0); transform-origin: left; animation: plStrike .35s ease .6s forwards }
+    .pl-new { opacity: 0; animation: plIn .4s ease 1.2s forwards }
+    .pl-sub { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--pl-muted); opacity: 0; animation: plIn .4s ease 1.35s forwards }
+    .pl-art { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; font-size: 13px; font-weight: 500; color: var(--pl-muted); opacity: 0; animation: plIn .4s ease 1.5s forwards }
+    .pl-art b { color: var(--pl-red); font-weight: 700 }
+    .pl-progress { width: 120px; height: 2px; border-radius: 2px; background: var(--pl-track); overflow: hidden; margin-top: 8px }
+    .pl-progress span { display: block; height: 100%; width: 100%; background: var(--pl-red); transform: scaleX(0); transform-origin: left; animation: plFill 2.2s cubic-bezier(.4,0,.2,1) forwards }
+    @keyframes plIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+    @keyframes plOut { to { opacity: 0; transform: translateY(-6px) } }
+    @keyframes plStrike { to { transform: scaleX(1) } }
+    @keyframes plFill { to { transform: scaleX(1) } }
+    @media (prefers-reduced-motion: reduce) {
+      #preloader *, #preloader *::after { animation-duration: .01ms !important; animation-delay: 0s !important }
+      .pl-old { display: none }
     }
   </style>
   <!-- ═══ Path-based Preloader Toggle ═══ -->
@@ -683,68 +101,19 @@
 
 <body>
   <!-- ═══ Preloader — renders instantly before React loads ═══ -->
-  <div id="preloader">
-    <div class="pl-bar-top"><span></span><span></span><span></span></div>
-    <div class="pl-bg-glow"></div>
-    <div class="pl-grid"></div>
-    <div class="pl-scan"></div>
-    <div id="pl-particles"></div>
-
-    <!-- Logo -->
-    <div class="pl-logo-wrap">
-      <div class="pl-logo-inner">
-        <img class="pl-logo-img" src="/prajakeeya.png" alt="Prajaakeeya" />
-      </div>
+  <div id="preloader" role="status" aria-label="Loading Prajaakeeya">
+    <img class="pl-logo" src="/prajakeeya.png" alt="" />
+    <div class="pl-words">
+      <div class="pl-old"><span id="pl-old-word">ರಾಜಕೀಯ</span></div>
+      <div class="pl-new" id="pl-new-word">ಪ್ರಜಾಕೀಯ</div>
     </div>
-
-    <div class="pl-stage">
-
-      <!-- Phase 1: Old System -->
-      <div class="pl-word-old">
-        <div class="pl-old-word" id="pl-old-word">ರಾಜಕೀಯ</div>
-        <div class="pl-old-kannada" id="pl-old-sub">RAJAKEEYA</div>
-      </div>
-
-      <!-- Phase 2: New System -->
-      <div class="pl-word-new">
-        <div class="pl-new-prefix" id="pl-new-prefix">ದಿ ರಿಯಲ್</div>
-        <div class="pl-new-word" id="pl-new-word">ಪ್ರಜಾಕೀಯ</div>
-        <div class="pl-new-kannada" id="pl-new-sub">THE REAL PRAJAAKEEYA</div>
-      </div>
-
-      <!-- Tagline (below stage) -->
-      <div class="pl-tagline-wrap">
-        <div class="pl-tagline-divider">
-          <div class="pl-div-line-l"></div>
-          <div class="pl-div-dot">✊</div>
-          <div class="pl-div-line-r"></div>
-        </div>
-        <div class="pl-art-row">
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">A</span>
-            <span class="pl-art-word" id="pl-art-a">Accountability</span>
-          </div>
-          <span class="pl-art-sep">·</span>
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">R</span>
-            <span class="pl-art-word" id="pl-art-r">Responsibility</span>
-          </div>
-          <span class="pl-art-sep">·</span>
-          <div class="pl-art-pill">
-            <span class="pl-art-letter">T</span>
-            <span class="pl-art-word" id="pl-art-t">Transparency</span>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /.pl-stage -->
-
-    <div class="pl-progress-wrap">
-      <div class="pl-progress-track">
-        <div class="pl-progress-fill"></div>
-      </div>
-      <div class="pl-progress-label" id="pl-loading">Prajaakeeya Loading</div>
+    <div class="pl-sub" id="pl-new-sub">The Real Prajaakeeya</div>
+    <div class="pl-art">
+      <span><b>A</b> <span id="pl-art-a">Accountability</span></span>
+      <span><b>R</b> <span id="pl-art-r">Responsibility</span></span>
+      <span><b>T</b> <span id="pl-art-t">Transparency</span></span>
     </div>
+    <div class="pl-progress"><span></span></div>
 
     <!-- Localise preloader based on saved language -->
     <script>
@@ -775,8 +144,6 @@
         s('pl-loading', d.load);
       })();
     </script>
-
-    <div class="pl-bar-bottom"><span></span><span></span><span></span></div>
   </div><!-- /#preloader -->
 
   <div id="root"></div>

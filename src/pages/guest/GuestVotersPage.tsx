@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { BRAND } from '../../theme';
 import apiClient from '../../services/apiClient';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 const LIMIT = 50;
 
 interface Voter {
@@ -61,12 +61,12 @@ const GuestVotersPage = () => {
       .finally(() => setLoading(false));
   }, [page]);
 
-  const cardBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #130B0B 100%)' : theme.palette.background.paper;
-  const cardBorder = isDark ? '1px solid rgba(245,168,0,0.1)' : '1px solid rgba(245,168,0,0.22)';
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = isDark ? '1px solid rgba(120,113,108,0.1)' : '1px solid rgba(120,113,108,0.22)';
   const textPrimary = theme.palette.text.primary;
-  const textDim = isDark ? 'rgba(255,255,255,0.42)' : 'rgba(17,24,39,0.46)';
-  const avatarBg = isDark ? '#1C1010' : theme.palette.background.paper;
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const textDim = theme.palette.text.secondary;
+  const avatarBg = isDark ? '#1C1917' : theme.palette.background.paper;
+  const GOLD = theme.palette.text.secondary;
 
   return (
     <Stack spacing={3} sx={{ fontFamily: FF }}>
@@ -105,12 +105,12 @@ const GuestVotersPage = () => {
                   },
                 }}>
                   <Box sx={{ display: 'flex' }}>
-                    <Box sx={{ width: '4px', flexShrink: 0, bgcolor: BRAND.yellow }} />
+                    <Box sx={{ width: '4px', flexShrink: 0, bgcolor: '#D92D20' }} />
                     <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1.5, px: { xs: 1.5, sm: 2 }, py: 1.5 }}>
                       <Box sx={{
                         p: '2px', borderRadius: '50%', flexShrink: 0,
                         background: voter.profilePicture
-                          ? `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2 || BRAND.red} 180deg 270deg, ${BRAND.yellow2 || BRAND.yellow} 270deg 360deg)`
+                          ? `${BRAND.red}`
                           : 'none',
                       }}>
                         <Avatar

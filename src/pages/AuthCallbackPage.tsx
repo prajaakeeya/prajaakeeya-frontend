@@ -178,7 +178,7 @@ const AuthCallbackPage = () => {
           </Alert>
           <Typography
             onClick={() => navigate('/register', { replace: true })}
-            sx={{ color: '#F5A800', cursor: 'pointer', fontWeight: 600 }}
+            sx={{ color: '#D92D20', cursor: 'pointer', fontWeight: 600 }}
           >
             Back to login
           </Typography>

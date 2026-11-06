@@ -40,7 +40,6 @@ import { updateUserConstituencies } from "../services/authService";
 import { COOKIE_AUTH } from "../config/authMode";
 import useAuthStore from "../store/useAuthStore";
 import LanguageSelector from "../components/LanguageSelector";
-import { BRAND } from "../theme";
 import prajakeeyaLogo from "../assets/images/prajakeeya.webp";
 
 type Municipality = { id: number; name: string; state: string };
@@ -483,16 +482,16 @@ const UserConstituencyOnboardingPage = () => {
       "& fieldset": {
         borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(17,24,39,0.18)",
       },
-      "&:hover fieldset": { borderColor: "rgba(245,168,0,0.45)" },
+      "&:hover fieldset": { borderColor: "rgba(120,113,108,0.45)" },
       "&.Mui-focused fieldset": {
-        borderColor: BRAND.yellow,
+        borderColor: 'rgba(120,113,108,0.35)',
         borderWidth: "1.5px",
       },
     },
     "& .MuiInputLabel-root": {
       color: isDark ? "rgba(255,255,255,0.55)" : "rgba(17,24,39,0.62)",
     },
-    "& .MuiInputLabel-root.Mui-focused": { color: BRAND.yellow },
+    "& .MuiInputLabel-root.Mui-focused": { color: '#D92D20' },
     "& .MuiInputBase-input": {
       color: isDark ? "#fff" : "rgba(15,23,42,0.94)",
       fontSize: "1rem",
@@ -500,12 +499,12 @@ const UserConstituencyOnboardingPage = () => {
   };
 
   const listboxSx = {
-    bgcolor: isDark ? "#1a1515" : "#fff",
+    bgcolor: isDark ? "#1C1917" : "#fff",
     "& .MuiAutocomplete-option": {
       color: isDark ? "rgba(255,255,255,0.85)" : "rgba(15,23,42,0.9)",
       fontSize: "0.95rem",
       '&[aria-selected="true"]': {
-        bgcolor: isDark ? "rgba(245,168,0,0.18)" : "rgba(245,168,0,0.14)",
+        bgcolor: isDark ? "rgba(120,113,108,0.18)" : "rgba(120,113,108,0.14)",
       },
       "&.Mui-focused": {
         bgcolor: isDark ? "rgba(255,255,255,0.06)" : "rgba(17,24,39,0.04)",
@@ -537,23 +536,23 @@ const UserConstituencyOnboardingPage = () => {
           alignItems: "center",
           gap: 2,
           border: isSelected
-            ? `1.5px solid ${BRAND.yellow}`
+            ? `1.5px solid #D92D20`
             : `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "rgba(17,24,39,0.12)"}`,
           background: isSelected
-            ? "linear-gradient(135deg, rgba(245,168,0,0.10) 0%, rgba(224,32,16,0.06) 100%)"
+            ? "linear-gradient(135deg, rgba(120,113,108,0.10) 0%, rgba(224,32,16,0.06) 100%)"
             : isDark
               ? "rgba(255,255,255,0.03)"
               : "rgba(17,24,39,0.02)",
           transition: "all 0.18s ease",
           "&:hover": {
-            borderColor: BRAND.yellow,
+            borderColor: 'rgba(120,113,108,0.35)',
             background:
-              "linear-gradient(135deg, rgba(245,168,0,0.10) 0%, rgba(224,32,16,0.06) 100%)",
+              "linear-gradient(135deg, rgba(120,113,108,0.10) 0%, rgba(224,32,16,0.06) 100%)",
             "& .lb-arrow": {
               background:
-                "linear-gradient(135deg, #F5A800 0%, #E02010 100%)",
+                "linear-gradient(135deg, #E8A10A 0%, #D92D20 100%)",
               color: "#fff",
-              boxShadow: "0 6px 18px rgba(224,32,16,0.35)",
+              boxShadow: 'none',
               transform: "scale(1.06)",
             },
           },
@@ -612,7 +611,7 @@ const UserConstituencyOnboardingPage = () => {
             alignItems: "center",
             justifyContent: "center",
             background: isSelected
-              ? "linear-gradient(135deg, #F5A800 0%, #E02010 100%)"
+              ? "linear-gradient(135deg, #E8A10A 0%, #D92D20 100%)"
               : isDark
                 ? "rgba(255,255,255,0.06)"
                 : "rgba(17,24,39,0.06)",
@@ -973,12 +972,10 @@ const UserConstituencyOnboardingPage = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: isDark
-            ? "radial-gradient(ellipse at 50% 0%, #1a0a0a 0%, #0a0505 55%, #000 100%)"
-            : "radial-gradient(ellipse at 50% 0%, #fff8ee 0%, #f5efe2 55%, #ece4d2 100%)",
+          bgcolor: "background.default",
         }}
       >
-        <CircularProgress sx={{ color: BRAND.yellow }} />
+        <CircularProgress sx={{ color: '#D92D20' }} />
       </Box>
     );
   }
@@ -987,9 +984,7 @@ const UserConstituencyOnboardingPage = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: isDark
-          ? "radial-gradient(ellipse at 50% 0%, #1a0a0a 0%, #0a0505 55%, #000 100%)"
-          : "radial-gradient(ellipse at 50% 0%, #fff8ee 0%, #f5efe2 55%, #ece4d2 100%)",
+        bgcolor: "background.default",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -1013,31 +1008,15 @@ const UserConstituencyOnboardingPage = () => {
           />
           <Typography
             sx={{
-              fontFamily: '"Bebas Neue", "Impact", sans-serif',
-              fontSize: { xs: "1.05rem", sm: "1.2rem" },
-              letterSpacing: "0.08em",
-              background:
-                "linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              fontWeight: 700,
+              fontSize: "1rem",
             }}
           >
-            PRAJAAKEEYA
+            Prajaakeeya
           </Typography>
         </Stack>
         <LanguageSelector
           variant="outlined"
-          sx={{
-            borderRadius: 3,
-            borderColor: isDark
-              ? "rgba(245,168,0,0.4)"
-              : "rgba(245,168,0,0.5)",
-            color: BRAND.yellow,
-            "&:hover": {
-              borderColor: BRAND.yellow,
-              bgcolor: "rgba(245,168,0,0.08)",
-            },
-          }}
         />
       </Stack>
 
@@ -1046,17 +1025,10 @@ const UserConstituencyOnboardingPage = () => {
         sx={{
           width: "100%",
           maxWidth: 720,
-          background: isDark
-            ? "linear-gradient(160deg, rgba(28,16,16,0.92) 0%, rgba(19,11,11,0.96) 100%)"
-            : "rgba(255,255,255,0.92)",
-          border: isDark
-            ? "1px solid rgba(245,168,0,0.18)"
-            : "1px solid rgba(245,168,0,0.32)",
-          borderRadius: 4,
-          boxShadow: isDark
-            ? "0 24px 64px rgba(0,0,0,0.55)"
-            : "0 16px 48px rgba(17,24,39,0.10)",
-          backdropFilter: "blur(12px)",
+          bgcolor: "background.paper",
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 3,
           p: { xs: 3, sm: 5 },
         }}
       >
@@ -1072,7 +1044,7 @@ const UserConstituencyOnboardingPage = () => {
               fontSize: "0.75rem",
               fontWeight: 700,
               letterSpacing: "0.12em",
-              color: BRAND.yellow,
+              color: '#D92D20',
               textTransform: "uppercase",
             }}
           >
@@ -1103,8 +1075,7 @@ const UserConstituencyOnboardingPage = () => {
               ? "rgba(255,255,255,0.06)"
               : "rgba(17,24,39,0.08)",
             "& .MuiLinearProgress-bar": {
-              background:
-                "linear-gradient(90deg, #F5A800 0%, #E02010 100%)",
+              bgcolor: "primary.main",
               borderRadius: 2,
             },
           }}
@@ -1133,14 +1104,12 @@ const UserConstituencyOnboardingPage = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "1.5rem",
-                  background:
-                    "linear-gradient(135deg, rgba(245,168,0,0.18) 0%, rgba(224,32,16,0.12) 100%)",
-                  border: "1px solid rgba(245,168,0,0.35)",
+                  bgcolor: "action.hover",
                 }}
               >
                 {currentStep === "local_body" ? (
                   <AccountBalanceIcon
-                    sx={{ fontSize: 24, color: BRAND.yellow }}
+                    sx={{ fontSize: 24, color: '#D92D20' }}
                   />
                 ) : (
                   meta.icon
@@ -1180,7 +1149,7 @@ const UserConstituencyOnboardingPage = () => {
                 spacing={1}
                 sx={{ mb: 1 }}
               >
-                <CircularProgress size={14} sx={{ color: BRAND.yellow }} />
+                <CircularProgress size={14} sx={{ color: '#D92D20' }} />
                 <Typography
                   sx={{
                     fontSize: "0.8rem",
@@ -1297,12 +1266,10 @@ const UserConstituencyOnboardingPage = () => {
                 fontSize: "0.95rem",
                 color: "#fff",
                 background:
-                  "linear-gradient(135deg, #C8180A 0%, #E02010 100%)",
-                boxShadow: "0 6px 20px rgba(200,24,10,0.35)",
+                  "linear-gradient(135deg, #B42318 0%, #D92D20 100%)",
                 "&:hover": {
                   background:
-                    "linear-gradient(135deg, #E02010 0%, #C8180A 100%)",
-                  boxShadow: "0 8px 26px rgba(200,24,10,0.5)",
+                    "linear-gradient(135deg, #D92D20 0%, #B42318 100%)",
                 },
                 "&.Mui-disabled": {
                   background: isDark

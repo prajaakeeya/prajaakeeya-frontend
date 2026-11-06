@@ -25,7 +25,7 @@ const AuthLayout = ({ title }: PropsWithChildren<AuthLayoutProps>) => {
   return (
     <Box
       minHeight="100vh"
-      width="100vw"
+      width="100%"
       display="flex"
       alignItems="center"
       justifyContent="center"

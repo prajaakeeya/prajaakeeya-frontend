@@ -17,7 +17,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { BRAND } from '../../theme';
+import PageHeader from '../../components/PageHeader';
 import { getIssuesByElectionAndConstituency } from '../../services/civicIssuesService';
 import {
   fetchElections,
@@ -41,7 +41,7 @@ import garbageImg from '../../assets/images/garbage.webp';
 import streetLightImg from '../../assets/images/street-light.webp';
 import savePlanetImg from '../../assets/images/save-the-planet.webp';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 interface IssueCategory {
   name: string;
@@ -53,19 +53,19 @@ const filterSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
     background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
     '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-    '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-    '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+    '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+    '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
   },
   '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-  '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+  '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
   '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)' },
 });
 
 const listboxSx = (isDark: boolean) => ({
-  bgcolor: isDark ? '#1a1515' : '#fff',
+  bgcolor: isDark ? '#1C1917' : '#fff',
   '& .MuiAutocomplete-option': {
     color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(15,23,42,0.9)',
-    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' },
+    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.1)' },
     '&.Mui-focused': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.04)' },
   },
 });
@@ -76,11 +76,11 @@ const GuestCivicIssuesPage = () => {
   const isDark = theme.palette.mode === 'dark';
   const isKannada = (i18n.language || '').startsWith('kn');
 
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const GOLD = theme.palette.primary.main;
   const BG = theme.palette.background.paper;
-  const borderFaint = isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)';
+  const borderFaint = theme.palette.divider;
   const textPrimary = theme.palette.text.primary;
-  const textDim = isDark ? 'rgba(255,255,255,0.42)' : 'rgba(17,24,39,0.46)';
+  const textDim = theme.palette.text.secondary;
 
   // ── Elections ────────────────────────────────────────────────
   const [elections, setElections] = useState<Election[]>([]);
@@ -320,32 +320,7 @@ const GuestCivicIssuesPage = () => {
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 1, sm: 0 } }}>
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.38 }}>
-        <Box sx={{
-          bgcolor: BG, borderRadius: 3, border: `1px solid ${borderFaint}`, overflow: 'hidden',
-          boxShadow: isDark ? '0 14px 32px rgba(0,0,0,0.32)' : '0 4px 14px rgba(17,24,39,0.06)',
-          mb: 3,
-        }}>
-          <Box sx={{ display: 'flex', height: '4px' }}>
-            {[BRAND.red, BRAND.blue, BRAND.brown].map(c => (
-              <Box key={c} sx={{ flex: 1, bgcolor: c }} />
-            ))}
-          </Box>
-          <Box sx={{ px: { xs: 2.5, sm: 4 }, py: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{
-              width: 52, height: 52, borderRadius: '12px',
-              background: 'linear-gradient(135deg,rgba(200,24,10,.22),rgba(37,58,154,.18))',
-              border: '1.5px solid rgba(245,168,0,.35)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}>
-              <ReportProblemIcon sx={{ color: GOLD, fontSize: 26 }} />
-            </Box>
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: { xs: '1.15rem', sm: '1.4rem' }, color: textPrimary, lineHeight: 1.1 }}>
-              {t('civicIssues.title', { defaultValue: 'Public Issues' })}
-            </Typography>
-          </Box>
-        </Box>
-      </motion.div>
+      <PageHeader title={t('civicIssues.title', { defaultValue: 'Public Issues' })} />
 
       {/* Row 1: Election + first-level filters */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
@@ -359,10 +334,10 @@ const GuestCivicIssuesPage = () => {
             MenuProps: {
               PaperProps: {
                 sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
+                  bgcolor: isDark ? '#1C1917' : '#ffffff',
                   '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.1)' },
+                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.2)', color: '#D92D20' },
                 },
               },
             },
@@ -565,7 +540,6 @@ const GuestCivicIssuesPage = () => {
                   overflow: 'hidden',
                 }}>
                   <Box sx={{ display: 'flex' }}>
-                    <Box sx={{ width: '4px', flexShrink: 0, bgcolor: idx % 3 === 0 ? BRAND.red : idx % 3 === 1 ? BRAND.blue : BRAND.brown }} />
                     <CardContent sx={{ flex: 1, py: 2, px: { xs: 2, sm: 2.5 }, '&:last-child': { pb: 2 } }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ minWidth: 0, flex: 1, display: 'flex', alignItems: 'center', gap: 1.25, overflow: 'hidden' }}>
@@ -596,9 +570,9 @@ const GuestCivicIssuesPage = () => {
                           label={cat.count}
                           sx={{
                             fontFamily: FF, fontWeight: 800, fontSize: '0.85rem',
-                            bgcolor: cat.count > 0 ? 'rgba(245,168,0,0.12)' : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.06)'),
+                            bgcolor: cat.count > 0 ? 'rgba(120,113,108,0.12)' : (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.06)'),
                             color: cat.count > 0 ? GOLD : textDim,
-                            border: `1px solid ${cat.count > 0 ? 'rgba(245,168,0,0.3)' : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)')}`,
+                            border: `1px solid ${cat.count > 0 ? 'rgba(120,113,108,0.3)' : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)')}`,
                             minWidth: 36, height: 28,
                           }}
                         />

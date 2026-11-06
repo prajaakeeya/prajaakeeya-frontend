@@ -404,10 +404,10 @@ const AspirantRegistrationPage = () => {
     <Stack spacing={3}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: "'Baloo 2', sans-serif" }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: 'inherit' }}>
             {t('forms.aspirant.title')}
           </Typography>
-          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: "'Baloo 2', sans-serif" }}>
+          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'inherit' }}>
             {t('forms.aspirant.formSubtitle')}
           </Typography>
         </Box>
@@ -465,11 +465,11 @@ const AspirantRegistrationPage = () => {
         }}
         PaperProps={{
           sx: {
-            bgcolor: theme.palette.mode === 'dark' ? '#0A0808' : '#FFFFFF',
+            bgcolor: theme.palette.mode === 'dark' ? '#0C0A09' : '#FFFFFF',
             color: theme.palette.text.primary,
-            borderRadius: '16px',
+            borderRadius: '12px',
             overflow: 'hidden',
-            border: theme.palette.mode === 'dark' ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
+            border: theme.palette.mode === 'dark' ? '1px solid rgba(120,113,108,0.22)' : '1px solid rgba(120,113,108,0.3)',
             boxShadow: theme.palette.mode === 'dark'
               ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
               : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
@@ -480,9 +480,6 @@ const AspirantRegistrationPage = () => {
           },
         }}
       >
-        <Box sx={{ display: 'flex', height: '4px' }}>
-          {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
         <DialogTitle sx={{ textAlign: 'center', pt: 4 }}>
           <Box
             sx={{
@@ -494,16 +491,16 @@ const AspirantRegistrationPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'linear-gradient(135deg,rgba(200,24,10,0.22),rgba(245,168,0,0.16))',
-              border: '1.5px solid rgba(245,168,0,0.45)',
+              background: 'rgba(200,24,10,0.22)',
+              border: '1.5px solid rgba(120,113,108,0.45)',
               '@keyframes votePulse': {
-                '0%,100%': { boxShadow: '0 0 0 0 rgba(245,168,0,0.0), 0 0 22px rgba(200,24,10,0.22)' },
-                '50%': { boxShadow: '0 0 0 8px rgba(245,168,0,0.06), 0 0 34px rgba(245,168,0,0.35)' },
+                '0%,100%': { boxShadow: 'none' },
+                '50%': { boxShadow: '0 0 0 8px rgba(120,113,108,0.06), 0 0 34px rgba(120,113,108,0.35)' },
               },
               animation: 'votePulse 2.4s ease-in-out infinite',
             }}
           >
-            <HowToVoteIcon sx={{ fontSize: 42, color: '#F5A800' }} />
+            <HowToVoteIcon sx={{ fontSize: 42, color: '#D92D20' }} />
           </Box>
           <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
             {t('forms.aspirant.successDialog.title')}
@@ -528,14 +525,7 @@ const AspirantRegistrationPage = () => {
             sx={{
               px: 4,
               fontWeight: 800,
-              color: '#fff',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-              boxShadow: '0 8px 28px rgba(200,24,10,0.38)',
-              '&:hover': {
-                background: 'linear-gradient(135deg,#df210f 0%,#ffbe1a 100%)',
-                boxShadow: '0 10px 34px rgba(200,24,10,0.52)',
-              },
             }}
           >
             {t('common.ok')}

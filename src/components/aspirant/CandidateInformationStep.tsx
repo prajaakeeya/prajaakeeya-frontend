@@ -49,12 +49,12 @@ import capitolInactiveImg from '../../assets/images/capitol.png';
 import capitolActiveImg from '../../assets/images/capitol1.webp';
 
 // ── Theme constants — sourced from central BRAND palette ──────────────────
-const GOLD = BRAND.yellow;                    // '#F5A800'
-const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = BRAND.black;                     // '#0A0808'
+const GOLD = 'primary.main';
+const GOLDD = 'divider';
+const DARK = 'background.paper';
 const DARK2 = 'rgba(255,255,255,0.03)';
-const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const BORDER = 'divider';
+const FF = 'inherit';
 
 // ── Framer-motion variants ─────────────────────────────────────────────────
 const containerVariants = {
@@ -73,11 +73,11 @@ const FIELD_ACCENTS = [
   BRAND.brown,  // brown
   BRAND.red,
   BRAND.blue,
-  BRAND.yellow, // gold
+  '#D92D20', // gold
   BRAND.red,
   BRAND.blue,
   BRAND.brown,
-  BRAND.yellow,
+  '#D92D20',
   BRAND.red,
 ];
 
@@ -187,8 +187,8 @@ const CandidateInformationStep = ({
   const isDark = theme.palette.mode === 'dark';
   const darkFieldSx = getFieldSx(isDark);
   const disabledFieldSx = getDisabledFieldSx(isDark);
-  const cardBg = isDark ? DARK : 'linear-gradient(180deg,#fffdfa 0%,#f9f4ec 100%)';
-  const cardBorder = isDark ? BORDER : 'rgba(245,168,0,0.24)';
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = theme.palette.divider;
   const textPrimary = isDark ? '#fff' : 'rgba(15,23,42,0.94)';
   const textSecondary = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.62)';
   const fieldWrapBg = isDark ? DARK2 : 'rgba(15,23,42,0.04)';
@@ -695,10 +695,10 @@ const CandidateInformationStep = ({
             MenuProps: {
               PaperProps: {
                 sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
+                  bgcolor: isDark ? '#1C1917' : '#ffffff',
                   '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)', fontFamily: FF },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: GOLD },
+                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.1)' },
+                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.2)', color: GOLD },
                 },
               },
             },
@@ -851,10 +851,10 @@ const CandidateInformationStep = ({
                       py: { xs: 1.4, sm: 1.6 },
                       borderRadius: 2,
                       border: isActive
-                        ? '1.5px solid rgba(245,168,0,0.55)'
+                        ? '1.5px solid rgba(232,161,10,0.55)'
                         : `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.08)'}`,
                       background: isActive
-                        ? 'linear-gradient(135deg, rgba(245,168,0,0.95) 0%, rgba(224,32,16,0.85) 100%)'
+                        ? '#D92D20'
                         : isDark ? 'rgba(255,255,255,0.03)' : 'rgba(17,24,39,0.02)',
                       color: isActive ? '#fff' : isDark ? 'rgba(255,255,255,0.78)' : 'rgba(17,24,39,0.78)',
                       transition: 'all 0.18s ease',
@@ -865,8 +865,8 @@ const CandidateInformationStep = ({
                         : isActive
                           ? {}
                           : {
-                              borderColor: 'rgba(245,168,0,0.45)',
-                              background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.06)',
+                              borderColor: 'rgba(120,113,108,0.45)',
+                              background: isDark ? 'rgba(120,113,108,0.06)' : 'rgba(120,113,108,0.06)',
                             },
                     }}
                   >
@@ -936,9 +936,9 @@ const CandidateInformationStep = ({
                   onClick={() => setPickerOpen(true)}
                   sx={{
                     color: GOLD, fontFamily: FF, fontWeight: 700, textTransform: 'none',
-                    border: `1px solid ${GOLD}`, borderRadius: '8px', px: 1.5,
+                    border: 1, borderColor: GOLD, borderRadius: '8px', px: 1.5,
                     flexShrink: 0,
-                    '&:hover': { background: 'rgba(245,168,0,0.08)' },
+                    '&:hover': { background: 'rgba(120,113,108,0.08)' },
                   }}
                 >
                   {t('forms.aspirant.updateProfile', { defaultValue: 'Update Profile' })}
@@ -948,8 +948,8 @@ const CandidateInformationStep = ({
               <Box sx={{
                 p: { xs: 1.5, sm: 2 },
                 borderRadius: 2,
-                border: `1px dashed ${isDark ? 'rgba(245,168,0,0.45)' : 'rgba(245,168,0,0.55)'}`,
-                bgcolor: isDark ? 'rgba(245,168,0,0.04)' : 'rgba(245,168,0,0.05)',
+                border: `1px dashed ${isDark ? 'rgba(120,113,108,0.45)' : 'rgba(120,113,108,0.35)'}`,
+                bgcolor: isDark ? 'rgba(120,113,108,0.04)' : 'rgba(120,113,108,0.05)',
                 textAlign: 'center',
               }}>
                 <Typography sx={{ fontFamily: FF, fontSize: '0.88rem', color: textPrimary, mb: 1 }}>
@@ -966,7 +966,7 @@ const CandidateInformationStep = ({
                   sx={{
                     color: GOLD, borderColor: GOLD,
                     fontFamily: FF, fontWeight: 700, textTransform: 'none',
-                    '&:hover': { borderColor: GOLD, background: 'rgba(245,168,0,0.08)' },
+                    '&:hover': { borderColor: GOLD, background: 'rgba(120,113,108,0.08)' },
                   }}
                 >
                   {t('forms.aspirant.updateProfile', { defaultValue: 'Update Profile' })}
@@ -1134,9 +1134,6 @@ const CandidateInformationStep = ({
     }}>
 
       {/* Top colour bar */}
-      <Box sx={{ display: 'flex', height: '5px' }}>
-        {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-      </Box>
 
       {/* ── Header ── */}
       <motion.div
@@ -1151,8 +1148,8 @@ const CandidateInformationStep = ({
         }}>
           <Box sx={{
             width: 52, height: 52, borderRadius: '12px', flexShrink: 0,
-            background: 'linear-gradient(135deg,rgba(37,58,154,.28),rgba(245,168,0,.18))',
-            border: `1.5px solid rgba(245,168,0,.35)`,
+            background: 'rgba(37,58,154,.28)',
+            border: `1.5px solid rgba(120,113,108,.35)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <PersonAddIcon sx={{ color: GOLD, fontSize: 28 }} />
@@ -1181,12 +1178,12 @@ const CandidateInformationStep = ({
                   <Grid item xs={12}>
                     <Alert
                       severity="info"
-                      icon={<InfoOutlinedIcon sx={{ color: '#F5A800' }} />}
+                      icon={<InfoOutlinedIcon sx={{ color: '#D92D20' }} />}
                       sx={{
                         borderRadius: 2,
-                        bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.06)',
-                        border: `1px solid ${isDark ? 'rgba(245,168,0,0.2)' : 'rgba(245,168,0,0.25)'}`,
-                        color: isDark ? '#FFCB00' : 'rgba(15,23,42,0.8)',
+                        bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.06)',
+                        border: `1px solid ${isDark ? 'rgba(120,113,108,0.2)' : 'rgba(120,113,108,0.25)'}`,
+                        color: isDark ? '#D92D20' : 'rgba(15,23,42,0.8)',
                         fontFamily: FF,
                         fontSize: '0.78rem',
                         '& .MuiAlert-message': { fontFamily: FF },
@@ -1205,7 +1202,7 @@ const CandidateInformationStep = ({
                       borderLeft: `3px solid ${FIELD_ACCENTS[idx] ?? GOLDD}`,
                       transition: 'border-color 0.2s',
                       '&:hover': { borderLeftColor: GOLD },
-                      '&:focus-within': { borderLeftColor: GOLD, background: 'rgba(245,168,0,0.03)' },
+                      '&:focus-within': { borderLeftColor: GOLD, background: 'rgba(120,113,108,0.03)' },
                     }}>
                       {node}
                     </Box>
@@ -1269,7 +1266,7 @@ const CandidateInformationStep = ({
                   fontSize: '0.82rem',
                   borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.72)',
-                  '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                  '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                 }}
               >
                 {t('forms.aspirant.navigation.back')}
@@ -1285,12 +1282,9 @@ const CandidateInformationStep = ({
                   fontWeight: 800,
                   fontSize: '0.9rem',
                   px: { xs: 2, sm: 0 },
-                  background: `linear-gradient(135deg, #C8180A 0%, #F5A800 100%)`,
-                  color: '#fff',
-                  boxShadow: `0 4px 20px rgba(200,24,10,0.35)`,
+                  background: `#B42318`,
                   '&:hover': {
-                    background: `linear-gradient(135deg, #e01c0c 0%, #ffb800 100%)`,
-                    boxShadow: `0 6px 24px rgba(200,24,10,0.55)`,
+                    background: `#e01c0c`,
                     transform: 'translateY(-1px)',
                   },
                   '&:active': { transform: 'translateY(0px)' },
@@ -1298,7 +1292,6 @@ const CandidateInformationStep = ({
                   '&.Mui-disabled': {
                     background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.12)',
                     color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(15,23,42,0.38)',
-                    boxShadow: 'none'
                   },
                 }}
               >
@@ -1310,9 +1303,6 @@ const CandidateInformationStep = ({
       </Box>
 
       {/* Bottom colour bar */}
-      <Box sx={{ display: 'flex', height: '3px' }}>
-        {['#6B3A00', '#253A9A', '#C8180A'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-      </Box>
 
       {/* Constituency-picker modal — opened from the tab strip's
           "Update Profile" CTA. After save it updates the auth store, and the

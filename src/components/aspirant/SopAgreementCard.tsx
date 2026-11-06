@@ -12,7 +12,7 @@ import {
 import SopFlowChart from './SopFlowChart';
 import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 interface Props {
     sopAgreed: boolean;
@@ -41,7 +41,7 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
 
     if (!sopAgreed) return null;
 
-    const border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(17,24,39,0.1)';
+    const border = theme.palette.divider;
 
     return (
         <>
@@ -126,7 +126,7 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                         signatureSlot={
                             <Box>
                                 <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1.5 }}>
-                                    <DrawIcon sx={{ color: isDark ? BRAND.yellow : BRAND.saffron, fontSize: 18 }} />
+                                    <DrawIcon sx={{ color: isDark ? '#D92D20' : BRAND.saffron, fontSize: 18 }} />
                                     <Typography sx={{
                                         fontFamily: FF, fontWeight: 700, fontSize: '0.72rem',
                                         textTransform: 'uppercase', letterSpacing: '0.1em',
@@ -144,7 +144,7 @@ const SopAgreementCard: React.FC<Props> = ({ sopAgreed, name, sopAgreedAt, isKan
                                         color: isDark ? '#FFD27A' : '#B45309',
                                         lineHeight: 1.1,
                                         pb: 0.5,
-                                        borderBottom: `1.5px solid ${isDark ? 'rgba(245,168,0,0.35)' : 'rgba(180,83,9,0.4)'}`,
+                                        borderBottom: `1.5px solid ${isDark ? 'rgba(120,113,108,0.35)' : 'rgba(180,83,9,0.4)'}`,
                                         display: 'inline-block',
                                         minWidth: { xs: 140, sm: 240 },
                                     }}>

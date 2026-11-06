@@ -58,7 +58,7 @@ const FloatingWord = ({
         fontFamily:
           word === "ಪ್ರಜಾಕೀಯ"
             ? '"Noto Sans Kannada", sans-serif'
-            : '"Playfair Display", serif',
+            : 'inherit',
         fontWeight: 700,
         color,
         opacity: 0,
@@ -115,8 +115,8 @@ const GlowRing = ({
 const ComingSoonPage = () => {
   const wordColors = [
     BRAND.red,
-    BRAND.yellow,
-    BRAND.yellow2,
+    '#D92D20',
+    '#D92D20',
     BRAND.saffron,
     BRAND.red2,
   ];
@@ -203,7 +203,7 @@ const ComingSoonPage = () => {
         }}
       >
         <GlowRing radius={220} delay={0} color={BRAND.saffron} />
-        <GlowRing radius={260} delay={1} color={BRAND.yellow} />
+        <GlowRing radius={260} delay={1} color={'#D92D20'} />
         <GlowRing radius={300} delay={2} color={BRAND.red} />
 
         {/* Logo with CSS animation — guaranteed to replay on every load */}
@@ -240,11 +240,11 @@ const ComingSoonPage = () => {
         <Typography
           variant="h2"
           sx={{
-            fontFamily: '"Playfair Display", serif',
+            fontFamily: 'inherit',
             fontWeight: 800,
             fontSize: { xs: "2.2rem", sm: "3rem", md: "3.8rem" },
             textAlign: "center",
-            background: `linear-gradient(135deg, ${BRAND.yellow2}, ${BRAND.saffron}, ${BRAND.red})`,
+            background: `linear-gradient(135deg, #D92D20, ${BRAND.saffron}, ${BRAND.red})`,
             backgroundClip: "text",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -262,7 +262,7 @@ const ComingSoonPage = () => {
           marginTop: "32px",
           height: 3,
           borderRadius: 2,
-          background: `linear-gradient(90deg, transparent, ${BRAND.saffron}, ${BRAND.yellow}, ${BRAND.saffron}, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${BRAND.saffron}, #D92D20, ${BRAND.saffron}, transparent)`,
           animation: "expandDivider 1s ease-out 1.3s both",
         }}
       />
@@ -287,7 +287,7 @@ const ComingSoonPage = () => {
           component={Link}
           to="/privacy-policy"
           sx={{
-            color: BRAND.yellow,
+            color: '#D92D20',
             fontSize: { xs: "0.68rem", sm: "0.8rem" },
             fontWeight: 600,
             textDecoration: "none",
@@ -299,7 +299,7 @@ const ComingSoonPage = () => {
         </MuiLink>
         <Box
           component="span"
-          sx={{ color: BRAND.yellow, fontSize: "0.8rem", opacity: 0.4 }}
+          sx={{ color: '#D92D20', fontSize: "0.8rem", opacity: 0.4 }}
         >
           |
         </Box>
@@ -307,7 +307,7 @@ const ComingSoonPage = () => {
           component={Link}
           to="/terms-and-conditions"
           sx={{
-            color: BRAND.yellow,
+            color: '#D92D20',
             fontSize: { xs: "0.68rem", sm: "0.8rem" },
             fontWeight: 600,
             textDecoration: "none",
@@ -319,7 +319,7 @@ const ComingSoonPage = () => {
         </MuiLink>
         <Box
           component="span"
-          sx={{ color: BRAND.yellow, fontSize: "0.8rem", opacity: 0.4 }}
+          sx={{ color: '#D92D20', fontSize: "0.8rem", opacity: 0.4 }}
         >
           |
         </Box>
@@ -327,7 +327,7 @@ const ComingSoonPage = () => {
           component={Link}
           to="/community-guidelines"
           sx={{
-            color: BRAND.yellow,
+            color: '#D92D20',
             fontSize: { xs: "0.68rem", sm: "0.8rem" },
             fontWeight: 600,
             textDecoration: "none",
@@ -339,7 +339,7 @@ const ComingSoonPage = () => {
         </MuiLink>
         <Box
           component="span"
-          sx={{ color: BRAND.yellow, fontSize: "0.8rem", opacity: 0.4 }}
+          sx={{ color: '#D92D20', fontSize: "0.8rem", opacity: 0.4 }}
         >
           |
         </Box>
@@ -347,7 +347,7 @@ const ComingSoonPage = () => {
           component={Link}
           to="/child-safety"
           sx={{
-            color: BRAND.yellow,
+            color: '#D92D20',
             fontSize: { xs: "0.68rem", sm: "0.8rem" },
             fontWeight: 600,
             textDecoration: "none",

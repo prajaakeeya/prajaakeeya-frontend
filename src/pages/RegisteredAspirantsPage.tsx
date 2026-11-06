@@ -12,7 +12,7 @@ const PAGE_SIZE = 50;
 
 const RegisteredAspirantsPage: React.FC = () => {
     const { i18n } = useTranslation();
-    const FF = "'Baloo 2', sans-serif";
+    const FF = 'inherit';
     const isKannada = (i18n.language || '').startsWith('kn');
 
     const [aspirants, setAspirants] = useState<any[]>([]);
@@ -28,10 +28,10 @@ const RegisteredAspirantsPage: React.FC = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const border = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.14)' : 'rgba(17,24,39,0.14)';
+    const border = theme.palette.divider;
     const panelBg = theme.palette.mode === 'dark'
-        ? 'linear-gradient(155deg, rgba(20,24,34,0.95) 0%, rgba(13,17,28,0.96) 100%)'
-        : 'linear-gradient(155deg, #FFFFFF 0%, #F8FAFC 100%)';
+        ? 'rgba(20,24,34,0.95)'
+        : '#FFFFFF';
     const textPrimary = theme.palette.text.primary;
     const textSecondary = theme.palette.text.secondary;
 
@@ -63,9 +63,6 @@ const RegisteredAspirantsPage: React.FC = () => {
         <Box sx={{ p: { xs: 1.25, sm: 2.5 } }}>
             {/* Header card */}
             <Card sx={{ mb: 2.2, borderRadius: 2.5, background: panelBg, border: `1px solid ${border}`, boxShadow: theme.palette.mode === 'dark' ? '0 18px 40px rgba(0,0,0,0.35)' : '0 10px 24px rgba(17,24,39,0.08)' }}>
-                <Box sx={{ display: 'flex', height: 4 }}>
-                    {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-                </Box>
                 <CardContent sx={{ p: { xs: 1.5, sm: 2.2 }, '&:last-child': { pb: { xs: 1.5, sm: 2.2 } } }}>
                     <Stack spacing={1.35}>
                         <Box>

@@ -23,7 +23,6 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { BRAND } from '../../theme';
 import SopAgreementCard from './SopAgreementCard';
 
 interface AspirantProfileTabProps {
@@ -40,16 +39,16 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
     const [continuing, setContinuing] = useState(false);
     const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
 
-    const FF = "'Baloo 2', sans-serif";
+    const FF = 'inherit';
     const isDark = theme.palette.mode === 'dark';
     const cardBg = theme.palette.background.paper;
     const insetBg = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(17,24,39,0.04)';
-    const goldd = 'rgba(245,168,0,0.45)';
+    const goldd = theme.palette.divider;
     const textPri = theme.palette.text.primary;
     const textSec = theme.palette.text.secondary;
-    const textDim = isDark ? 'rgba(255,255,255,0.46)' : 'rgba(17,24,39,0.50)';
-    const border = isDark ? 'rgba(255,255,255,0.09)' : 'rgba(17,24,39,0.08)';
-    const cardShadow = isDark ? '0 16px 36px rgba(0,0,0,0.36)' : '0 4px 16px rgba(17,24,39,0.06)';
+    const textDim = theme.palette.text.secondary;
+    const border = theme.palette.divider;
+    const cardShadow = 'none';
 
     const formatDate = (d: any) => {
         if (!d) return '—';
@@ -143,10 +142,6 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                         startIcon={continuing ? <CircularProgress size={18} color="inherit" /> : undefined}
                         sx={{
                             minWidth: 170, fontWeight: 800, fontFamily: FF, borderRadius: 2.2, textTransform: 'none',
-                            color: '#fff',
-                            background: `linear-gradient(135deg,${BRAND.red} 0%,${BRAND.yellow} 100%)`,
-                            boxShadow: '0 10px 28px rgba(200,24,10,0.35)',
-                            '&:hover': { background: `linear-gradient(135deg,${BRAND.red2} 0%,#ffbe1a 100%)` },
                         }}
                     >
                         {continuing ? 'Continuing…' : 'Continue Registration'}
@@ -184,9 +179,6 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                 {/* ── Profile card ── */}
                 <Grid item xs={12} md={4}>
                     <Card sx={{ borderRadius: 3, bgcolor: cardBg, boxShadow: cardShadow, border: `1px solid ${border}`, overflow: 'hidden' }}>
-                        <Box sx={{ display: 'flex', height: '3px' }}>
-                            {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-                        </Box>
                         <CardContent sx={{ p: { xs: 2, md: 4 } }}>
                             <Typography variant="h6" sx={{ fontFamily: FF, fontWeight: 800, mb: 2.4, color: textPri }}>
                                 {t('userDashboard.aspirant.profileTitle') || 'Aspirant Profile'}
@@ -324,12 +316,9 @@ const AspirantProfileTab: React.FC<AspirantProfileTabProps> = ({ aspirantProfile
                 {/* ── SOP Agreement card ── */}
                 <Grid item xs={12} md={8}>
                     <Card sx={{ borderRadius: 3, bgcolor: cardBg, boxShadow: cardShadow, border: `1px solid ${border}`, overflow: 'hidden' }}>
-                        <Box sx={{ display: 'flex', height: '3px' }}>
-                            {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-                        </Box>
                         <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                             <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 2 }}>
-                                <VerifiedIcon sx={{ color: BRAND.yellow }} />
+                                <VerifiedIcon sx={{ color: '#D92D20' }} />
                                 <Typography variant="h6" sx={{ fontFamily: FF, fontWeight: 800, color: textPri }}>
                                     {t('userDashboard.aspirant.sopAgreementTitle') || 'SOP Agreement'}
                                 </Typography>

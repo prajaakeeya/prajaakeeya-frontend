@@ -24,11 +24,11 @@ import apiClient from '../../services/apiClient';
 import LivePhotoCaptureStep from './LivePhotoCaptureStep';
 import { safeUrl } from '../../utils/safeUrl';
 
-const GOLD = '#F5A800';
-const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
-const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const GOLD = 'primary.main';
+const GOLDD = 'divider';
+const DARK = 'background.paper';
+const BORDER = 'divider';
+const FF = 'inherit';
 
 const containerVariants = {
   hidden: {},
@@ -189,8 +189,8 @@ const DocumentsUploadStep = ({
     return () => { mounted = false; };
   }, []);
   const isDark = theme.palette.mode === 'dark';
-  const cardBg = isDark ? DARK : 'linear-gradient(180deg,#fffdfa 0%,#f9f4ec 100%)';
-  const cardBorder = isDark ? BORDER : 'rgba(245,168,0,0.24)';
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = theme.palette.divider;
   const textPrimary = isDark ? '#fff' : 'rgba(15,23,42,0.94)';
   const textSecondary = isDark ? 'rgba(255,255,255,0.56)' : 'rgba(15,23,42,0.62)';
   const surface1 = isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)';
@@ -251,9 +251,6 @@ const DocumentsUploadStep = ({
           </Box>
         )}
 
-      <Box sx={{ display: 'flex', height: '5px' }}>
-        {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-      </Box>
 
 
       <Box sx={{ px: { xs: 2, sm: 4 }, py: 2.5 }}>
@@ -270,7 +267,7 @@ const DocumentsUploadStep = ({
                       border: `1px solid ${surfaceBorder}`,
                       overflow: 'hidden',
                       transition: 'all .25s ease',
-                      '&:hover': { borderColor: 'rgba(245,168,0,.35)', transform: 'translateY(-1px)' },
+                      '&:hover': { borderColor: 'rgba(120,113,108,.35)', transform: 'translateY(-1px)' },
                     }}>
                       <Box sx={{ height: '3px', bgcolor: doc.accent }} />
                       <Box sx={{ p: 2 }}>
@@ -337,11 +334,10 @@ const DocumentsUploadStep = ({
                           }}
                           sx={{
                             mt: 1.6,
-                            fontFamily: FF,
                             fontWeight: 700,
                             color: isDark ? 'rgba(255,255,255,0.76)' : 'rgba(15,23,42,0.8)',
                             borderColor: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(15,23,42,0.2)',
-                            '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                            '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                             '&.Mui-disabled': { color: isDark ? 'rgba(255,255,255,0.28)' : 'rgba(15,23,42,0.36)', borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.12)' },
                           }}
                         >
@@ -377,11 +373,10 @@ const DocumentsUploadStep = ({
                 variant="outlined"
                 onClick={onCancel}
                 sx={{
-                  fontFamily: FF,
                   fontWeight: 700,
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
-                  '&:hover': { borderColor: 'rgba(245,168,0,0.45)', color: '#F5A800', bgcolor: 'rgba(245,168,0,0.06)' },
+                  '&:hover': { borderColor: 'rgba(120,113,108,0.45)', color: '#D92D20', bgcolor: 'rgba(120,113,108,0.06)' },
                 }}
               >
                 {t('common.home')}
@@ -394,11 +389,10 @@ const DocumentsUploadStep = ({
               onClick={onBack}
               sx={{
                 width: { xs: '100%', sm: 'auto' },
-                fontFamily: FF,
                 fontWeight: 700,
                 color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
                 borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
-                '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
               }}
             >
               {t('forms.aspirant.navigation.back')}
@@ -412,20 +406,14 @@ const DocumentsUploadStep = ({
             sx={{
               flex: { xs: 1, sm: 'none' },
               width: { xs: '100%', sm: 'auto' },
-              fontFamily: FF,
               fontWeight: 800,
               px: { xs: 2.8, sm: 3.5 },
-              background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-              color: '#fff',
-              boxShadow: '0 4px 20px rgba(200,24,10,0.35)',
               '&:hover': {
-                background: 'linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)',
-                boxShadow: '0 6px 24px rgba(200,24,10,0.55)',
+                background: '#e01c0c',
               },
               '&.Mui-disabled': {
                 background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.12)',
                 color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(15,23,42,0.38)',
-                boxShadow: 'none'
               },
             }}
           >
@@ -434,9 +422,6 @@ const DocumentsUploadStep = ({
         </Stack>
       </Box>
 
-      <Box sx={{ display: 'flex', height: '3px' }}>
-        {['#6B3A00', '#253A9A', '#C8180A'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-      </Box>
     </Box>
   );
 };

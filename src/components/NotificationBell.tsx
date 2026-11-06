@@ -6,12 +6,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useThemeStore from '../store/useThemeStore';
 import useAuthStore from '../store/useAuthStore';
-import { BRAND } from '../theme';
 import { getUnreadCount, NOTIFICATIONS_CHANGED_EVENT } from '../services/notificationService';
-
-const FF = "'Baloo 2', sans-serif";
 
 interface NotificationBellProps {
   /** When provided, overrides the live fetched unread count. */
@@ -29,9 +25,7 @@ export default function NotificationBell({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { mode } = useThemeStore();
   const { isAuthenticated } = useAuthStore();
-  const isDark = mode === 'dark';
 
   const [liveCount, setLiveCount] = useState(0);
 
@@ -63,45 +57,27 @@ export default function NotificationBell({
   }, [fetchCount]);
 
   const count = countOverride ?? liveCount;
-  const accent = isDark ? BRAND.yellow : BRAND.saffron;
   const hasUnread = count > 0;
 
   return (
     <IconButton
       onClick={() => navigate(to)}
-      size="small"
       aria-label={t('notifications.title') || 'Notifications'}
-      sx={{
-        width: 36,
-        height: 36,
-        color: accent,
-        '&:hover': {
-          bgcolor: isDark ? 'rgba(245,168,0,0.10)' : 'rgba(245,168,0,0.12)',
-        },
-        ...sx,
-      }}
+      sx={{ color: 'text.secondary', ...sx }}
     >
       <Badge
         badgeContent={count}
         max={9}
-        overlap="circular"
+        color="primary"
         invisible={!hasUnread}
         sx={{
           '& .MuiBadge-badge': {
-            fontFamily: FF,
-            fontWeight: 800,
-            fontSize: '0.62rem',
-            minWidth: 16,
-            height: 16,
-            padding: '0 4px',
-            bgcolor: BRAND.red,
-            color: '#fff',
-            border: `2px solid ${isDark ? '#0e0c0c' : '#fff'}`,
-            boxShadow: hasUnread ? '0 0 0 2px rgba(200,24,10,0.25)' : 'none',
+            fontWeight: 700, fontSize: '0.625rem', minWidth: 16, height: 16, px: 0.5,
+            border: 2, borderColor: 'background.paper',
           },
         }}
       >
-        {hasUnread ? <BellActiveIcon /> : <BellIcon />}
+        {hasUnread ? <BellActiveIcon fontSize="small" /> : <BellIcon fontSize="small" />}
       </Badge>
     </IconButton>
   );

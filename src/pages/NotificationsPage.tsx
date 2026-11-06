@@ -42,7 +42,7 @@ import {
   ApiNotification,
 } from '../services/notificationService';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 type Kind = 'vote' | 'issue' | 'aspirant' | 'announcement' | 'chat' | 'meeting';
 type Bucket = 'today' | 'yesterday' | 'earlier';
@@ -176,10 +176,10 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const accent = isDark ? BRAND.yellow : BRAND.saffron;
+  const accent = theme.palette.primary.main;
   const textPrimary = theme.palette.text.primary;
   const subText = isDark ? 'rgba(255,255,255,0.62)' : 'rgba(17,24,39,0.6)';
-  const borderFaint = isDark ? 'rgba(255,255,255,0.10)' : 'rgba(17,24,39,0.10)';
+  const borderFaint = theme.palette.divider;
 
   const KIND_META: Record<Kind, { icon: React.ReactNode; tint: string; label: string }> = {
     vote: {
@@ -348,38 +348,14 @@ export default function NotificationsPage() {
           size="small"
           onChange={(_, v) => v && setFilter(v)}
           sx={{
-            p: 0.5,
-            gap: 0.5,
-            borderRadius: 50,
-            background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(17,24,39,0.04)',
-            border: `1px solid ${borderFaint}`,
-            backdropFilter: 'blur(6px)',
-            '& .MuiToggleButtonGroup-grouped': {
-              border: 'none',
-              borderRadius: '999px !important',
-              mx: 0,
-            },
+            p: 0.5, gap: 0.5, borderRadius: 3, bgcolor: 'action.hover', border: 1, borderColor: 'divider',
+            '& .MuiToggleButtonGroup-grouped': { border: 'none', borderRadius: '6px !important', mx: 0 },
             '& .MuiToggleButton-root': {
-              fontFamily: FF,
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              textTransform: 'none',
-              color: subText,
-              px: 2.2,
-              py: 0.6,
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.08)',
-                color: accent,
-              },
-              '&.Mui-selected': {
-                background: 'linear-gradient(135deg, rgba(245,168,0,0.95) 0%, rgba(224,32,16,0.85) 100%)',
-                color: '#fff',
-                boxShadow: '0 4px 12px -2px rgba(245,168,0,0.45)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, rgba(245,168,0,1) 0%, rgba(224,32,16,0.95) 100%)',
-                  color: '#fff',
-                },
+              fontWeight: 500, fontSize: '0.875rem', textTransform: 'none', color: 'text.secondary', px: 2, py: 0.5,
+              '&:hover': { color: 'text.primary', bgcolor: 'transparent' },
+              '&.Mui-selected, &.Mui-selected:hover': {
+                bgcolor: 'background.paper', color: 'text.primary', fontWeight: 600,
+                boxShadow: (th: any) => `0 0 0 1px ${th.palette.divider}`,
               },
             },
           }}
@@ -399,21 +375,19 @@ export default function NotificationsPage() {
             startIcon={<DoneAllIcon sx={{ fontSize: 18 }} />}
             onClick={handleMarkAll}
             sx={{
-              fontFamily: FF,
               fontWeight: 700,
               fontSize: '0.82rem',
-              textTransform: 'none',
               borderRadius: 2,
               px: 2,
               py: 0.7,
               color: accent,
-              border: `1px solid ${isDark ? 'rgba(245,168,0,0.28)' : 'rgba(245,168,0,0.35)'}`,
-              background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.05)',
+              border: `1px solid ${isDark ? 'rgba(120,113,108,0.28)' : 'rgba(120,113,108,0.35)'}`,
+              background: isDark ? 'rgba(120,113,108,0.06)' : 'rgba(120,113,108,0.05)',
               transition: 'all 0.2s ease',
               '&:hover': {
                 borderColor: accent,
-                background: isDark ? 'rgba(245,168,0,0.14)' : 'rgba(245,168,0,0.12)',
-                boxShadow: '0 4px 12px -3px rgba(245,168,0,0.35)',
+                background: isDark ? 'rgba(120,113,108,0.14)' : 'rgba(120,113,108,0.12)',
+                boxShadow: '0 4px 12px -3px rgba(120,113,108,0.35)',
               },
               '&.Mui-disabled': {
                 color: subText,
@@ -430,21 +404,19 @@ export default function NotificationsPage() {
             startIcon={<ClearAllIcon sx={{ fontSize: 18 }} />}
             onClick={handleClearAll}
             sx={{
-              fontFamily: FF,
               fontWeight: 700,
               fontSize: '0.82rem',
-              textTransform: 'none',
               borderRadius: 2,
               px: 2,
               py: 0.7,
               color: accent,
-              border: `1px solid ${isDark ? 'rgba(245,168,0,0.28)' : 'rgba(245,168,0,0.35)'}`,
-              background: isDark ? 'rgba(245,168,0,0.06)' : 'rgba(245,168,0,0.05)',
+              border: `1px solid ${isDark ? 'rgba(120,113,108,0.28)' : 'rgba(120,113,108,0.35)'}`,
+              background: isDark ? 'rgba(120,113,108,0.06)' : 'rgba(120,113,108,0.05)',
               transition: 'all 0.2s ease',
               '&:hover': {
                 borderColor: accent,
-                background: isDark ? 'rgba(245,168,0,0.14)' : 'rgba(245,168,0,0.12)',
-                boxShadow: '0 4px 12px -3px rgba(245,168,0,0.35)',
+                background: isDark ? 'rgba(120,113,108,0.14)' : 'rgba(120,113,108,0.12)',
+                boxShadow: '0 4px 12px -3px rgba(120,113,108,0.35)',
               },
               '&.Mui-disabled': {
                 color: subText,
@@ -496,9 +468,9 @@ export default function NotificationsPage() {
               height: 64,
               mx: 'auto',
               mb: 1.6,
-              bgcolor: isDark ? 'rgba(245,168,0,0.14)' : 'rgba(245,168,0,0.15)',
+              bgcolor: isDark ? 'rgba(120,113,108,0.14)' : 'rgba(120,113,108,0.15)',
               color: accent,
-              border: `1px solid rgba(245,168,0,0.36)`,
+              border: `1px solid rgba(120,113,108,0.36)`,
             }}
           >
             <BellIcon />
@@ -560,14 +532,14 @@ export default function NotificationsPage() {
                           border: `1px solid ${
                             !n.read
                               ? isDark
-                                ? 'rgba(245,168,0,0.32)'
-                                : 'rgba(245,168,0,0.42)'
+                                ? 'rgba(120,113,108,0.32)'
+                                : 'rgba(120,113,108,0.42)'
                               : borderFaint
                           }`,
                           background: !n.read
                             ? isDark
-                              ? 'linear-gradient(135deg, rgba(245,168,0,0.08), rgba(200,24,10,0.05))'
-                              : 'linear-gradient(135deg, rgba(245,168,0,0.08), rgba(200,24,10,0.04))'
+                              ? 'rgba(120,113,108,0.08)'
+                              : 'rgba(120,113,108,0.08)'
                             : isDark
                               ? 'rgba(255,255,255,0.02)'
                               : '#fff',
