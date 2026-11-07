@@ -95,10 +95,10 @@ const AspirantDeclarationPage = () => {
     <Stack spacing={3}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: "'Baloo 2', sans-serif" }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, lineHeight: 1.1, color: theme.palette.text.primary, fontFamily: 'inherit' }}>
             {t('forms.aspirant.title')}
           </Typography>
-          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: "'Baloo 2', sans-serif" }}>
+          <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'inherit' }}>
             {t('forms.aspirant.formSubtitle')}
           </Typography>
         </Box>

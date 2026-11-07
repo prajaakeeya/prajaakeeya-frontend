@@ -23,25 +23,25 @@ import {
 } from '../../services/electionService';
 import { fetchAspirantsByConstituency } from '../../services/aspirantService';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 const filterSx = (isDark: boolean) => ({
   '& .MuiOutlinedInput-root': {
     background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
     '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-    '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-    '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+    '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+    '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
   },
   '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-  '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+  '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
   '& .MuiSelect-select': { color: isDark ? '#fff' : 'rgba(15,23,42,0.9)' },
 });
 
 const listboxSx = (isDark: boolean) => ({
-  bgcolor: isDark ? '#1a1515' : '#fff',
+  bgcolor: isDark ? '#1C1917' : '#fff',
   '& .MuiAutocomplete-option': {
     color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(15,23,42,0.9)',
-    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.1)' },
+    '&[aria-selected="true"]': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.1)' },
     '&.Mui-focused': { bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.04)' },
   },
 });
@@ -247,12 +247,12 @@ const GuestAspirantsPage = () => {
   }, [selectedElectionId, selectedConstituency, selectedGpVillage, isGramPanchayat]);
 
   // ── Theme tokens ─────────────────────────────────────────────
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const GOLD = theme.palette.text.secondary;
   const textPrimary = theme.palette.text.primary;
-  const textDim = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(17,24,39,0.42)';
-  const cardBg = isDark ? 'linear-gradient(160deg, #1C1010 0%, #130B0B 100%)' : theme.palette.background.paper;
-  const cardBorder = isDark ? '1px solid rgba(245,168,0,0.1)' : '1px solid rgba(245,168,0,0.22)';
-  const avatarBg = isDark ? '#1C1010' : theme.palette.background.paper;
+  const textDim = theme.palette.text.secondary;
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = isDark ? '1px solid rgba(120,113,108,0.1)' : '1px solid rgba(120,113,108,0.22)';
+  const avatarBg = isDark ? '#1C1917' : theme.palette.background.paper;
   const votesValueColor = isDark ? '#ff6a5f' : BRAND.red;
 
   // ── Derive whether enough filters are selected to show results ─
@@ -281,10 +281,10 @@ const GuestAspirantsPage = () => {
             MenuProps: {
               PaperProps: {
                 sx: {
-                  bgcolor: isDark ? '#1a1515' : '#ffffff',
+                  bgcolor: isDark ? '#1C1917' : '#ffffff',
                   '& .MuiMenuItem-root': { color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.85)' },
-                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(245,168,0,0.08)' : 'rgba(245,168,0,0.1)' },
-                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(245,168,0,0.15)' : 'rgba(245,168,0,0.2)', color: BRAND.yellow },
+                  '& .MuiMenuItem-root:hover': { bgcolor: isDark ? 'rgba(120,113,108,0.08)' : 'rgba(120,113,108,0.1)' },
+                  '& .MuiMenuItem-root.Mui-selected': { bgcolor: isDark ? 'rgba(120,113,108,0.15)' : 'rgba(120,113,108,0.2)', color: '#D92D20' },
                 },
               },
             },
@@ -439,7 +439,7 @@ const GuestAspirantsPage = () => {
                 transition: 'transform 0.24s cubic-bezier(.2,.8,.2,1), box-shadow 0.24s ease',
                 '&::before': {
                   content: '""', position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px',
-                  background: `linear-gradient(180deg, ${BRAND.red} 0%, ${BRAND.yellow} 55%, ${BRAND.brown} 100%)`,
+                  background: `${BRAND.red}`,
                 },
                 '&:hover': {
                   transform: 'translateY(-4px)',
@@ -450,7 +450,7 @@ const GuestAspirantsPage = () => {
                   <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 1.5 }}>
                     <Box sx={{
                       p: '2.5px', borderRadius: '50%', flexShrink: 0,
-                      background: `conic-gradient(${BRAND.red} 0deg 90deg, ${BRAND.yellow} 90deg 180deg, ${BRAND.red2 || BRAND.red} 180deg 270deg, ${BRAND.yellow2 || BRAND.yellow} 270deg 360deg)`,
+                      background: `${BRAND.red}`,
                     }}>
                       <Avatar
                         src={asp.selfieUrl || asp.recentPhotoUrl || asp.profilePicture || asp.photo || undefined}
@@ -489,7 +489,7 @@ const GuestAspirantsPage = () => {
                           <Chip
                             label={asp.party.toLowerCase() !== 'independent' ? asp.party : t('forms.aspirant.defaults.party', { defaultValue: 'Independent' })}
                             size="small"
-                            sx={{ borderRadius: '6px', bgcolor: 'rgba(245,168,0,0.12)', color: GOLD, border: '1px solid rgba(245,168,0,0.3)', fontWeight: 700, fontSize: '0.65rem', flexShrink: 0, height: 20 }}
+                            sx={{ borderRadius: '6px', bgcolor: 'rgba(120,113,108,0.12)', color: GOLD, border: '1px solid rgba(120,113,108,0.3)', fontWeight: 700, fontSize: '0.65rem', flexShrink: 0, height: 20 }}
                           />
                         )}
                       </Box>

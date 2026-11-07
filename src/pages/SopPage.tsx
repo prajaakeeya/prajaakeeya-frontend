@@ -4,12 +4,12 @@ import { Box, Button, Typography, Stack } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, AccountTree as AccountTreeIcon } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import PageHeader from '../components/PageHeader';
 import { motion } from 'framer-motion';
 import SopFlowChart from '../components/aspirant/SopFlowChart';
-import { BRAND } from '../theme';
 import useAuthStore from '../store/useAuthStore';
 import { fetchVotingWindow } from '../services/voteService';
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 const SopPage = () => {
     const navigate = useNavigate();
@@ -54,58 +54,16 @@ const SopPage = () => {
 
     const textPrimary = theme.palette.text.primary;
     const textSecondary = theme.palette.text.secondary;
-    const borderFaint = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.10)';
-    const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+    const borderFaint = theme.palette.divider;
+    const GOLD = theme.palette.primary.main;
 
     return (
         <Stack spacing={3} sx={{ pb: { xs: 3, md: 5 } }}>
-            {/* ── Header ── */}
-            <motion.div
-                initial={{ opacity: 0, y: -16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.38 }}
-            >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: { xs: 'flex-start', sm: 'center' },
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        gap: { xs: 1.4, sm: 2 },
-                    }}
-                >
-
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Box
-                            sx={{
-                                width: 46,
-                                height: 46,
-                                borderRadius: 2,
-                                bgcolor: 'rgba(245,168,0,0.12)',
-                                color: GOLD,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: '1px solid rgba(245,168,0,0.3)',
-                                flexShrink: 0,
-                            }}
-                        >
-                            <AccountTreeIcon sx={{ fontSize: 26 }} />
-                        </Box>
-                        <Box>
-                            <Typography
-                                variant="h4"
-                                sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, lineHeight: 1.1 }}
-                            >
-                                {t('pages.landing.sopOverline') || 'How Prajakeeya Works'}
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: FF, color: textSecondary, mt: 0.3 }}>
-                                {t('pages.landing.sopFlow.coreRule') ||
-                                    'Understand the governance process and how citizens can raise and track civic issues.'}
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Box>
-            </motion.div>
+            <PageHeader
+                title={t('pages.landing.sopOverline') || 'How Prajakeeya Works'}
+                subtitle={t('pages.landing.sopFlow.coreRule') ||
+                    'Understand the governance process and how citizens can raise and track civic issues.'}
+            />
 
             {/* ── SOP Flow Chart (view-only — agreement section hidden) ── */}
             <motion.div
@@ -134,18 +92,9 @@ const SopPage = () => {
                         onClick={() => navigate('/user/aspirants/declaration', { replace: true })}
                         sx={{
                             borderRadius: 3,
-                            textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
                             py: 1.5,
                             fontSize: '0.95rem',
-                            color: '#fff',
-                            background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-                            boxShadow: '0 6px 24px rgba(200,24,10,0.4)',
-                            '&:hover': {
-                                background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-                                boxShadow: '0 8px 30px rgba(200,24,10,0.55)',
-                            },
                         }}
                     >
                         {t('forms.aspirant.navigation.back', { defaultValue: 'Back to Declaration' })}
@@ -163,18 +112,9 @@ const SopPage = () => {
                     }}
                     sx={{
                         borderRadius: 3,
-                        textTransform: 'none',
                         fontWeight: 700,
-                        fontFamily: FF,
                         py: 1.5,
                         fontSize: '0.95rem',
-                        color: '#fff',
-                        background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-                        boxShadow: '0 6px 24px rgba(200,24,10,0.4)',
-                        '&:hover': {
-                            background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-                            boxShadow: '0 8px 30px rgba(200,24,10,0.55)',
-                        },
                     }}
                 >
                     {t('userDashboard.actions.candidates', { defaultValue: 'Aspirants List' })}
@@ -186,16 +126,11 @@ const SopPage = () => {
                         onClick={() => navigate('/user/aspirants/declaration')}
                         sx={{
                             borderRadius: 3,
-                            textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
                             py: 1.5,
                             fontSize: '0.95rem',
-                            borderColor: '#F5A800',
-                            color: '#F5A800',
                             '&:hover': {
-                                borderColor: '#d99000',
-                                bgcolor: 'rgba(245,168,0,0.08)',
+                                bgcolor: 'rgba(120,113,108,0.08)',
                             },
                         }}
                     >

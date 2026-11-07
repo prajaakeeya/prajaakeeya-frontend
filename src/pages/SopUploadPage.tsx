@@ -29,11 +29,11 @@ import { getAspirantById } from '../services/aspirantService';
 import apiClient from '../services/apiClient';
 import { safeUrl } from '../utils/safeUrl';
 
-const GOLD = '#F5A800';
-const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = '#0A0808';
-const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const GOLD = 'primary.main';
+const GOLDD = 'divider';
+const DARK = 'background.paper';
+const BORDER = 'divider';
+const FF = 'inherit';
 
 const SOP_EN_URL = '';
 
@@ -63,8 +63,8 @@ const SopUploadPage = () => {
   const navigate = useNavigate();
 
   const isDark = theme.palette.mode === 'dark';
-  const cardBg = isDark ? DARK : 'linear-gradient(180deg,#fffdfa 0%,#f9f4ec 100%)';
-  const cardBorder = isDark ? BORDER : 'rgba(245,168,0,0.24)';
+  const cardBg = theme.palette.background.paper;
+  const cardBorder = isDark ? BORDER : 'rgba(120,113,108,0.24)';
   const textPrimary = isDark ? '#fff' : 'rgba(15,23,42,0.94)';
   const surface1 = isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)';
   const surfaceBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.14)';
@@ -183,8 +183,8 @@ const SopUploadPage = () => {
             <Box sx={{
               width: 52, minWidth: 52, height: 52, minHeight: 52,
               borderRadius: '12px',
-              background: 'linear-gradient(135deg,rgba(200,24,10,.24),rgba(37,58,154,.22))',
-              border: '1.5px solid rgba(245,168,0,.35)',
+              background: 'rgba(200,24,10,.24)',
+              border: '1.5px solid rgba(120,113,108,.35)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
               <UploadFileIcon sx={{ color: GOLD, fontSize: 28 }} />
@@ -205,10 +205,10 @@ const SopUploadPage = () => {
             <Grid item xs={12}>
               <motion.div variants={itemVariants} initial="hidden" animate="visible">
                 <Box sx={{ borderRadius: '11px', background: surface1, border: `1px solid ${surfaceBorder}`, overflow: 'hidden' }}>
-                  <Box sx={{ height: '3px', bgcolor: '#C8180A' }} />
+                  <Box sx={{ height: '3px', bgcolor: '#B42318' }} />
                   <Box sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <FileDownloadIcon sx={{ color: '#C8180A' }} />
+                      <FileDownloadIcon sx={{ color: '#B42318' }} />
                       <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textPrimary, fontSize: '0.95rem' }}>
                         {t('forms.aspirant.documents.downloadSop') || 'Download SOP (English & Kannada)'}
                       </Typography>
@@ -357,7 +357,7 @@ const SopUploadPage = () => {
                   fontFamily: FF, fontWeight: 700,
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                   color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
-                  '&:hover': { borderColor: 'rgba(245,168,0,0.45)', color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                  '&:hover': { borderColor: 'rgba(120,113,108,0.45)', color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                 }}
               >
                 {t('common.home')}
@@ -370,7 +370,7 @@ const SopUploadPage = () => {
                   fontFamily: FF, fontWeight: 700,
                   color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.74)',
                   borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
-                  '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                  '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                 }}
               >
                 {t('forms.aspirant.navigation.back')}
@@ -384,14 +384,10 @@ const SopUploadPage = () => {
               sx={{
                 fontFamily: FF, fontWeight: 800,
                 px: { xs: 2.8, sm: 3.5 },
-                background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-                color: '#fff',
-                boxShadow: '0 4px 20px rgba(200,24,10,0.35)',
-                '&:hover': { background: 'linear-gradient(135deg,#e01c0c 0%,#ffb800 100%)', boxShadow: '0 6px 24px rgba(200,24,10,0.55)' },
+                '&:hover': { background: '#e01c0c', boxShadow: 'none' },
                 '&.Mui-disabled': {
                   background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.12)',
                   color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(15,23,42,0.38)',
-                  boxShadow: 'none',
                 },
               }}
             >
@@ -400,11 +396,6 @@ const SopUploadPage = () => {
           </Stack>
         </Box>
 
-        <Box sx={{ display: 'flex', height: '3px' }}>
-          {['#6B3A00', '#253A9A', '#C8180A'].map((c) => (
-            <Box key={c} sx={{ flex: 1, bgcolor: c }} />
-          ))}
-        </Box>
       </Box>
 
       {/* Success dialog */}
@@ -416,11 +407,11 @@ const SopUploadPage = () => {
         BackdropProps={{ sx: { backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.74)' } }}
         PaperProps={{
           sx: {
-            bgcolor: isDark ? '#0A0808' : '#FFFFFF',
+            bgcolor: isDark ? '#0C0A09' : '#FFFFFF',
             color: theme.palette.text.primary,
-            borderRadius: '16px',
+            borderRadius: '12px',
             overflow: 'hidden',
-            border: isDark ? '1px solid rgba(245,168,0,0.22)' : '1px solid rgba(245,168,0,0.3)',
+            border: isDark ? '1px solid rgba(120,113,108,0.22)' : '1px solid rgba(120,113,108,0.3)',
             boxShadow: isDark
               ? '0 20px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset'
               : '0 20px 70px rgba(17,24,39,0.18), 0 0 0 1px rgba(15,23,42,0.04) inset',
@@ -431,22 +422,19 @@ const SopUploadPage = () => {
           },
         }}
       >
-        <Box sx={{ display: 'flex', height: '4px' }}>
-          {['#C8180A', '#253A9A', '#6B3A00'].map((c) => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
         <DialogTitle sx={{ textAlign: 'center', pt: 4 }}>
           <Box sx={{
             width: 78, height: 78, borderRadius: '50%', mx: 'auto', mb: 2,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(135deg,rgba(200,24,10,0.22),rgba(245,168,0,0.16))',
-            border: '1.5px solid rgba(245,168,0,0.45)',
+            background: 'rgba(200,24,10,0.22)',
+            border: '1.5px solid rgba(120,113,108,0.45)',
             '@keyframes votePulse': {
-              '0%,100%': { boxShadow: '0 0 0 0 rgba(245,168,0,0.0), 0 0 22px rgba(200,24,10,0.22)' },
-              '50%': { boxShadow: '0 0 0 8px rgba(245,168,0,0.06), 0 0 34px rgba(245,168,0,0.35)' },
+              '0%,100%': { boxShadow: 'none' },
+              '50%': { boxShadow: '0 0 0 8px rgba(120,113,108,0.06), 0 0 34px rgba(120,113,108,0.35)' },
             },
             animation: 'votePulse 2.4s ease-in-out infinite',
           }}>
-            <HowToVoteIcon sx={{ fontSize: 42, color: '#F5A800' }} />
+            <HowToVoteIcon sx={{ fontSize: 42, color: '#D92D20' }} />
           </Box>
           <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
             {t('forms.aspirant.successDialog.title')}
@@ -465,10 +453,7 @@ const SopUploadPage = () => {
             variant="contained"
             onClick={() => { setSuccessDialogOpen(false); navigate('/user/dashboard', { replace: true }); }}
             sx={{
-              px: 4, fontWeight: 800, color: '#fff', borderRadius: '10px',
-              background: 'linear-gradient(135deg,#C8180A 0%,#F5A800 100%)',
-              boxShadow: '0 8px 28px rgba(200,24,10,0.38)',
-              '&:hover': { background: 'linear-gradient(135deg,#df210f 0%,#ffbe1a 100%)', boxShadow: '0 10px 34px rgba(200,24,10,0.52)' },
+              px: 4, fontWeight: 800, borderRadius: '10px',
             }}
           >
             {t('common.ok')}

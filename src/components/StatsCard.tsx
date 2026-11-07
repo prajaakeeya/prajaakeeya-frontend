@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
+import { Box, Card, CardContent, Stack, Typography, alpha } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { ReactNode } from 'react';
 
@@ -9,59 +9,30 @@ interface StatsCardProps {
   color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
 }
 
-const StatsCard = ({ label, value, icon, color = 'primary' }: StatsCardProps) => {
-  const colorMap = {
-    primary: '#00695f',
-    secondary: '#d32f2f',
-    success: '#2e7d32',
-    error: '#d32f2f',
-    warning: '#ed6c02',
-    info: '#0288d1'
-  };
-
-  return (
-    <Card
-      sx={{
-        height: '100%',
-        background: `linear-gradient(135deg, ${colorMap[color]}15 0%, ${colorMap[color]}05 100%)`,
-        border: `1px solid ${colorMap[color]}20`
-      }}
-    >
-      <CardContent>
-        <Stack direction="row" spacing={2} alignItems="flex-start" justifyContent="space-between">
-          <Box flex={1}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontWeight: 500 }}>
-              {label}
-            </Typography>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 700,
-                color: colorMap[color],
-                mt: 0.5
-              }}
-            >
-              {value.toLocaleString()}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: 2,
-              bgcolor: `${colorMap[color]}15`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: colorMap[color]
-            }}
-          >
-            {icon || <TrendingUpIcon fontSize="large" />}
-              </Box>
-        </Stack>
-      </CardContent>
-    </Card>
-  );
-};
+/** Metric card: label, large tabular value, tinted icon. */
+const StatsCard = ({ label, value, icon, color = 'primary' }: StatsCardProps) => (
+  <Card sx={{ height: '100%' }}>
+    <CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
+      <Stack direction="row" spacing={2} alignItems="flex-start" justifyContent="space-between">
+        <Box>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>{label}</Typography>
+          <Typography sx={{ fontSize: '2rem', fontWeight: 700, lineHeight: 1.2, mt: 1, fontVariantNumeric: 'tabular-nums' }}>
+            {value.toLocaleString()}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: 44, height: 44, borderRadius: 2, flexShrink: 0,
+            display: 'grid', placeItems: 'center',
+            color: `${color}.main`,
+            bgcolor: (th) => alpha(th.palette[color].main, th.palette.mode === 'dark' ? 0.16 : 0.08),
+          }}
+        >
+          {icon || <TrendingUpIcon />}
+        </Box>
+      </Stack>
+    </CardContent>
+  </Card>
+);
 
 export default StatsCard;

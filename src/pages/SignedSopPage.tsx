@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, useTheme, Card, CardContent, CircularProgress, Stack } from '@mui/material';
 import { motion } from 'framer-motion';
 import useAuthStore from '../store/useAuthStore';
-import { BRAND } from '../theme';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getAspirantById } from '../services/aspirantService';
@@ -13,13 +12,13 @@ const SignedSopPage: React.FC = () => {
     const { t, i18n } = useTranslation();
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
-    const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+    const GOLD = theme.palette.primary.main;
     const { user } = useAuthStore();
     const textPrimary = theme.palette.text.primary;
-    const textHigh = isDark ? 'rgba(255,255,255,0.66)' : 'rgba(17,24,39,0.72)';
-    const textFaint = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(17,24,39,0.42)';
-    const BORDER = isDark ? 'rgba(245,168,0,0.20)' : 'rgba(245,168,0,0.35)';
-    const FF = "'Baloo 2', sans-serif";
+    const textHigh = theme.palette.text.secondary;
+    const textFaint = theme.palette.text.secondary;
+    const BORDER = theme.palette.divider;
+    const FF = 'inherit';
 
     // page uses layout header; no hero background here
 

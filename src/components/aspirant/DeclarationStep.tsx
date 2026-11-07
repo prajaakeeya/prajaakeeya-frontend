@@ -20,12 +20,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { BRAND } from '../../theme';
 
 // ── Theme constants — sourced from central BRAND palette ──────────────────
-const GOLD = BRAND.yellow;                    // '#F5A800'
-const GOLDD = 'rgba(245,168,0,0.45)';
-const DARK = BRAND.black;                     // '#0A0808'
+const GOLD = 'primary.main';
+const GOLDD = 'divider';
+const DARK = 'background.paper';
 const DARK2 = 'rgba(255,255,255,0.03)';
-const BORDER = 'rgba(245,168,0,0.18)';
-const FF = "'Baloo 2', sans-serif";
+const BORDER = 'divider';
+const FF = 'inherit';
 
 
 
@@ -60,8 +60,8 @@ const DeclarationStep = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
-  const cardBg = isDark ? DARK : 'linear-gradient(180deg,#fffdfa 0%,#f9f4ec 100%)';
-  const borderColor = isDark ? BORDER : 'rgba(245,168,0,0.24)';
+  const cardBg = theme.palette.background.paper;
+  const borderColor = theme.palette.divider;
   const textPrimary = isDark ? '#fff' : 'rgba(15,23,42,0.94)';
   const textSecondary = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.62)';
   const cardSubtleBg = isDark ? DARK2 : 'rgba(15,23,42,0.04)';
@@ -83,9 +83,6 @@ const DeclarationStep = ({
       }}>
 
         {/* Top colour bar */}
-        <Box sx={{ display: 'flex', height: '5px' }}>
-          {['#C8180A', '#F5A800', '#E02010'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
 
         {/* ── Header ── */}
         <motion.div
@@ -100,8 +97,8 @@ const DeclarationStep = ({
           }}>
             <Box sx={{
               width: 52, height: 52, borderRadius: '12px', flexShrink: 0,
-              background: 'linear-gradient(135deg,rgba(200,24,10,.25),rgba(245,168,0,.18))',
-              border: `1.5px solid rgba(245,168,0,.35)`,
+              background: 'rgba(200,24,10,.25)',
+              border: `1.5px solid rgba(120,113,108,.35)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <GavelIcon sx={{ color: GOLD, fontSize: 28 }} />
@@ -197,7 +194,7 @@ const DeclarationStep = ({
         </Box>
 
         {/* ── Divider ── */}
-        <Box sx={{ mx: { xs: 2, sm: 4 }, my: 2.5, height: '1px', background: `linear-gradient(90deg, transparent, ${GOLDD}, transparent)` }} />
+        <Box sx={{ mx: { xs: 2, sm: 4 }, my: 2.5, height: '1px', bgcolor: GOLDD }} />
 
         {/* ── Signature / Place / Date ── */}
         <Box sx={{ px: { xs: 2, sm: 4 }, pb: 3 }}>
@@ -239,7 +236,7 @@ const DeclarationStep = ({
                     : fieldBg,
                   border: `1.5px solid ${sopAgreed
                     ? 'rgba(43,180,104,0.45)'
-                    : (isDark ? 'rgba(245,168,0,0.4)' : 'rgba(245,168,0,0.5)')}`,
+                    : (isDark ? 'rgba(120,113,108,0.4)' : '#D92D20')}`,
                   transition: 'all 0.2s',
                 }}
               >
@@ -298,7 +295,7 @@ const DeclarationStep = ({
                     '&:hover': {
                       background: sopAgreed
                         ? (isDark ? 'rgba(43,180,104,0.18)' : 'rgba(43,180,104,0.2)')
-                        : (isDark ? 'rgba(245,168,0,0.14)' : 'rgba(245,168,0,0.18)'),
+                        : (isDark ? 'rgba(120,113,108,0.14)' : 'rgba(120,113,108,0.18)'),
                     },
                     '&:focus-visible': {
                       outline: `2px solid ${sopAgreed ? 'rgba(43,180,104,0.7)' : GOLD}`,
@@ -372,7 +369,7 @@ const DeclarationStep = ({
                     fontFamily: FF, fontWeight: 600, textTransform: 'none', borderRadius: '8px',
                     borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(15,23,42,0.22)',
                     color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(15,23,42,0.6)',
-                    '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
+                    '&:hover': { borderColor: GOLDD, color: GOLD, bgcolor: 'rgba(120,113,108,0.06)' },
                     px: 1.5,
                   }}
                 >
@@ -419,11 +416,10 @@ const DeclarationStep = ({
                     height: 44,
                     fontFamily: FF, fontWeight: 800, textTransform: 'none',
                     borderRadius: '8px',
-                    background: canProceed ? 'linear-gradient(135deg,#C8180A,#F5A800)' : undefined,
-                    boxShadow: canProceed ? '0 4px 22px rgba(200,24,10,0.4)' : 'none',
+                    background: canProceed ? '#B42318' : undefined,
                     '&:hover': canProceed ? {
-                      background: 'linear-gradient(135deg,#F5A800,#C8180A)',
-                      boxShadow: '0 6px 30px rgba(245,168,0,0.4)',
+                      background: '#D92D20',
+                      boxShadow: '0 6px 30px rgba(120,113,108,0.4)',
                       transform: 'translateY(-2px)',
                     } : {},
                     '&.Mui-disabled': {
@@ -441,9 +437,6 @@ const DeclarationStep = ({
         </Box>
 
         {/* Bottom colour bar */}
-        <Box sx={{ display: 'flex', height: '4px', opacity: 0.4 }}>
-          {['#C8180A', '#F5A800', '#E02010'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
 
       </Box>
     </Box>

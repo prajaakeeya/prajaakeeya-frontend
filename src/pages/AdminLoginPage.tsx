@@ -109,7 +109,7 @@ const AdminLoginPage = () => {
           : '0 8px 32px rgba(0,0,0,0.10)',
         border: '1px solid',
         borderColor: theme.palette.mode === 'dark'
-          ? 'rgba(245,168,0,0.12)'
+          ? 'rgba(120,113,108,0.12)'
           : 'rgba(0,0,0,0.06)',
         position: 'relative',
       }}
@@ -146,20 +146,7 @@ const AdminLoginPage = () => {
               alt="Prajakeeya"
               sx={{ width: 64, height: 64, borderRadius: 1, objectFit: 'contain' }}
             />
-            <Typography sx={{
-              fontFamily: '"Bebas Neue", "Impact", sans-serif',
-              fontSize: '1.5rem',
-              letterSpacing: '0.08em',
-              lineHeight: 1,
-              mt: 1,
-              pb: 0.7,
-              background: theme.palette.mode === 'dark'
-                ? 'linear-gradient(135deg, #E02010 0%, #FFCB00 45%, #F5A800 100%)'
-                : 'linear-gradient(135deg, #E02010 0%, #c32d0c 45%, #ff9500 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
+            <Typography variant="h5" component="h1" sx={{ mt: 2 }}>
               {i18n.language === 'kn' ? 'ದಿ ರಿಯಲ್ ಪ್ರಜಾಕೀಯ' : 'The Real Prajaakeeya'}
             </Typography>
           </Box>

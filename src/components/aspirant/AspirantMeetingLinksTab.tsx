@@ -206,16 +206,9 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
     return (
         <Grid container columnSpacing={{ xs: 0, md: 3 }} rowSpacing={{ xs: 2, md: 3 }} alignItems="stretch">
             <Grid item xs={12} md={4}>
-                <Card sx={{
-                    borderRadius: 4,
-                    boxShadow: isDark ? '0 14px 34px rgba(0,0,0,0.55)' : '0 4px 20px rgba(0,0,0,0.08)',
-                    border: '2px solid',
-                    borderColor: isDark ? 'rgba(245,168,0,0.20)' : 'primary.main',
-                    bgcolor: isDark ? DARK : '#FFFBF5',
-                    height: '100%'
-                }}>
-                    <CardContent sx={{ p: 2 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: isDark ? theme.palette.text.primary : 'primary.main' }}>
+                <Card sx={{ height: '100%' }}>
+                    <CardContent sx={{ p: 3 }}>
+                        <Typography variant="h6" sx={{ mb: 1 }}>
                             {t('userDashboard.aspirant.publicInteractionTitle') || 'Video Chat Link'}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -517,9 +510,9 @@ const AspirantMeetingLinksTab: React.FC<AspirantMeetingLinksTabProps> = ({
                                                     p: 2,
                                                     borderRadius: 3,
                                                     border: '1px solid',
-                                                    borderColor: isCompleted ? (isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)') : (isDark ? 'rgba(255,168,0,0.12)' : 'rgba(255,106,0,0.12)'),
+                                                    borderColor: isCompleted ? (isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)') : (isDark ? 'rgba(120,113,108,0.12)' : 'rgba(255,106,0,0.12)'),
                                                     bgcolor: isCompleted ? (isDark ? 'rgba(255,255,255,0.02)' : '#FAFAFB') : (isDark ? 'rgba(255,255,255,0.02)' : '#FFFFFF'),
-                                                    boxShadow: isCompleted ? 'none' : (isDark ? '0 10px 26px rgba(0,0,0,0.45)' : '0 12px 30px rgba(255,106,0,0.06)'),
+                                                    boxShadow: 'none',
                                                     cursor: meeting.meetingLink ? 'pointer' : 'default',
                                                     transition: 'transform 0.18s ease, box-shadow 0.18s ease',
                                                     borderLeft: isCompleted ? undefined : '4px solid',

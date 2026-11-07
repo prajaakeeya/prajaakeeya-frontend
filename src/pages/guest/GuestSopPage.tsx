@@ -5,9 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import SopFlowChart from '../../components/aspirant/SopFlowChart';
-import { BRAND } from '../../theme';
 
-const FF = "'Baloo 2', sans-serif";
+const FF = 'inherit';
 
 const GuestSopPage = () => {
   const theme = useTheme();
@@ -17,7 +16,7 @@ const GuestSopPage = () => {
 
   const textPrimary = theme.palette.text.primary;
   const textSecondary = theme.palette.text.secondary;
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
+  const GOLD = theme.palette.primary.main;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -45,12 +44,12 @@ const GuestSopPage = () => {
                 width: 46,
                 height: 46,
                 borderRadius: 2,
-                bgcolor: 'rgba(245,168,0,0.12)',
+                bgcolor: 'rgba(120,113,108,0.12)',
                 color: GOLD,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1px solid rgba(245,168,0,0.3)',
+                border: '1px solid rgba(120,113,108,0.3)',
                 flexShrink: 0,
               }}
             >

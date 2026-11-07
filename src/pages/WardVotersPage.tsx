@@ -10,7 +10,7 @@ import useSnackbar from '../hooks/useSnackbar';
 
 const WardVotersPage: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const FF = "'Baloo 2', sans-serif";
+    const FF = 'inherit';
     const isKannada = (i18n.language || '').startsWith('kn');
     const navigate = useNavigate();
     const { user } = useAuthStore();
@@ -200,17 +200,14 @@ const WardVotersPage: React.FC = () => {
     const descText = resolve('pages.voterCount.listDescription', 'voters', 'List of voters');
     const textPrimary = theme.palette.text.primary;
     const textSecondary = theme.palette.text.secondary;
-    const border = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.14)' : 'rgba(17,24,39,0.14)';
+    const border = theme.palette.divider;
     const panelBg = theme.palette.mode === 'dark'
-        ? 'linear-gradient(155deg, rgba(20,24,34,0.95) 0%, rgba(13,17,28,0.96) 100%)'
-        : 'linear-gradient(155deg, #FFFFFF 0%, #F8FAFC 100%)';
+        ? 'rgba(20,24,34,0.95)'
+        : '#FFFFFF';
 
     return (
         <Box sx={{ p: { xs: 1.25, sm: 2.5 } }}>
             <Card sx={{ mb: 2.2, borderRadius: 2.5, background: panelBg, border: `1px solid ${border}`, boxShadow: theme.palette.mode === 'dark' ? '0 18px 40px rgba(0,0,0,0.35)' : '0 10px 24px rgba(17,24,39,0.08)' }}>
-                <Box sx={{ display: 'flex', height: 4 }}>
-                    {['#C8180A', '#253A9A', '#6B3A00'].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-                </Box>
                 <CardContent sx={{ p: { xs: 1.5, sm: 2.2 }, '&:last-child': { pb: { xs: 1.5, sm: 2.2 } } }}>
                     <Stack spacing={1.35}>
                         <Box>
@@ -256,7 +253,7 @@ const WardVotersPage: React.FC = () => {
                                             sx={{
                                                 borderRadius: 2,
                                                 border: `1px solid ${border}`,
-                                                borderLeft: `4px solid ${reported ? '#ef4444' : '#F5A800'}`,
+                                                borderLeft: `4px solid ${reported ? '#ef4444' : 'rgba(120,113,108,0.35)'}`,
                                                 boxShadow: theme.palette.mode === 'dark' ? '0 8px 20px rgba(0,0,0,0.3)' : '0 4px 14px rgba(17,24,39,0.06)',
                                                 ...(reported ? { backgroundColor: 'error.main', color: 'common.white' } : {})
                                             }}
@@ -372,18 +369,9 @@ const WardVotersPage: React.FC = () => {
                         onClick={() => navigate('/user/civic-issues')}
                         sx={{
                             borderRadius: 3,
-                            textTransform: 'none',
                             fontWeight: 700,
-                            fontFamily: FF,
                             py: 1.25,
                             fontSize: '0.95rem',
-                            color: '#fff',
-                            background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-                            boxShadow: '0 6px 24px rgba(200,24,10,0.4)',
-                            '&:hover': {
-                                background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-                                boxShadow: '0 8px 30px rgba(200,24,10,0.55)',
-                            },
                         }}
                     >
                         {t('userDashboard.actions.civicIssues', { defaultValue: 'Public Issues' })}
@@ -396,19 +384,12 @@ const WardVotersPage: React.FC = () => {
                         variant="contained"
                         onClick={() => navigate('/user/civic-issues')}
                         sx={{
-                            borderRadius: 999,
-                            textTransform: 'none',
+                            borderRadius: 2,
                             fontWeight: 700,
-                            fontFamily: FF,
                             py: 0.8,
                             px: 2,
                             fontSize: '0.95rem',
-                            color: '#fff',
-                            background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-                            boxShadow: '0 8px 34px rgba(200,24,10,0.45)',
                             '&:hover': {
-                                background: 'linear-gradient(135deg, #df210f 0%, #ffbe1a 100%)',
-                                boxShadow: '0 10px 40px rgba(200,24,10,0.6)',
                                 transform: 'translateY(-2px)'
                             },
                         }}
@@ -425,16 +406,11 @@ const WardVotersPage: React.FC = () => {
                     onClick={() => navigate('/user/civic-issues')}
                     sx={{
                         borderRadius: 3,
-                        textTransform: 'none',
                         fontWeight: 700,
-                        fontFamily: FF,
                         py: 1.5,
                         fontSize: '0.95rem',
-                        borderColor: '#F5A800',
-                        color: '#F5A800',
                         '&:hover': {
-                            borderColor: '#d99000',
-                            bgcolor: 'rgba(245,168,0,0.08)',
+                            bgcolor: 'rgba(120,113,108,0.08)',
                         },
                     }}
                 >
@@ -554,7 +530,6 @@ const WardVotersPage: React.FC = () => {
                                         variant="outlined"
                                         startIcon={<AttachFileIcon />}
                                         sx={{
-                                            textTransform: 'none',
                                             borderStyle: 'dashed',
                                             borderWidth: 2,
                                             py: 1.5,
@@ -616,7 +591,6 @@ const WardVotersPage: React.FC = () => {
                     <Button
                         onClick={() => setReportOpen(false)}
                         sx={{
-                            textTransform: 'none',
                             px: 3,
                             fontWeight: 600
                         }}
@@ -630,14 +604,9 @@ const WardVotersPage: React.FC = () => {
                         disabled={submittingReport || !reportReason.trim()}
                         startIcon={submittingReport ? <CircularProgress size={16} color="inherit" /> : <ReportIcon />}
                         sx={{
-                            textTransform: 'none',
                             px: 3,
                             py: 1,
                             fontWeight: 600,
-                            boxShadow: '0 4px 12px rgba(211,47,47,0.25)',
-                            '&:hover': {
-                                boxShadow: '0 6px 16px rgba(211,47,47,0.35)'
-                            }
                         }}
                     >
                         {submittingReport ? 'Submitting...' : (t('report') || 'Report')}

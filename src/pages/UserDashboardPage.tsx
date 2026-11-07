@@ -1,6 +1,5 @@
 import {
   Card,
-  CardContent,
   Button,
   Typography,
   Box,
@@ -28,12 +27,11 @@ import chatImg from '../assets/images/chat.webp';
 import videoCameraImg from '../assets/images/video.webp';
 import meetImg from '../assets/images/meet.webp';
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
-import { BRAND } from '../theme';
+import ActionTile from '../components/ActionTile';
 import apiClient from '../services/apiClient';
 import { fetchAllWards } from '../services/wardService';
 import { getVoters } from '../services/voterService';
@@ -143,32 +141,7 @@ const UserDashboardPage = () => {
   const shouldShowContinue = hasLocalDraft || hasIncompleteAspirant;
 
 
-  const FF = "'Baloo 2', sans-serif";
   const isDark = theme.palette.mode === 'dark';
-
-  // ── Theme-aware colour helpers ──────────────────────────────────────────
-  const DARK = theme.palette.background.paper;
-  const GOLD = isDark ? BRAND.yellow : BRAND.yellowLight;
-  const GOLDD = 'rgba(245,168,0,0.45)';
-  const BORDER = isDark ? 'rgba(245,168,0,0.20)' : 'rgba(245,168,0,0.35)';
-
-  const textPrimary = theme.palette.text.primary;
-  const textSecondary = theme.palette.text.secondary;
-  const textHigh = isDark ? 'rgba(255,255,255,0.66)' : 'rgba(17,24,39,0.72)';
-  const borderSubtle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(17,24,39,0.10)';
-  const borderFaint = isDark ? 'rgba(255,255,255,0.09)' : 'rgba(17,24,39,0.08)';
-
-  const gridOverlay = isDark
-    ? 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)'
-    : 'linear-gradient(rgba(17,24,39,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.02) 1px,transparent 1px)';
-
-  const dialogPaperSx = {
-    bgcolor: DARK,
-    color: textPrimary,
-    borderRadius: 3,
-    border: `1px solid ${borderSubtle}`,
-    boxShadow: isDark ? '0 18px 44px rgba(0,0,0,0.55)' : '0 18px 44px rgba(0,0,0,0.12)',
-  };
 
   const photoFrameOptions = React.useMemo(
     () => [
@@ -516,123 +489,73 @@ const UserDashboardPage = () => {
     }
   }, [generatePhotoFrameBlob, selectedPhotoFrame, showPhotoFrameToast, t]);
 
-  // ── Mobile hero (matches the redesign mockup) — centered avatar, welcome
-  //    banner, name + verified tick and the registered-citizens count. Only
-  //    used on xs screens; desktop keeps the original hero + tile grid below.
-  // Warm orange → blackish gradient for the mobile hero card (matches the reference).
-  const mobileHeroBg = isDark
-    ? 'radial-gradient(135% 125% at 78% -12%, rgba(245,150,25,0.36) 0%, rgba(150,55,10,0.45) 26%, rgba(42,20,10,0.97) 60%, #0b0704 100%)'
-    : 'linear-gradient(160deg, #fff4e2 0%, #ffe7c4 48%, #fff9f0 100%)';
+  // ── Greeting card: who you are, your ward, and the movement's size ──
+  const wardLabel = user?.wardNumber || user?.wardId
+    ? `${t('common.ward', { defaultValue: 'Ward' })} ${user?.wardNumber ?? user?.wardId}${user?.wardName || resolvedWardName ? ` · ${user?.wardName || resolvedWardName}` : ''}`
+    : null;
   const mobileHero = (
-    <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.42 }}>
-      <Box sx={{
-        borderRadius: '20px', overflow: 'hidden', background: mobileHeroBg,
-        border: `1px solid ${isDark ? 'rgba(245,140,0,0.45)' : 'rgba(245,168,0,0.3)'}`,
-        boxShadow: isDark
-          ? '0 0 28px rgba(245,130,0,0.4), 0 0 60px rgba(200,80,0,0.2), 0 12px 40px rgba(0,0,0,0.6)'
-          : '0 0 0 1px rgba(245,168,0,0.08), 0 8px 32px rgba(17,24,39,0.07)',
-        position: 'relative',
-      }}>
-        <Box sx={{ position: 'absolute', inset: 0, backgroundImage: gridOverlay, backgroundSize: '44px 44px', pointerEvents: 'none' }} />
-        <Box sx={{ display: 'flex', height: '4px' }}>
-          {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
-        <Stack spacing={0.375} alignItems="center" sx={{ px: 2.5, py: 2, position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '1.5rem', color: GOLD, lineHeight: 1.1 }}>
-            {isKannada ? 'ದಿ ರಿಯಲ್ ಪ್ರಜಾಕೀಯ' : 'The Real Prajaakeeya'}
-          </Typography>
-          {!isAspirant && <Box sx={{ fontSize: '1.4rem', lineHeight: 1, mt: 1 }}>👑</Box>}
-          <Stack direction="row" spacing={0.6} alignItems="center">
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, fontSize: '1.5rem', color: textPrimary, lineHeight: 1.1 }}>
-              {userDisplayName}
+    <Card sx={{ p: { xs: 2.5, md: 3 } }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={{ xs: 2.5, sm: 3 }}
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        justifyContent="space-between"
+      >
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ minWidth: 0 }}>
+          <Avatar
+            src={user?.profilePicture || undefined}
+            alt={userDisplayName}
+            sx={{ width: 56, height: 56, bgcolor: 'primary.main', fontWeight: 600 }}
+          >
+            {userInitials}
+          </Avatar>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, lineHeight: 1.6 }}>
+              {isKannada ? 'ದಿ ರಿಯಲ್ ಪ್ರಜಾಕೀಯ' : 'The Real Prajaakeeya'}
             </Typography>
-          </Stack>
-          {totalVoters != null && (
-            <Box sx={{
-              display: 'inline-flex', alignItems: 'center', gap: 0.6,
-              px: 1.6, py: 0.7, borderRadius: 999, mt: 0.5,
-              background: isDark ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.7)',
-              border: `1px solid ${BORDER}`,
-            }}>
-              <Typography component="span" sx={{ fontFamily: FF, fontSize: '0.95rem', fontWeight: 800, color: GOLD }}>
-                {totalVoters.toLocaleString()}
-              </Typography>
-              <Typography component="span" sx={{ fontFamily: FF, fontSize: '0.85rem', fontWeight: 600, color: textHigh }}>
-                {t('userDashboard.citizensRegistered', { defaultValue: 'Citizens are registered.' })}
-              </Typography>
-            </Box>
-          )}
+            <Typography variant="h4" component="h1" noWrap>{userDisplayName}</Typography>
+            {wardLabel && (
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.25 }}>{wardLabel}</Typography>
+            )}
+          </Box>
         </Stack>
-      </Box>
-    </motion.div>
+        {totalVoters != null && (
+          <Box sx={{ textAlign: { sm: 'right' }, pl: { sm: 3 }, borderLeft: { sm: 1 }, borderColor: { sm: 'divider' } }}>
+            <Typography sx={{ fontSize: '1.75rem', fontWeight: 700, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>
+              {totalVoters.toLocaleString()}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              {t('userDashboard.citizensRegistered', { defaultValue: 'Citizens are registered.' })}
+            </Typography>
+          </Box>
+        )}
+      </Stack>
+    </Card>
   );
 
-  // Aspirant-only quick tiles shown on the mobile home above the aspirants
-  // list (same actions & icons as the desktop aspirant tiles).
+  // Aspirant-only quick actions shown above the aspirants list.
   const aspirantQuickTiles = [
-    { title: t('userDashboard.actions.meetCitizens') || 'Meet Citizens', icon: <img src={meetImg} alt="meet citizens" width={30} height={30} />, path: '/user/dashboard/posts' },
-    { title: t('userDashboard.actions.videoMeetings') || 'Video Meetings', icon: <img src={videoCameraImg} alt="video meetings" width={82} height={82} style={{ objectFit: 'contain' }} />, path: '/user/dashboard/meetings' },
-    { title: t('userDashboard.actions.chatWithCitizens') || 'Chat with Citizens', icon: <img src={chatImg} alt="chat with citizens" width={30} height={30} />, path: `/user/chat/${user?.aspirantId || ''}` },
+    { title: t('userDashboard.actions.meetCitizens') || 'Meet Citizens', icon: <img src={meetImg} alt="" />, path: '/user/dashboard/posts' },
+    { title: t('userDashboard.actions.videoMeetings') || 'Video Meetings', icon: <img src={videoCameraImg} alt="" style={{ width: 52, height: 52 }} />, path: '/user/dashboard/meetings' },
+    { title: t('userDashboard.actions.chatWithCitizens') || 'Chat with Citizens', icon: <img src={chatImg} alt="" />, path: `/user/chat/${user?.aspirantId || ''}` },
   ];
   const mobileAspirantTiles = (
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 1.5 }}>
-      {aspirantQuickTiles.map((action, index) => (
-        <Card
-          key={action.path}
-          onClick={() => navigate(action.path)}
-          sx={{
-            borderRadius: '16px', cursor: 'pointer',
-            background: isDark
-              ? 'radial-gradient(ellipse at 60% 0%, rgba(200,80,0,0.12) 0%, rgba(10,6,4,0.98) 55%), #0a0604'
-              : 'linear-gradient(150deg, #fffdf7 0%, #fff8e8 100%)',
-            border: `1.5px solid ${isDark
-              ? (index % 2 === 0 ? 'rgba(245,140,0,0.65)' : 'rgba(80,110,240,0.55)')
-              : (index % 2 === 0 ? 'rgba(245,168,0,0.4)' : 'rgba(37,58,154,0.35)')}`,
-            boxShadow: isDark
-              ? (index % 2 === 0 ? '0 0 14px rgba(245,130,0,0.35)' : '0 0 14px rgba(60,90,240,0.35)')
-              : '0 4px 16px rgba(245,168,0,0.07)',
-            overflow: 'hidden',
-            transition: 'transform 0.2s ease',
-            '&:active': { transform: 'scale(0.97)' },
-          }}
-        >
-          <CardContent sx={{ p: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, '&:last-child': { pb: 1.5 } }}>
-            <Box sx={{
-              width: 54, height: 54, borderRadius: '14px',
-              background: isDark
-                ? 'linear-gradient(145deg, #1a0f04 0%, #100a02 100%)'
-                : 'radial-gradient(circle at 30% 30%, rgba(245,168,0,0.22), rgba(245,168,0,0.06))',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1.5px solid rgba(245,168,0,0.35)',
-            }}>
-              {action.icon}
-            </Box>
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, color: isDark ? '#fff' : textPrimary, fontSize: '0.8rem', lineHeight: 1.15, textAlign: 'center' }}>
-              {action.title}
-            </Typography>
-          </CardContent>
-        </Card>
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 2 }}>
+      {aspirantQuickTiles.map((action) => (
+        <ActionTile key={action.path} title={action.title} icon={action.icon} onClick={() => navigate(action.path)} />
       ))}
     </Box>
   );
 
+  const continueRegistration = () => navigate('/user/aspirants/declaration', { state: { resume: true } });
   const pendingAspirantAlert = user?.role === 'aspirant' && (user as any)?.documentStatus !== 'completed' && !pendingAlertDismissed && (
     <Alert
       severity="warning"
-      sx={{
-        borderRadius: 2,
-        border: `1px solid ${BORDER}`,
-        '& .MuiAlert-message': { width: '100%', fontFamily: FF },
-      }}
+      variant="outlined"
+      sx={{ alignItems: 'flex-start', '& .MuiAlert-message': { width: '100%' } }}
       action={isSm ? undefined : (
         <Stack direction="row" spacing={1} alignItems="center">
-          <Button
-            color="inherit"
-            size="small"
-            variant="outlined"
-            onClick={() => navigate('/user/aspirants/declaration', { state: { resume: true } })}
-            sx={{ whiteSpace: 'nowrap', fontFamily: FF, fontWeight: 700 }}
-          >
+          <Button color="inherit" size="small" variant="outlined" onClick={continueRegistration} sx={{ whiteSpace: 'nowrap' }}>
             {t('userDashboard.actions.continueAspirantRegistration')}
           </Button>
           <IconButton aria-label="Dismiss" size="small" color="inherit" onClick={() => setPendingAlertDismissed(true)}>
@@ -642,19 +565,12 @@ const UserDashboardPage = () => {
       )}
     >
       <Stack spacing={1}>
-        <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: FF }}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
           {t('userDashboard.actions.pendingAspirantAlert')}
         </Typography>
         {isSm && (
           <Stack direction="row" spacing={1} alignItems="center">
-            <Button
-              color="inherit"
-              size="small"
-              variant="outlined"
-              fullWidth
-              onClick={() => navigate('/user/aspirants/declaration', { state: { resume: true } })}
-              sx={{ fontFamily: FF, fontWeight: 700 }}
-            >
+            <Button color="inherit" size="small" variant="outlined" fullWidth onClick={continueRegistration}>
               {t('userDashboard.actions.continueAspirantRegistration')}
             </Button>
             <IconButton aria-label="Dismiss" size="small" color="inherit" onClick={() => setPendingAlertDismissed(true)}>
@@ -666,12 +582,11 @@ const UserDashboardPage = () => {
     </Alert>
   );
 
+  const closeFrame = () => { setPhotoFrameOpen(false); setFramePhoto(null); };
+
   return (
     <>
-      {/* Unified layout: desktop now mirrors the mobile home (full-width).
-          The aspirants list (WardCandidateListPage) reflows to a 2–3 column
-          grid on larger screens automatically. */}
-      <Stack spacing={{ xs: 2.5, md: 3 }} sx={{ fontFamily: FF, pb: { xs: 2, md: 4 } }}>
+      <Stack spacing={3} sx={{ pb: { xs: 2, md: 4 } }}>
         {mobileHero}
         {pendingAspirantAlert}
         {isAspirant && mobileAspirantTiles}
@@ -680,33 +595,12 @@ const UserDashboardPage = () => {
         </React.Suspense>
       </Stack>
 
-      <Dialog
-        open={photoFrameOpen}
-        onClose={() => { setPhotoFrameOpen(false); setFramePhoto(null); }}
-        fullWidth
-        maxWidth="md"
-        BackdropProps={{ sx: { backdropFilter: 'blur(6px)', bgcolor: 'rgba(0,0,0,0.45)' } }}
-        PaperProps={{
-          sx: {
-            ...dialogPaperSx,
-            overflow: 'hidden',
-            background: isDark
-              ? 'linear-gradient(145deg, rgba(13,16,24,0.98) 0%, rgba(16,10,10,0.98) 100%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(252,247,240,0.98) 100%)',
-          }
-        }}
-      >
-        <DialogTitle sx={{ px: { xs: 2, md: 3 }, py: { xs: 2, md: 2.5 }, borderBottom: `1px solid ${borderSubtle}` }}>
-          <Stack direction="row" spacing={1.25} alignItems="center">
-            <Box sx={{ width: 42, height: 42, borderRadius: 2, display: 'grid', placeItems: 'center', bgcolor: 'rgba(245,168,0,0.14)', border: `1px solid ${BORDER}`, color: GOLD }}>
-              <AutoAwesomeIcon />
-            </Box>
-            <Typography sx={{ fontFamily: FF, fontWeight: 800, color: textPrimary, fontSize: { xs: '1.05rem', md: '1.25rem' }, flex: 1 }}>
-              {t('userDashboard.framePrompt.title', { defaultValue: 'Add Frame' })}
-            </Typography>
-          </Stack>
+      <Dialog open={photoFrameOpen} onClose={closeFrame} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+          <AutoAwesomeIcon sx={{ color: 'primary.main' }} />
+          {t('userDashboard.framePrompt.title', { defaultValue: 'Add Frame' })}
         </DialogTitle>
-        <DialogContent sx={{ px: { xs: 2, md: 3 }, py: { xs: 2, md: 3 } }}>
+        <DialogContent sx={{ py: 3 }}>
           {/* Hidden file input for photo upload */}
           <input
             ref={frameFileInputRef}
@@ -725,142 +619,81 @@ const UserDashboardPage = () => {
             }}
           />
 
+          {/* Poster preview — mirrors the canvas output of generatePhotoFrameBlob */}
           <Box
             sx={{
-              position: 'relative',
-              borderRadius: 3,
-              minHeight: { xs: 380, md: 480 },
-              p: { xs: 2, md: 3 },
-              overflow: 'hidden',
-              border: `1px solid ${borderSubtle}`,
-              background: selectedPhotoFrame.gradient,
-              boxShadow: isDark ? 'inset 0 1px 0 rgba(255,255,255,0.03)' : 'inset 0 1px 0 rgba(255,255,255,0.85)',
-              maxWidth: 480,
-              mx: 'auto',
+              position: 'relative', mx: 'auto', maxWidth: 420, p: 3, borderRadius: 3,
+              border: 1, borderColor: 'divider', bgcolor: isDark ? 'grey.900' : 'grey.50', overflow: 'hidden',
             }}
           >
-            {/* Top tricolor bar */}
-            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 5, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
-              <Box sx={{ bgcolor: BRAND.red }} />
-              <Box sx={{ bgcolor: BRAND.blue }} />
-              <Box sx={{ bgcolor: BRAND.brown }} />
-            </Box>
-
-            <Stack spacing={2} sx={{ position: 'relative' }}>
-              {/* Header: Logo + Prajaakeeya, Name below */}
-              <Box>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Box component="img" src={prajakeeyaLogo} alt="logo" sx={{ height: 32 }} />
-                  <Typography sx={{
-                    fontFamily: FF, fontWeight: 900, fontSize: '1.1rem',
-                    background: 'linear-gradient(135deg, #C8180A 0%, #F5A800 100%)',
-                    backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                  }}>
+            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, bgcolor: 'primary.main' }} />
+            <Stack spacing={2.5}>
+              <Stack direction="row" spacing={1.25} alignItems="center">
+                <Box component="img" src={prajakeeyaLogo} alt="" sx={{ width: 32, height: 32, borderRadius: 2 }} />
+                <Box>
+                  <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }}>
                     {t('userDashboard.frame.brandName', { defaultValue: 'Prajaakeeya' })}
                   </Typography>
-                </Stack>
-                <Typography sx={{ fontFamily: FF, fontWeight: 700, color: textSecondary, fontSize: '0.85rem', mt: 0.5, ml: 0.5 }}>
-                  {userDisplayName}
-                </Typography>
-              </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>{userDisplayName}</Typography>
+                </Box>
+              </Stack>
 
-              {/* Photo — click to upload */}
               <Box
+                component="button"
+                type="button"
                 onClick={() => frameFileInputRef.current?.click()}
-                sx={{
-                  display: 'flex', justifyContent: 'center', pt: 1, cursor: 'pointer',
-                }}
+                aria-label={t('userDashboard.framePrompt.tapToUpload', { defaultValue: 'Tap photo to upload from gallery or camera' })}
+                sx={{ position: 'relative', alignSelf: 'center', p: 0, border: 0, bgcolor: 'transparent', cursor: 'pointer', borderRadius: '50%' }}
               >
-                <Box sx={{ position: 'relative', p: 0.8, borderRadius: '50%', background: `linear-gradient(135deg, ${selectedPhotoFrame.accent} 0%, ${GOLD} 100%)`, boxShadow: `0 0 0 6px ${selectedPhotoFrame.accentSoft}` }}>
-                  <Avatar
-                    src={framePhoto || user?.profilePicture || undefined}
-                    sx={{
-                      width: { xs: 160, md: 220 },
-                      height: { xs: 160, md: 220 },
-                      bgcolor: 'rgba(255,255,255,0.92)',
-                      color: selectedPhotoFrame.accent,
-                      fontFamily: FF, fontWeight: 800,
-                      fontSize: { xs: '3rem', md: '4rem' },
-                      border: '4px solid rgba(255,255,255,0.95)',
-                    }}
-                  >
-                    {userInitials}
-                  </Avatar>
-                  {/* Camera overlay icon */}
-                  <Box sx={{
-                    position: 'absolute', bottom: 8, right: 8,
-                    width: 36, height: 36, borderRadius: '50%',
-                    bgcolor: 'rgba(0,0,0,0.6)', display: 'grid', placeItems: 'center',
-                    border: '2px solid rgba(255,255,255,0.8)',
-                  }}>
-                    <AddAPhotoIcon sx={{ color: '#fff', fontSize: 18 }} />
-                  </Box>
+                <Avatar
+                  src={framePhoto || user?.profilePicture || undefined}
+                  sx={{
+                    width: { xs: 160, sm: 200 }, height: { xs: 160, sm: 200 },
+                    fontSize: '3.5rem', fontWeight: 700,
+                    bgcolor: 'background.paper', color: 'primary.main',
+                    border: 6, borderColor: 'primary.main',
+                  }}
+                >
+                  {userInitials}
+                </Avatar>
+                <Box
+                  sx={{
+                    position: 'absolute', bottom: 10, right: 10, width: 36, height: 36, borderRadius: '50%',
+                    display: 'grid', placeItems: 'center', bgcolor: 'grey.900', color: 'common.white',
+                    border: 2, borderColor: 'background.paper',
+                  }}
+                >
+                  <AddAPhotoIcon sx={{ fontSize: 18 }} />
                 </Box>
               </Box>
 
-              {/* Upload hint */}
-              <Typography sx={{ fontFamily: FF, color: textSecondary, fontSize: '0.8rem', textAlign: 'center' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
                 {t('userDashboard.framePrompt.tapToUpload', { defaultValue: 'Tap photo to upload from gallery or camera' })}
               </Typography>
-
-              {/* Tagline */}
-              <Typography sx={{
-                fontFamily: FF, fontWeight: 800, color: textPrimary,
-                fontSize: { xs: '1.25rem', md: '1.6rem' }, textAlign: 'center', lineHeight: 1.2,
-              }}>
-                {selectedPhotoFrame.title}
-              </Typography>
+              <Typography variant="h4" component="p" sx={{ textAlign: 'center' }}>{selectedPhotoFrame.title}</Typography>
             </Stack>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: { xs: 2, md: 3 }, py: { xs: 1.6, md: 2.2 }, borderTop: `1px solid ${borderSubtle}`, gap: 1, flexWrap: 'wrap' }}>
-          <Button
-            onClick={() => { setPhotoFrameOpen(false); setFramePhoto(null); }}
-            variant="outlined"
-            sx={{ fontFamily: FF, fontWeight: 700, textTransform: 'none', borderRadius: 2 }}
-          >
+        <DialogActions sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', gap: 1, flexWrap: 'wrap' }}>
+          <Button onClick={closeFrame} sx={{ color: 'text.secondary' }}>
             {t('common.cancel') || 'Later'}
           </Button>
           <Box sx={{ flex: 1 }} />
-          <Button
-            onClick={downloadPhotoFrame}
-            disabled={photoFrameBusy}
-            variant="outlined"
-            startIcon={<DownloadRoundedIcon />}
-            sx={{
-              fontFamily: FF,
-              fontWeight: 700,
-              textTransform: 'none',
-              borderRadius: 2,
-              borderColor: GOLDD,
-              color: textPrimary,
-              '&:hover': { borderColor: GOLD, bgcolor: 'rgba(245,168,0,0.06)' },
-            }}
-          >
+          <Button onClick={downloadPhotoFrame} disabled={photoFrameBusy} variant="outlined" startIcon={<DownloadRoundedIcon />}>
             {t('userDashboard.framePrompt.download', { defaultValue: 'Download' })}
           </Button>
-          <Button
-            onClick={sharePhotoFrame}
-            disabled={photoFrameBusy}
-            variant="contained"
-            startIcon={<IosShareIcon />}
-            sx={{
-              fontFamily: FF,
-              fontWeight: 800,
-              textTransform: 'none',
-              borderRadius: 2,
-              color: '#fff',
-              background: `linear-gradient(135deg, ${BRAND.red} 0%, ${BRAND.yellow} 100%)`,
-              boxShadow: '0 10px 24px rgba(200,24,10,0.22)',
-              '&:hover': { background: `linear-gradient(135deg, ${BRAND.red2} 0%, #ffbe1a 100%)` },
-            }}
-          >
+          <Button onClick={sharePhotoFrame} disabled={photoFrameBusy} variant="contained" startIcon={<IosShareIcon />}>
             {t('userDashboard.framePrompt.share', { defaultValue: 'Share Now' })}
           </Button>
         </DialogActions>
       </Dialog>
-      <Snackbar open={photoFrameToast.open} autoHideDuration={3200} onClose={() => setPhotoFrameToast((prev) => ({ ...prev, open: false }))} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity={photoFrameToast.severity} onClose={() => setPhotoFrameToast((prev) => ({ ...prev, open: false }))} sx={{ fontFamily: FF }}>
+      <Snackbar
+        open={photoFrameToast.open}
+        autoHideDuration={3200}
+        onClose={() => setPhotoFrameToast((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={photoFrameToast.severity} onClose={() => setPhotoFrameToast((prev) => ({ ...prev, open: false }))}>
           {photoFrameToast.message}
         </Alert>
       </Snackbar>

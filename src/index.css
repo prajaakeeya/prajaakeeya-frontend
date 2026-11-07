@@ -21,7 +21,7 @@ h1,
 h2,
 h3,
 h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: inherit;
 }
 
 /* Small helper to ensure pseudo-element gradients show outside overflow-hidden cards */

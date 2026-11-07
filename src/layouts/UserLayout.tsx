@@ -2,24 +2,28 @@ import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Button,
   Avatar,
-  Chip,
-  Container,
-  IconButton,
-  useTheme,
-  Paper,
   BottomNavigation,
   BottomNavigationAction,
+  Box,
+  ButtonBase,
+  Container,
+  Divider,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Paper,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import {
-  Logout as LogoutIcon,
-  DarkMode as DarkModeIcon,
-  LightMode as LightModeIcon,
-  ArrowBack as ArrowBackIcon,
+  LogoutRounded as LogoutIcon,
+  DarkModeOutlined as DarkModeIcon,
+  LightModeOutlined as LightModeIcon,
+  ArrowBackRounded as ArrowBackIcon,
   HomeRounded as HomeRoundedIcon,
   ReportProblemRounded as ReportProblemRoundedIcon,
   GroupsRounded as GroupsRoundedIcon,
@@ -31,12 +35,9 @@ import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/useAuthStore';
 import useThemeStore from '../store/useThemeStore';
 import prajakeeyaLogo from '../assets/images/prajakeeya.webp';
-import { BRAND } from '../theme';
 import LanguageSelector from '../components/LanguageSelector';
 import NotificationBell from '../components/NotificationBell';
 import { fetchAspirant } from '../services/aspirantService';
-
-const FF = "'Baloo 2', sans-serif";
 
 const UserLayout = () => {
   const { t } = useTranslation();
@@ -44,7 +45,6 @@ const UserLayout = () => {
   const { mode, toggleTheme } = useThemeStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
   const isDark = mode === 'dark';
   const isDashboard = location.pathname === '/user/dashboard';
   const isVotersPage = location.pathname === '/user/voters';
@@ -54,6 +54,8 @@ const UserLayout = () => {
   const isNotificationsPage = location.pathname === '/user/notifications';
   const isRegisteredAspirants = location.pathname === '/user/registered-aspirants';
   const isProfilePage = location.pathname === '/user/complete-profile' || location.pathname === '/user/dashboard/profile';
+  // Top-level pages show the logo on mobile; nested pages show a back arrow instead.
+  const isTopLevel = isDashboard || isVotersPage || isCivicIssuesPage || isSopPage || isAspirantRegister || isNotificationsPage || isRegisteredAspirants || isProfilePage;
 
   const [aspirantName, setAspirantName] = useState<string | null>(null);
   const [aspirantLoading, setAspirantLoading] = useState(user?.role === 'aspirant');
@@ -102,250 +104,165 @@ const UserLayout = () => {
       : location.pathname.startsWith(item.path)
   );
 
-  // Theme-aware colour helpers
-  const navBg = isDark
-    ? 'radial-gradient(130% 140% at 0% 0%, rgba(200,24,10,0.2) 0%, rgba(10,8,8,1) 55%), radial-gradient(120% 130% at 100% 0%, rgba(37,58,154,0.16) 0%, rgba(10,8,8,1) 55%)'
-    : `linear-gradient(135deg, #fff 0%, #FFF8F0 100%)`;
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const wardText = wardNumber ? `${t('common.ward', { defaultValue: 'Ward' })} ${wardNumber}` : null;
+  const themeLabel = isDark
+    ? t('common.switchToLight', { defaultValue: 'Switch to light theme' })
+    : t('common.switchToDark', { defaultValue: 'Switch to dark theme' });
 
-  const subtleText = isDark ? 'rgba(255,255,255,0.52)' : 'rgba(17,24,39,0.45)';
+  const userAvatar = (size: number) => (
+    <Avatar
+      src={displayUser.profilePicture || undefined}
+      alt={displayName || 'User'}
+      sx={{ width: size, height: size, fontSize: size * 0.42, fontWeight: 600, bgcolor: 'primary.main' }}
+    >
+      {!displayUser.profilePicture && (displayName?.charAt(0).toUpperCase() || 'U')}
+    </Avatar>
+  );
 
   return (
     <Box sx={{ minHeight: '100dvh', bgcolor: 'background.default' }}>
-      <AppBar position="sticky" elevation={0} sx={{
-        background: navBg,
-        color: isDark ? 'white' : 'text.primary',
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        '&::before': isDark ? {
-          content: '""',
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px)',
-          backgroundSize: '44px 44px',
-        } : {},
-      }}>
-        {/* Tri-colour top accent */}
-        <Box sx={{ display: 'flex', height: '3px' }}>
-          {[BRAND.red, BRAND.blue, BRAND.brown].map(c => <Box key={c} sx={{ flex: 1, bgcolor: c }} />)}
-        </Box>
-
-        <Container maxWidth="xl" sx={{ px: { xs: 1, sm: 2 } }}>
-          <Toolbar sx={{ justifyContent: 'space-between', py: { xs: 0.9, sm: 1.2 }, minHeight: { xs: 56, sm: 72 }, px: { xs: 1 } }}>
-            {/* Left: back button (mobile, non-dashboard) or logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              {/* Mobile back button — shown on all pages except dashboard, voters, civic issues, sop, aspirant register, notifications, and registered-aspirants */}
-              {!isDashboard && !isVotersPage && !isCivicIssuesPage && !isSopPage && !isAspirantRegister && !isNotificationsPage && !isRegisteredAspirants && !isProfilePage && (
-                <IconButton
-                  onClick={() => navigate(-1)}
-                  size="small"
-                  aria-label="go back"
-                  sx={{
-                    display: { xs: 'flex', sm: 'none' },
-                    color: isDark ? BRAND.yellow : BRAND.saffron,
-                    p: 0.8, borderRadius: 2,
-                    background: `linear-gradient(135deg,rgba(200,24,10,.18),rgba(245,168,0,.14))`,
-                    border: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  <ArrowBackIcon sx={{ fontSize: 22 }} />
-                </IconButton>
-              )}
-
-              {/* Logo — always on desktop, on dashboard/voters/civic-issues/sop on mobile */}
-              <Box
-                sx={{ display: { xs: (isDashboard || isVotersPage || isCivicIssuesPage || isSopPage || isAspirantRegister || isNotificationsPage || isRegisteredAspirants || isProfilePage) ? 'flex' : 'none', sm: 'flex' }, alignItems: 'center', gap: 1.5, cursor: 'pointer' }}
-                onClick={() => navigate('/user/dashboard')}
-              >
-                <Box sx={{
-                  p: 0.8, borderRadius: 2,
-                  background: `linear-gradient(135deg,rgba(200,24,10,.18),rgba(245,168,0,.14))`,
-                  border: `1px solid ${theme.palette.divider}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <Box component="img" src={prajakeeyaLogo} alt={t('userDashboard.title')} sx={{ height: { xs: 28, sm: 34 } }} />
-                </Box>
-                <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                  <Typography sx={{ fontFamily: FF, fontWeight: 800, lineHeight: 1.05, color: isDark ? '#fff' : 'text.primary', fontSize: { sm: '1rem', md: '1.08rem' } }}>
-                    {t('pages.landing.kicker')}
-                  </Typography>
-                  <Typography sx={{ fontFamily: FF, fontSize: '0.73rem', letterSpacing: '.06em', textTransform: 'uppercase', color: subtleText }}>
-                    {t('menu.dashboard') || 'Dashboard'}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* Right: theme toggle + lang switch + avatar + logout(desktop) */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.8, sm: 1.5 } }}>
-              {/* Dark / Light mode toggle */}
+      <AppBar position="sticky">
+        <Container maxWidth="lg" disableGutters>
+          <Toolbar sx={{ minHeight: { xs: 56, sm: 64 }, gap: 1 }}>
+            {/* Mobile back button — hidden on top-level pages */}
+            {!isTopLevel && (
               <IconButton
-                onClick={toggleTheme}
-                size="small"
-                aria-label="toggle theme"
-                sx={{
-                  width: 36, height: 36,
-                  color: isDark ? BRAND.yellow : BRAND.saffron,
-                }}>
-                {isDark ? <LightModeIcon /> : <DarkModeIcon />}
-              </IconButton>
-
-              {/* Lang selector */}
-              <LanguageSelector
-                sx={{
-                  minWidth: 64,
-                  px: 1,
-                  fontFamily: FF,
-                  fontWeight: 800,
-                  fontSize: '0.9rem',
-                  color: isDark ? BRAND.yellow : BRAND.saffron,
-                }}
-              />
-
-              {/* Notifications bell — opens /user/notifications */}
-              <NotificationBell />
-
-              <Box sx={{ width: { xs: 4, sm: 8 } }} />
-
-              {/* User avatar (desktop: full, mobile: compact) */}
-              <Box sx={{
-                display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1.2, cursor: 'pointer',
-                p: 0.7, pr: { xs: 0.7, sm: 1.2 }, borderRadius: 3,
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : theme.palette.divider}`,
-                bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'action.hover',
-                '&:hover': { bgcolor: isDark ? 'rgba(255,255,255,0.07)' : 'action.selected' },
-              }} onClick={() => navigate('/user/complete-profile')}>
-                <Avatar
-                  src={displayUser.profilePicture || undefined}
-                  alt={displayName || 'User'}
-                  sx={{
-                    width: { xs: 34, sm: 38 }, height: { xs: 34, sm: 38 },
-                    bgcolor: displayUser.profilePicture ? 'transparent' : 'primary.main',
-                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : theme.palette.divider}`,
-                  }}
-                >
-                  {!displayUser.profilePicture && (displayName?.charAt(0).toUpperCase() || 'U')}
-                </Avatar>
-                <Box>
-                  <Typography variant="body2" sx={{ fontFamily: FF, fontWeight: 700, lineHeight: 1.2, color: isDark ? '#fff' : 'text.primary' }}>
-                    {displayName}
-                  </Typography>
-                  {(wardNumber || displayUser.wardId) && (
-                    <Chip
-                      label={`Ward ${wardNumber ?? displayUser.wardId}`}
-                      size="small"
-                      sx={{
-                        height: 18, fontSize: '0.64rem', fontWeight: 700, fontFamily: FF,
-                        bgcolor: isDark ? 'rgba(245,168,0,0.16)' : 'rgba(245,168,0,0.15)',
-                        color: isDark ? '#ffe4aa' : BRAND.brown,
-                        border: `1px solid rgba(245,168,0,0.36)`,
-                      }}
-                    />
-                  )}
-                </Box>
-              </Box>
-
-              {/* Mobile-only profile avatar */}
-              <Box
-                onClick={() => navigate('/user/complete-profile')}
-                sx={{
-                  display: { xs: 'flex', sm: 'none' },
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                }}
+                onClick={() => navigate(-1)}
+                aria-label="go back"
+                sx={{ display: { xs: 'inline-flex', sm: 'none' }, ml: -1 }}
               >
-                <Avatar
-                  src={displayUser.profilePicture || undefined}
-                  alt={displayName || 'User'}
-                  sx={{
-                    width: 34, height: 34,
-                    bgcolor: displayUser.profilePicture ? 'transparent' : 'primary.main',
-                    border: `2px solid ${isDark ? 'rgba(245,168,0,0.55)' : BRAND.yellow}`,
-                  }}
-                >
-                  {!displayUser.profilePicture && (displayName?.charAt(0).toUpperCase() || 'U')}
-                </Avatar>
-              </Box>
+                <ArrowBackIcon />
+              </IconButton>
+            )}
 
-              {/* Logout (desktop) */}
-              <Button size="small" startIcon={<LogoutIcon />} onClick={handleLogout}
-                sx={{
-                  fontFamily: FF, borderRadius: 50,
-                  display: { xs: 'none', sm: 'inline-flex' },
-                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.2)' : theme.palette.divider}`,
-                  color: isDark ? 'rgba(255,255,255,0.7)' : 'text.secondary',
-                  textTransform: 'none', fontWeight: 700,
-                  '&:hover': {
-                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.45)' : theme.palette.primary.main}`,
-                    color: isDark ? '#fff' : 'text.primary',
-                    bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'action.hover',
-                  },
-                }}>
-                {t('common.logout')}
-              </Button>
-            </Box>
-          </Toolbar>
-        </Container>
+            <ButtonBase
+              onClick={() => navigate('/user/dashboard')}
+              sx={{
+                display: { xs: isTopLevel ? 'flex' : 'none', sm: 'flex' },
+                alignItems: 'center', gap: 1.25, borderRadius: 2, p: 0.5, ml: -0.5, flexShrink: 0,
+              }}
+            >
+              <Box component="img" src={prajakeeyaLogo} alt={t('userDashboard.title')} sx={{ width: 32, height: 32, borderRadius: 2 }} />
+              <Typography sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 700, fontSize: '1rem' }}>
+                {t('pages.landing.kicker')}
+              </Typography>
+            </ButtonBase>
 
-        {/* Desktop primary nav — mirrors the mobile bottom nav, shown on sm+.
-            Same items / paths / active-state; replaces the bottom bar on desktop. */}
-        <Box sx={{ display: { xs: 'none', sm: 'block' }, borderTop: `1px solid ${theme.palette.divider}` }}>
-          <Container maxWidth="xl" sx={{ px: { xs: 1, sm: 2 } }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: { sm: 0.5, md: 1 }, py: 0.5 }}>
+            {/* Desktop primary nav */}
+            <Stack component="nav" direction="row" sx={{ display: { xs: 'none', md: 'flex' }, ml: 4, alignSelf: 'stretch' }}>
               {bottomNavItems.map((item, idx) => {
                 const active = idx === currentNavIndex;
                 return (
-                  <Button
+                  <ButtonBase
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    startIcon={item.icon}
+                    aria-current={active ? 'page' : undefined}
                     sx={{
-                      fontFamily: FF,
-                      fontWeight: 700,
-                      textTransform: 'none',
-                      borderRadius: 2,
-                      px: { sm: 1.2, md: 2 },
-                      py: 0.9,
-                      fontSize: { sm: '0.8rem', md: '0.9rem' },
-                      color: active
-                        ? (isDark ? BRAND.yellow : BRAND.saffron)
-                        : (isDark ? 'rgba(255,255,255,0.72)' : 'text.secondary'),
-                      bgcolor: active ? 'rgba(245,168,0,0.12)' : 'transparent',
-                      '& .MuiButton-startIcon': { mr: 0.6 },
-                      '&:hover': {
-                        bgcolor: isDark ? 'rgba(255,255,255,0.06)' : 'action.hover',
-                        color: isDark ? '#fff' : 'text.primary',
-                      },
+                      px: 1.5, fontSize: '0.875rem', fontWeight: active ? 600 : 500,
+                      color: active ? 'text.primary' : 'text.secondary',
+                      borderBottom: 2, borderColor: active ? 'primary.main' : 'transparent',
+                      mb: '-1px', transition: 'color 120ms ease',
+                      '&:hover': { color: 'text.primary' },
                     }}
                   >
                     {item.label}
-                  </Button>
+                  </ButtonBase>
                 );
               })}
-            </Box>
-          </Container>
+            </Stack>
+
+            <Box sx={{ flex: 1 }} />
+
+            <Stack direction="row" alignItems="center" spacing={{ xs: 0.25, sm: 0.5 }}>
+              <Tooltip title={themeLabel}>
+                <IconButton onClick={toggleTheme} aria-label="toggle theme" sx={{ color: 'text.secondary' }}>
+                  {isDark ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+                </IconButton>
+              </Tooltip>
+              <LanguageSelector sx={{ color: 'text.primary', minWidth: 0 }} />
+              <NotificationBell />
+
+              <ButtonBase
+                onClick={(e) => setMenuAnchor(e.currentTarget)}
+                aria-label={displayName || 'Account'}
+                aria-haspopup="menu"
+                sx={{ ml: 0.5, borderRadius: 2, p: 0.5, gap: 1 }}
+              >
+                {userAvatar(32)}
+                <Box sx={{ display: { xs: 'none', lg: 'block' }, textAlign: 'left' }}>
+                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, lineHeight: 1.2 }}>{displayName}</Typography>
+                  {wardText && (
+                    <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.3 }}>{wardText}</Typography>
+                  )}
+                </Box>
+              </ButtonBase>
+            </Stack>
+          </Toolbar>
+        </Container>
+
+        {/* Tablet nav (sm–md): a scrollable second row */}
+        <Box sx={{ display: { xs: 'none', sm: 'block', md: 'none' }, borderTop: 1, borderColor: 'divider' }}>
+          <Stack direction="row" sx={{ px: 2, overflowX: 'auto' }}>
+            {bottomNavItems.map((item, idx) => {
+              const active = idx === currentNavIndex;
+              return (
+                <ButtonBase
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  sx={{
+                    px: 1.5, py: 1.25, whiteSpace: 'nowrap', fontSize: '0.875rem',
+                    fontWeight: active ? 600 : 500, color: active ? 'text.primary' : 'text.secondary',
+                    borderBottom: 2, borderColor: active ? 'primary.main' : 'transparent',
+                  }}
+                >
+                  {item.label}
+                </ButtonBase>
+              );
+            })}
+          </Stack>
         </Box>
       </AppBar>
 
-      <Container maxWidth="lg" sx={{ pt: { xs: 3, sm: 4, md: 5 }, pb: { xs: 'calc(90px + env(safe-area-inset-bottom))', sm: 4, md: 5 } }}>
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{ sx: { minWidth: 240, mt: 1 } }}
+      >
+        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ px: 2, py: 1.5 }}>
+          {userAvatar(40)}
+          <Box sx={{ minWidth: 0 }}>
+            <Typography sx={{ fontWeight: 600 }} noWrap>{displayName}</Typography>
+            {wardText && <Typography variant="body2" sx={{ color: 'text.secondary' }}>{wardText}</Typography>}
+          </Box>
+        </Stack>
+        <Divider />
+        <MenuItem onClick={() => { setMenuAnchor(null); navigate('/user/complete-profile'); }}>
+          <ListItemIcon><PersonRoundedIcon fontSize="small" /></ListItemIcon>
+          {t('userDashboard.actions.myProfile', { defaultValue: 'My Profile' })}
+        </MenuItem>
+        <MenuItem onClick={() => { setMenuAnchor(null); handleLogout(); }} sx={{ color: 'error.main' }}>
+          <ListItemIcon sx={{ color: 'inherit' }}><LogoutIcon fontSize="small" /></ListItemIcon>
+          {t('common.logout')}
+        </MenuItem>
+      </Menu>
+
+      <Container maxWidth="lg" sx={{ pt: { xs: 3, sm: 4, md: 5 }, pb: { xs: 'calc(96px + env(safe-area-inset-bottom))', sm: 4, md: 6 } }}>
         <Outlet />
       </Container>
 
       {/* Mobile bottom navigation — fixed, xs only */}
       <Paper
-        elevation={0}
+        square
         sx={{
           display: { xs: 'block', sm: 'none' },
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: (theme) => theme.zIndex.appBar,
-          // Solid opaque base so page content scrolling underneath never shows
-          // through; the gradient sits on top via backgroundImage.
-          backgroundColor: isDark ? '#0a0808' : '#ffffff',
-          backgroundImage: navBg,
-          borderTop: `1px solid ${theme.palette.divider}`,
-          pb: 'calc(8px + env(safe-area-inset-bottom))',
+          position: 'fixed', bottom: 0, left: 0, right: 0,
+          zIndex: (th) => th.zIndex.appBar,
+          borderTop: 1, borderColor: 'divider',
+          pb: 'env(safe-area-inset-bottom)',
         }}
       >
         <BottomNavigation
@@ -353,29 +270,13 @@ const UserLayout = () => {
           value={currentNavIndex === -1 ? false : currentNavIndex}
           onChange={(_, newValue) => navigate(bottomNavItems[newValue].path)}
           sx={{
-            bgcolor: 'transparent',
-            height: 62,
-            alignItems: 'flex-start',
-            pt: 1,
+            height: 64, bgcolor: 'transparent',
             '& .MuiBottomNavigationAction-root': {
-              minWidth: 0,
-              px: 0.5,
-              // Anchor icon + label to the top so every icon lines up on the
-              // same row regardless of how many lines its label wraps to.
-              justifyContent: 'flex-start',
-              gap: 0.5,
-              color: isDark ? '#fff' : 'rgba(17,24,39,0.5)',
+              minWidth: 0, px: 0.5, color: 'text.secondary', justifyContent: 'flex-start', pt: 1.25, gap: 0.5,
             },
-            '& .MuiBottomNavigationAction-root.Mui-selected': {
-              color: isDark ? BRAND.yellow : BRAND.saffron,
-            },
-            '& .MuiBottomNavigationAction-label': {
-              mt: 0,
-              lineHeight: 1.2,
-              fontFamily: FF,
-              fontWeight: 700,
-              fontSize: '0.62rem',
-              '&.Mui-selected': { fontSize: '0.64rem' },
+            '& .MuiBottomNavigationAction-root.Mui-selected': { color: 'primary.main' },
+            '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected': {
+              fontSize: '0.6875rem', fontWeight: 600, lineHeight: 1.2, textAlign: 'center',
             },
           }}
         >

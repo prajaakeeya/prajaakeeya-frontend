@@ -24,7 +24,7 @@ const BigSwitch = styled(MuiSwitch)({
         width: 18,
         height: 18,
         boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.6)',
-        background: 'radial-gradient(circle at 35% 35%, #ffffff, #d8d8d8)',
+        background: '#ffffff',
     },
     '& .MuiSwitch-track': {
         borderRadius: 24,
@@ -73,7 +73,6 @@ import {
 } from '../services/electionService';
 
 type Municipality = { id: number; name: string; state: string };
-import { BRAND } from '../theme';
 import {
     Person as PersonIcon,
     Save as SaveIcon,
@@ -741,7 +740,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                 <Typography variant="h4" sx={{ fontWeight: 800, mb: 1, lineHeight: 1.05 }}>
                     {t('profile.completeProfile') || 'My Profile'}
                 </Typography>
-                <Typography variant="body1" sx={{ color: '#6B7280', fontSize: '1rem' }}>
+                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
                     {t('profile.subtitle') || 'View and update your profile information'}
                 </Typography>
             </Box>
@@ -756,10 +755,8 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
             <Card sx={{
                 borderRadius: 3,
                 overflow: 'hidden',
-                border: `1px solid ${isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.3)'}`,
-                boxShadow: isDark ? '0 20px 60px rgba(0,0,0,0.5)' : '0 12px 40px rgba(17,24,39,0.12)',
             }}>
-                <CardContent sx={{ pt: 2, pb: '16px !important', px: { xs: 1.5, sm: 2.5 } }}>
+                <CardContent sx={{ p: { xs: 2, sm: 3 }, pb: { xs: '16px !important', sm: '24px !important' } }}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Stack spacing={2}>
                             {/* Avatar */}
@@ -787,7 +784,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                             width: 28,
                                             height: 28,
                                             bgcolor: isDark ? '#1a1f2e' : '#fff',
-                                            border: `2px solid ${BRAND.yellow}`,
+                                            border: `2px solid rgba(120,113,108,0.35)`,
                                             boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                                             '&:hover': { bgcolor: isDark ? '#252a3a' : '#f5f5f5' },
                                         }}
@@ -844,18 +841,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                             </Box>
 
                             {/* Form Fields */}
-                            <Grid container spacing={2} sx={{
-                                pl: { xs: 0, sm: 0 }, pr: { xs: 1.5, sm: 0 },
-                                '& .MuiGrid-item': { pl: { xs: 1, sm: 2 } },
-                                '& .MuiTextField-root': { boxSizing: 'border-box', width: '100%' },
-                                '& .MuiInputLabel-root': { color: isDark ? '#fff' : '#000' },
-                                '& .MuiInputLabel-root.Mui-focused': { color: isDark ? '#fff' : '#000' },
-                                '& .MuiInputLabel-root.Mui-disabled': { color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' },
-                                '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? 'rgba(245,168,0,0.4)' : 'rgba(200,130,0,0.45)' },
-                                '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? 'rgba(245,168,0,0.7)' : 'rgba(200,130,0,0.75)' },
-                                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? '#F5A800' : '#c88200' },
-                                '& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: isDark ? 'rgba(245,168,0,0.2)' : 'rgba(200,130,0,0.2)' },
-                            }}>
+                            <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
@@ -1149,7 +1135,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                             fontSize: '0.78rem',
                                             fontWeight: 700,
                                             letterSpacing: '0.08em',
-                                            color: '#F5A800',
+                                            color: '#D92D20',
                                             textTransform: 'uppercase',
                                         }}
                                     >
@@ -1268,7 +1254,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                                 component="span"
                                                 sx={{
                                                     ml: 1,
-                                                    color: '#F5A800',
+                                                    color: '#D92D20',
                                                     fontWeight: 600,
                                                     textTransform: 'none',
                                                     letterSpacing: 'normal',
@@ -1344,7 +1330,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                                                 component="span"
                                                 sx={{
                                                     ml: 1,
-                                                    color: '#F5A800',
+                                                    color: '#D92D20',
                                                     fontWeight: 600,
                                                     textTransform: 'none',
                                                     letterSpacing: 'normal',
@@ -1492,13 +1478,12 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                 startIcon={<AutoAwesomeIcon />}
                 onClick={() => navigate('/user/dashboard', { state: { openPhotoFrame: true } })}
                 sx={{
-                    borderRadius: 50,
+                    borderRadius: 2,
                     fontWeight: 700,
-                    textTransform: 'none',
                     py: 1.4,
-                    borderColor: 'rgba(245,168,0,0.4)',
+                    borderColor: 'rgba(120,113,108,0.4)',
                     color: 'text.primary',
-                    '&:hover': { borderColor: '#F5A800', bgcolor: 'rgba(245,168,0,0.08)' },
+                    '&:hover': { borderColor: '#D92D20', bgcolor: 'rgba(120,113,108,0.08)' },
                 }}
             >
                 {t('userDashboard.framePrompt.title', { defaultValue: 'Add Frame' })}
@@ -1514,10 +1499,9 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     // or it races the reload and flashes a page before preloader.
                     onClick={() => { logout(); }}
                     sx={{
-                        borderRadius: 50,
+                        borderRadius: 2,
                         fontWeight: 700,
-                        textTransform: 'none',
-                        borderColor: 'rgba(245,168,0,0.4)',
+                        borderColor: 'rgba(120,113,108,0.4)',
                         color: 'text.secondary',
                         px: 3,
                         '&:hover': { borderColor: 'error.main', color: 'error.main', bgcolor: 'rgba(200,24,10,0.06)' },
@@ -1536,9 +1520,8 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                     startIcon={<DeleteForeverIcon />}
                     onClick={() => setDeleteDialogOpen(true)}
                     sx={{
-                        borderRadius: 50,
+                        borderRadius: 2,
                         fontWeight: 700,
-                        textTransform: 'none',
                         px: 3,
                         borderColor: 'rgba(211,47,47,0.4)',
                         color: 'error.main',
@@ -1559,7 +1542,7 @@ const ProfileCompletionPage = ({ hideLogout }: { hideLogout?: boolean } = {}) =>
                         <Box
                             component="a"
                             href="mailto:support@prajaakeeya.org"
-                            sx={{ color: '#F5A800', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                            sx={{ color: '#D92D20', fontWeight: 700, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
                         >
                             support@prajaakeeya.org
                         </Box>

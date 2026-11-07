@@ -12,7 +12,6 @@ import {
   Typography,
   Avatar,
   Divider,
-  Chip,
   IconButton,
   Button,
   Tooltip,
@@ -87,20 +86,11 @@ const AdminLayout = () => {
   };
 
   const drawer = (
-    <Box sx={{ bgcolor: '#f5550b', minHeight: '100vh' }}>
-      <Box sx={{ p: 2, pt: 2, bgcolor: '#f5550b' }}>
-        <Typography variant="overline" sx={{ px: 2, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
-          {t('common.navigation')}
-        </Typography>
-      </Box>
-      <List
-        sx={{
-          px: 1.5,
-          pt: 1,
-          bgcolor: '#f5550b',
-          minHeight: '100vh'
-        }}
-      >
+    <Box sx={{ pt: { xs: 2, md: 10 }, pb: 2 }}>
+      <Typography variant="overline" sx={{ px: 3, color: 'text.secondary', fontWeight: 700 }}>
+        {t('common.navigation')}
+      </Typography>
+      <List sx={{ px: 1.5, pt: 1 }}>
         {navItems.map((item) => {
           const isSelected = pathname === item.to || pathname.startsWith(item.to + '/');
           return (
@@ -111,64 +101,18 @@ const AdminLayout = () => {
               selected={isSelected}
               onClick={handleDrawerClose}
               sx={{
-                mb: 0.5,
-                borderRadius: 2,
-                bgcolor: isSelected ? 'white' : '#f5550b',
-                color: isSelected ? '#f5550b' : 'white',
-                fontWeight: isSelected ? 700 : 500,
-                '&:hover': {
-                  bgcolor: isSelected ? 'white' : 'rgba(255, 255, 255, 0.1)',
-                  color: isSelected ? '#f5550b' : 'white',
-                  '& .MuiListItemIcon-root': {
-                    color: isSelected ? '#f5550b' : 'white',
-                  },
-                  '& .MuiListItemText-primary': {
-                    color: isSelected ? '#f5550b' : 'white',
-                  }
+                mb: 0.25, borderRadius: 2, py: 0.875,
+                color: 'text.secondary',
+                '& .MuiListItemIcon-root': { color: 'inherit', minWidth: 36 },
+                '& .MuiListItemText-primary': { fontSize: '0.875rem', fontWeight: 500 },
+                '&:hover': { color: 'text.primary' },
+                '&.Mui-selected, &.Mui-selected:hover': {
+                  bgcolor: 'action.selected', color: 'primary.main',
+                  '& .MuiListItemText-primary': { fontWeight: 600 },
                 },
-                '&:active': {
-                  bgcolor: isSelected ? 'white' : 'rgba(255, 255, 255, 0.15)',
-                  color: isSelected ? '#f5550b' : 'white',
-                },
-                '&:focus': {
-                  bgcolor: isSelected ? 'white' : '#f5550b',
-                  color: isSelected ? '#f5550b' : 'white',
-                },
-                '&.Mui-selected': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
-                  '& .MuiListItemIcon-root': {
-                    color: '#f5550b !important',
-                  },
-                  '& .MuiListItemText-primary': {
-                    color: '#f5550b !important',
-                    fontWeight: 700,
-                  }
-                },
-                '&.Mui-selected:hover': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
-                },
-                '&.Mui-selected:active': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
-                },
-                '&.Mui-selected:focus': {
-                  bgcolor: 'white !important',
-                  color: '#f5550b !important',
-                },
-                '& .MuiListItemIcon-root': {
-                  color: isSelected ? '#f5550b' : 'white',
-                },
-                '& .MuiListItemText-primary': {
-                  color: isSelected ? '#f5550b' : 'white',
-                  fontWeight: isSelected ? 700 : 500,
-                }
               }}
             >
-              <ListItemIcon sx={{ color: isSelected ? '#f5550b' : 'white', minWidth: 40 }}>
-                {item.icon}
-              </ListItemIcon>
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           );
@@ -181,14 +125,7 @@ const AdminLayout = () => {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <AppBar
         position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#ffffff',
-          color: 'text.primary',
-          boxShadow: theme.palette.mode === 'dark'
-            ? '0 1px 3px rgba(0,0,0,0.4)'
-            : '0 1px 3px rgba(0,0,0,0.08)'
-        }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 2, sm: 3 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -204,13 +141,12 @@ const AdminLayout = () => {
               </IconButton>
             )}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box component="img" src={prajakeeyaLogo} alt={t('adminDashboard.title')} sx={{ height: 44 }} />
+              <Box component="img" src={prajakeeyaLogo} alt={t('adminDashboard.title')} sx={{ width: 32, height: 32, borderRadius: 2 }} />
               <Typography
                 variant="h6"
                 sx={{
                   fontWeight: 700,
-                  color: 'primary.main',
-                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  fontSize: '1rem',
                   display: { xs: 'none', sm: 'block' }
                 }}
               >
@@ -233,17 +169,9 @@ const AdminLayout = () => {
                 <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.2 }}>
                   {displayUser?.name}
                 </Typography>
-                <Chip
-                  label={displayUser?.role}
-                  size="small"
-                  sx={{
-                    height: 18,
-                    fontSize: '0.65rem',
-                    bgcolor: 'primary.main',
-                    color: 'white',
-                    fontWeight: 600
-                  }}
-                />
+                <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                  {displayUser?.role}
+                </Typography>
               </Box>
             </Box>
             <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
@@ -286,8 +214,8 @@ const AdminLayout = () => {
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
-              borderRight: 'none',
-              bgcolor: '#f5550b',
+              borderRight: 1,
+              borderColor: 'divider',
               overflow: 'auto',
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': {

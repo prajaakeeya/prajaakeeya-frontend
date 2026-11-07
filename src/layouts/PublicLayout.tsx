@@ -58,7 +58,7 @@ const PublicLayout = () => {
     <Box sx={{ width: 280, pt: 2 }}>
       <Box sx={{ px: 2, pb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box component="img" src={prajakeeyaLogo} alt={t('pages.landing.kicker')} sx={{ height: 36 }} />
-        <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+        <Typography sx={{ fontWeight: 700, fontSize: '1rem' }}>
           {t('pages.landing.kicker')}
         </Typography>
       </Box>
@@ -76,7 +76,7 @@ const PublicLayout = () => {
               }
             }}
           >
-            <Box sx={{ mr: 2, color: 'primary.main' }}>{item.icon}</Box>
+            <Box sx={{ mr: 2, color: 'text.secondary', display: 'flex' }}>{item.icon}</Box>
             <ListItemText
               primary={item.label}
               primaryTypographyProps={{
@@ -101,7 +101,7 @@ const PublicLayout = () => {
               navigate('/register');
               if (isMobile) setMobileOpen(false);
             }}
-            sx={{ justifyContent: 'flex-start', color: '#fff' }}
+            
           >
             {t('pages.landing.ctaVoter')}
           </Button>
@@ -111,14 +111,13 @@ const PublicLayout = () => {
   );
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#ffffff' }}>
-      <AppBar position="sticky" elevation={0} color="transparent" sx={{ top: 0, bgcolor: '#ffffff' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <AppBar position="sticky">
         <Toolbar
           sx={{
             justifyContent: 'space-between',
-            py: { xs: 2, sm: 2.5 },
             px: { xs: 2, sm: 3 },
-            minHeight: { xs: 72, sm: 80 }
+            minHeight: { xs: 56, sm: 64 }
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -128,14 +127,14 @@ const PublicLayout = () => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ color: 'primary.main' }}
+                sx={{ color: 'text.primary' }}
               >
                 <MenuIcon />
               </IconButton>
             )}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box component="img" src={prajakeeyaLogo} alt={t('pages.landing.kicker')} sx={{ height: 44 }} />
-              <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main', display: { xs: 'none', sm: 'block' } }}>
+              <Box component="img" src={prajakeeyaLogo} alt={t('pages.landing.kicker')} sx={{ width: 32, height: 32, borderRadius: 2 }} />
+              <Typography sx={{ fontWeight: 700, fontSize: '1rem', display: { xs: 'none', sm: 'block' } }}>
                 {t('pages.landing.kicker')}
               </Typography>
             </Box>
@@ -147,17 +146,13 @@ const PublicLayout = () => {
               return (
                 <Button
                   key={item.path}
-                  variant={isActive ? 'contained' : 'text'}
                   onClick={() => navigate(item.path)}
+                  aria-current={isActive ? 'page' : undefined}
                   sx={{
-                    borderRadius: 20,
-                    px: 3,
-                    boxShadow: isActive ? 'none' : 'none',
-                    color: isActive ? '#fff' : 'text.primary',
-                    bgcolor: isActive ? 'primary.main' : 'transparent',
-                    '&:hover': {
-                      bgcolor: isActive ? 'primary.dark' : 'action.hover'
-                    }
+                    px: 1.5,
+                    color: isActive ? 'text.primary' : 'text.secondary',
+                    fontWeight: isActive ? 600 : 500,
+                    '&:hover': { color: 'text.primary', bgcolor: 'transparent' },
                   }}
                 >
                   {item.label}
@@ -168,9 +163,9 @@ const PublicLayout = () => {
 
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
             <LanguageSelector
-              sx={{ fontWeight: 700, minWidth: 64 }}
+              sx={{ color: 'text.primary', minWidth: 64 }}
             />
-            <Button variant="contained" onClick={() => navigate('/register')} size="small" sx={{ color: '#fff' }}>
+            <Button variant="contained" onClick={() => navigate('/register')} size="small">
               {t('pages.landing.ctaVoter')}
             </Button>
           </Stack>

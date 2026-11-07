@@ -31,7 +31,6 @@ import {
 import { updateUserConstituencies } from '../services/authService';
 import useAuthStore from '../store/useAuthStore';
 import { COOKIE_AUTH } from '../config/authMode';
-import { BRAND } from '../theme';
 
 type Municipality = { id: number; name: string; state: string };
 type LocalBody = 'municipality' | 'gram_panchayat' | null;
@@ -96,11 +95,11 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
     '& .MuiOutlinedInput-root': {
       background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.88)',
       '& fieldset': { borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.2)' },
-      '&:hover fieldset': { borderColor: 'rgba(245,168,0,0.45)' },
-      '&.Mui-focused fieldset': { borderColor: BRAND.yellow, borderWidth: '1.5px' },
+      '&:hover fieldset': { borderColor: 'rgba(120,113,108,0.45)' },
+      '&.Mui-focused fieldset': { borderColor: '#D92D20', borderWidth: '1.5px' },
     },
     '& .MuiInputLabel-root': { color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(15,23,42,0.62)' },
-    '& .MuiInputLabel-root.Mui-focused': { color: BRAND.yellow },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#D92D20' },
   };
 
   // ── On open: load options + pre-fill from current user ────────────────
@@ -327,8 +326,8 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
       maxWidth="sm"
       PaperProps={{
         sx: {
-          bgcolor: isDark ? '#0d0b0b' : '#fffdfa',
-          border: `1px solid ${isDark ? 'rgba(245,168,0,0.18)' : 'rgba(245,168,0,0.28)'}`,
+          bgcolor: isDark ? '#0d0b0b' : '#FFFFFF',
+          border: `1px solid ${isDark ? 'rgba(120,113,108,0.18)' : 'rgba(120,113,108,0.28)'}`,
           borderRadius: 3,
         },
       }}
@@ -337,7 +336,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        fontFamily: '"Baloo 2", cursive',
+        fontFamily: 'inherit',
         fontWeight: 800,
         fontSize: '1.1rem',
         color: isDark ? '#fff' : 'rgba(15,23,42,0.94)',
@@ -352,7 +351,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
       <DialogContent dividers sx={{ borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(17,24,39,0.08)' }}>
         <Stack spacing={2.5} sx={{ mt: 1 }}>
           <Box>
-            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: BRAND.yellow, letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
+            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: '#D92D20', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
               {t('profile.lokSabhaConstituency', { defaultValue: 'Lok Sabha Constituency' })}
             </Typography>
             <Autocomplete
@@ -367,7 +366,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
           </Box>
 
           <Box>
-            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: BRAND.yellow, letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
+            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: '#D92D20', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
               {t('profile.stateAssemblyConstituency', { defaultValue: 'State Assembly Constituency' })}
             </Typography>
             <Autocomplete
@@ -382,7 +381,7 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
           </Box>
 
           <Box>
-            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: BRAND.yellow, letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
+            <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, color: '#D92D20', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 0.6 }}>
               {t('pages.constituencyOnboarding.localBodyTitle', { defaultValue: 'Local Body' })}
             </Typography>
             <TextField
@@ -518,12 +517,10 @@ const ConstituencyPickerDialog: React.FC<Props> = ({ open, onClose, onSaved }) =
           disabled={submitting}
           variant="contained"
           sx={{
-            background: 'linear-gradient(135deg, #F5A800 0%, #E02010 100%)',
-            color: '#fff',
-            textTransform: 'none',
+            background: '#D92D20',
             fontWeight: 700,
             px: 3,
-            '&:hover': { background: 'linear-gradient(135deg, #F5A800 0%, #C0180A 100%)' },
+            '&:hover': { background: '#D92D20' },
             '&.Mui-disabled': { opacity: 0.6, color: '#fff' },
           }}
         >

@@ -1,5 +1,12 @@
 {
   "common": {
+    "contents": "Contents",
+    "ward": "Ward",
+    "guest": "Guest",
+    "register": "Register",
+    "or": "or",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
     "logout": "Logout",
     "status": "Status",
     "action": "Action",
@@ -724,6 +731,10 @@
   "reportAttachments": "Add attachments",
   "pages": {
     "landing": {
+      "joinNow": "Join now",
+      "exploreAsGuest": "Explore as guest",
+      "rolesTitle": "Two ways to take part",
+      "footerExplore": "Explore",
       "kicker": "Prajaakeeya",
       "title": "Ward-level democracy for Bengaluru",
       "subtitle": "A transparent, citizen-first primary to choose BBMP ward aspirants using verified voter rolls.",
@@ -1577,6 +1588,7 @@
         "subtitle": "We'll send a 6-digit OTP to your email"
       },
       "oath": {
+        "agreeAndProceed": "Agree and Proceed",
         "title": "The Real Prajaakeeya",
         "subtitle": "Please read before agreeing",
         "scrollHint": "↓ scroll to continue",

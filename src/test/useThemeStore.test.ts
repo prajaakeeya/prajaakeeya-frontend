@@ -8,8 +8,8 @@ describe('useThemeStore', () => {
     useThemeStore.setState({ mode: 'dark' });
   });
 
-  it('defaults to dark mode', () => {
-    expect(useThemeStore.getState().mode).toBe('dark');
+  it('defaults to light mode for new visitors', () => {
+    expect(useThemeStore.getInitialState().mode).toBe('light');
   });
 
   it('toggleTheme switches dark -> light -> dark', () => {
